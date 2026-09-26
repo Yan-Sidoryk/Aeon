@@ -1,0 +1,20 @@
+[project]
+name = "pharmapulse-backend"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]",
+  "sqlmodel",
+  "httpx",
+  "anthropic>=1.0",
+  "sse-starlette",
+  "pydantic-settings",
+  "brotli>=1.2",  # httpx2 (used by anthropic 1.x) needs output_buffer_limit
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
