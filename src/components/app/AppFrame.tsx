@@ -5,6 +5,17 @@ import { AppHeader } from "./AppHeader";
 
 /** Shell for the product screens (/start/*, /report/*): header plus a banner when the API is in demo mode or down. */
 export async function AppFrame({ children }: { children: ReactNode }) {
+  return (
+    <div className="min-h-dvh bg-offwhite">
+      <AppHeader />
+      <StatusBanners />
+      <main>{children}</main>
+    </div>
+  );
+}
+
+/** "API down" and "demo mode" banners, shared by the onboarding frame and the dashboard. */
+export async function StatusBanners() {
   let health: Health | null = null;
   try {
     health = await api.health();
@@ -13,8 +24,7 @@ export async function AppFrame({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-dvh bg-offwhite">
-      <AppHeader />
+    <>
       {health === null && (
         <p role="alert" className="bg-alert-soft px-4 py-2.5 text-center text-[14px] leading-[1.4] text-alert-ink">
           Can&apos;t reach the Aeon API at {API_URL}.
@@ -33,7 +43,6 @@ export async function AppFrame({ children }: { children: ReactNode }) {
           {health.demo_domain ? ` of ${health.demo_domain}` : ""}. Results shown are not for the site you enter.
         </p>
       )}
-      <main>{children}</main>
-    </div>
+    </>
   );
 }

@@ -5,8 +5,8 @@ from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
-from app import jobs
-from app.auth import current_org, owned_product, owned_scan
+from app import guard, jobs
+from app.auth import Caller, current_caller, current_org, owned_product, owned_scan
 from app.config import settings
 from app.db import get_session
 from app.engines.registry import engine_status, enabled_engines
@@ -30,24 +30,26 @@ def list_engines():
     return status
 
 
-def start_scan_job(session: Session, product_id: int, org_id: int | None, kind: str = "onboarding") -> Scan:
+def start_scan_job(session: Session, product_id: int, org_id: int | None, kind: str = "onboarding",
+                   ip_hash: str | None = None) -> Scan:
     names = [e["name"] for e in list_engines() if e["enabled"]]
     s = Scan(product_id=product_id, engines=names, kind=kind)
     session.add(s)
     session.commit()
     session.refresh(s)
-    jobs.enqueue("scan", {"scan_id": s.id}, org_id=org_id, job_id=f"scan-{s.id}")
+    jobs.enqueue("scan", {"scan_id": s.id}, org_id=org_id, job_id=f"scan-{s.id}", ip_hash=ip_hash)
     return s
 
 
 @router.post("/products/{product_id}/scans")
-def start_scan(product_id: int, org: Org = Depends(current_org), session: Session = Depends(get_session)):
-    owned_product(session, product_id, org)
+def start_scan(product_id: int, caller: Caller = Depends(current_caller), session: Session = Depends(get_session)):
+    owned_product(session, product_id, caller.org)
     if not session.exec(active_prompts(product_id)).first():
         raise HTTPException(409, "Run setup first: no questions for this product")
     if not _demo() and not enabled_engines():
         raise HTTPException(503, "No AI engines configured; set ANTHROPIC_API_KEY")
-    s = start_scan_job(session, product_id, org.id)
+    guard.check(session, caller, "scan")
+    s = start_scan_job(session, product_id, caller.org.id, ip_hash=caller.ip_hash)
     return {"scan_id": s.id, "engines": s.engines}
 
 
@@ -76,9 +78,12 @@ def get_tracking(product_id: int, org: Org = Depends(current_org), session: Sess
 
 
 @router.put("/products/{product_id}/tracking", summary="Turn weekly re-scans on or off")
-def set_tracking(product_id: int, weekly: bool, org: Org = Depends(current_org),
+def set_tracking(product_id: int, weekly: bool, caller: Caller = Depends(current_caller),
                  session: Session = Depends(get_session)):
+    org = caller.org
     owned_product(session, product_id, org)
+    if weekly:
+        guard.check_tracking(session, caller, product_id)
     sched = session.exec(select(Schedule).where(Schedule.product_id == product_id)).first()
     if not sched:
         sched = Schedule(product_id=product_id, next_run_at=datetime.now(timezone.utc) + timedelta(days=7))

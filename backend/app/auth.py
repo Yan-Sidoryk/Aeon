@@ -2,13 +2,19 @@
 
 The browser signs in anonymously on its first visit and sends its Supabase access token as a Bearer token (SSE
 streams, which can't send headers, pass it as ?access_token=). At the save gate the same user adds an email, so
-the account and everything in it carries over."""
+the account and everything in it carries over.
+
+A caller is "signed in" once their email is confirmed (Supabase's is_anonymous is false). Anonymous visitors get
+one free live report a day; signed-in users get everything (guard.py). Without Supabase (local development)
+every caller counts as signed in."""
 
 import hashlib
+import os
 import time
+from dataclasses import dataclass
 
 import httpx
-from fastapi import Depends, Header, HTTPException, Query
+from fastapi import Depends, Header, HTTPException, Query, Request
 from sqlmodel import Session, select
 
 from app.config import settings
@@ -61,20 +67,46 @@ def _org_for_session(session: Session, session_id: str) -> Org:
     return org
 
 
-async def current_org(
+@dataclass
+class Caller:
+    org: Org
+    signed_in: bool  # confirmed email; False for anonymous visitors
+    ip_hash: str | None  # hashed client IP, for the per-IP limits on visitors
+
+
+def client_ip_hash(request: Request) -> str | None:
+    """Vercel's proxy puts the real client address in X-Real-IP; elsewhere a client could forge that header, so
+    it's only trusted on Vercel. Stored hashed: enough to count starts per address, not to recover it."""
+    ip = request.headers.get("x-real-ip") if os.environ.get("VERCEL") else None
+    ip = ip or (request.client.host if request.client else None)
+    return hashlib.sha256(ip.encode()).hexdigest()[:16] if ip else None
+
+
+async def resolve_caller(request: Request, session: Session, token: str | None, session_id: str | None) -> Caller:
+    if settings.auth_enabled:
+        if not token:
+            raise HTTPException(401, "Sign in to continue.")
+        user = await verify_token(token)
+        org = _org_for_user(session, user, session_id)
+        return Caller(org, not user.get("is_anonymous") and bool(user.get("email")), client_ip_hash(request))
+    if not session_id:
+        raise HTTPException(401, "Missing X-Session-Id header.")
+    return Caller(_org_for_session(session, session_id), True, client_ip_hash(request))
+
+
+async def current_caller(
+    request: Request,
     authorization: str | None = Header(None),
     x_session_id: str | None = Header(None, description="Anonymous browser session (demo / local, no Supabase)"),
     access_token: str | None = Query(None, include_in_schema=False),  # SSE can't send headers
     session: Session = Depends(get_session),
-) -> Org:
+) -> Caller:
     token = (authorization or "").removeprefix("Bearer ").strip() or access_token
-    if settings.auth_enabled:
-        if not token:
-            raise HTTPException(401, "Sign in to continue.")
-        return _org_for_user(session, await verify_token(token), x_session_id)
-    if not x_session_id:
-        raise HTTPException(401, "Missing X-Session-Id header.")
-    return _org_for_session(session, x_session_id)
+    return await resolve_caller(request, session, token, x_session_id)
+
+
+async def current_org(caller: Caller = Depends(current_caller)) -> Org:
+    return caller.org
 
 
 # ---- Ownership ------------------------------------------------------------------

@@ -5,6 +5,7 @@ from typing import TypeVar
 import anthropic
 from pydantic import BaseModel, ValidationError
 
+from app import spend
 from app.config import settings
 
 T = TypeVar("T", bound=BaseModel)
@@ -38,6 +39,7 @@ async def parse(model: str, system: str | list[dict], user: str, schema: type[T]
         )
     except ValidationError as exc:  # output cut off at max_tokens -> truncated JSON
         raise LLMError(f"structured output incomplete (likely hit max_tokens={max_tokens})") from exc
+    spend.claude(model, response.usage)
     if response.stop_reason == "refusal":
         raise LLMError("model declined the request")
     if response.parsed_output is None:

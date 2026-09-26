@@ -14,6 +14,7 @@ from contextvars import ContextVar
 
 import httpx
 
+from app import spend
 from app.config import settings
 
 log = logging.getLogger("aeon.dataforseo")
@@ -39,6 +40,7 @@ async def post(path: str, task: dict, retries: int = 2) -> dict:
         r.raise_for_status()
         body = r.json()
         spent.set(spent.get() + float(body.get("cost") or 0))
+        spend.add(float(body.get("cost") or 0))
         t = (body.get("tasks") or [{}])[0]
         if t.get("status_code") == 20000 and t.get("result"):
             return t["result"][0]

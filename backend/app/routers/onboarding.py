@@ -1,16 +1,18 @@
 """Screens 1-4: /start, /start/portfolio, /start/hero, /start/setup."""
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from datetime import datetime, timedelta, timezone
+
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlmodel import Session, select
 from sse_starlette.sse import EventSourceResponse
 
-from app import jobs
-from app.auth import current_org, owned_company, owned_competitor, owned_product
+from app import guard, jobs
+from app.auth import Caller, current_caller, current_org, owned_company, owned_competitor, owned_product, resolve_caller
 from app.config import settings
 from app.db import get_session
-from app.models import Company, Competitor, Org, Product, Prompt, active_competitors, active_prompts
+from app.models import Company, Competitor, Job, Org, Product, Prompt, active_competitors, active_prompts
 from app.schemas import AddProductIn, CompetitorIn, LabelerIn, OnboardingIn, ProductPatch, PromptIn
-from app.services import crawl, openfda
+from app.services import crawl, openfda, website
 
 router = APIRouter(prefix="/api", tags=["onboarding"])
 
@@ -23,20 +25,39 @@ async def stream_job(job_id: str, org: Org | None) -> EventSourceResponse:
     return EventSourceResponse(jobs.stream(job_id))
 
 
-async def stream_org(access_token: str | None = None, session: Session = Depends(get_session)) -> Org | None:
+async def stream_org(request: Request, access_token: str | None = None,
+                     session: Session = Depends(get_session)) -> Org | None:
     """Caller of an SSE stream: EventSource can't send headers, so auth comes from the query string."""
     if not settings.auth_enabled:
         return None
-    return await current_org(authorization=None, x_session_id=None, access_token=access_token, session=session)
+    return (await resolve_caller(request, session, access_token, None)).org
 
 
-@router.post("/onboarding")
-def start_onboarding(body: OnboardingIn, org: Org = Depends(current_org), session: Session = Depends(get_session)):
-    company = Company(org_id=org.id, domain=crawl.domain_of(body.url))
+def _earlier_discovery(session: Session, org: Org, domain: str) -> dict | None:
+    """This caller's discovery of the same site in the last day, unless it failed: typing it again reopens it."""
+    since = datetime.now(timezone.utc) - timedelta(days=1)
+    for job in session.exec(select(Job).where(Job.org_id == org.id, Job.kind == "discovery", Job.status != "failed",
+                                              Job.created_at >= since).order_by(Job.created_at.desc())):
+        company = session.get(Company, job.params.get("company_id"))
+        if company and company.domain == domain and company.status != "failed":
+            return {"job_id": job.id, "company_id": company.id}
+    return None
+
+
+@router.post("/onboarding", summary="Check the website, then start discovery (422 when it isn't a live website)")
+async def start_onboarding(body: OnboardingIn, caller: Caller = Depends(current_caller),
+                           session: Session = Depends(get_session)):
+    url = await website.check(body.url)
+    domain = crawl.domain_of(url)
+    if guard.live() and (earlier := _earlier_discovery(session, caller.org, domain)):
+        return earlier  # free: the stream replays that run's log, ending in done
+    guard.check(session, caller, "discovery")  # before the company row: a refused start leaves nothing behind
+    company = Company(org_id=caller.org.id, domain=domain)
     session.add(company)
     session.commit()
     session.refresh(company)
-    job_id = jobs.enqueue("discovery", {"company_id": company.id, "url": body.url}, org_id=org.id)
+    job_id = jobs.enqueue("discovery", {"company_id": company.id, "url": url}, org_id=caller.org.id,
+                          ip_hash=caller.ip_hash)
     return {"job_id": job_id, "company_id": company.id}
 
 
@@ -147,13 +168,13 @@ def setup_job_id(product_id: int) -> str:
 
 @router.post("/products/{product_id}/setup",
              summary="Competitors + questions: 200 with the setup when it exists, else 202 {job_id} (setup agent)")
-def build_setup(product_id: int, response: Response, regenerate: bool = False, org: Org = Depends(current_org),
+def build_setup(product_id: int, response: Response, regenerate: bool = False, caller: Caller = Depends(current_caller),
                 session: Session = Depends(get_session)):
-    owned_product(session, product_id, org)
+    owned_product(session, product_id, caller.org)
     has = session.exec(active_prompts(product_id)).first()
     if has and not regenerate:
         return {"setup": setup_view(session, product_id), "job_id": None}
-    job_id = jobs.enqueue("setup", {"product_id": product_id}, org_id=org.id, job_id=setup_job_id(product_id))
+    job_id = guard.start(session, caller, "setup", {"product_id": product_id}, job_id=setup_job_id(product_id))
     response.status_code = 202
     return {"setup": None, "job_id": job_id}
 

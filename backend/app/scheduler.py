@@ -16,6 +16,7 @@ log = logging.getLogger("aeon.scheduler")
 
 def run_due(now: datetime | None = None) -> list[int]:
     """Start a scan for every schedule that's due; returns the new scan ids."""
+    from app import guard
     from app.routers.scan import start_scan_job
 
     now = now or datetime.now(timezone.utc)
@@ -25,6 +26,9 @@ def run_due(now: datetime | None = None) -> list[int]:
             due = sched.next_run_at if sched.next_run_at.tzinfo else sched.next_run_at.replace(tzinfo=timezone.utc)
             if due > now:
                 continue
+            if guard.over_cap(s):  # today's budget is spent: due scans wait for the next day
+                log.warning("daily spend cap reached; weekly scans postponed")
+                break
             product = s.get(Product, sched.product_id)
             company = s.get(Company, product.company_id) if product else None
             if not company:
