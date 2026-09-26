@@ -45,6 +45,13 @@
   --color-taupe: #878787; /* 7shifts taupe-gray */
   --color-graphite: #555555;
 
+  /* Status colors (from the product mocks: VerifyMock's label conflict / match rows) */
+  --color-alert: #fa596d;
+  --color-alert-ink: #b3263a;
+  --color-alert-soft: #fff0f1;
+  --color-alert-line: #ffc9cf;
+  --color-pass-soft: #e5ffcf;
+
   /* shadcn token mapping */
   --color-ring: var(--ring);
   --color-input: var(--input);
