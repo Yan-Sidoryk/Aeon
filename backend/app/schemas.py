@@ -100,7 +100,8 @@ class DraftOut(BaseModel):
 
 class ReviewFlag(BaseModel):
     excerpt: str
-    rule: Literal["unsupported_claim", "off_label", "fair_balance", "overstatement", "missing_isi", "other"]
+    rule: Literal["unsupported_claim", "off_label", "fair_balance", "overstatement", "missing_isi",
+                  "unsupported_comparison", "other"]
     severity: Literal["high", "medium", "low"]
     suggestion: str
 

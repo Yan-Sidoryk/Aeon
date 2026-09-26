@@ -9,19 +9,23 @@ from app import handlers  # noqa: F401  registers the job handlers
 from app import jobs
 from app.config import settings
 from app.db import init_db
-from app.routers import onboarding, report, scan
+from app.observability import init_tracing, shutdown
+from app.routers import dashboard, onboarding, report, scan
+from app.scheduler import scheduler
 from app.services import demo
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    init_tracing()
     init_db()
-    tasks = [asyncio.create_task(jobs.worker())]
+    tasks = [asyncio.create_task(jobs.worker()), asyncio.create_task(scheduler())]
     yield
     for task in tasks:
         task.cancel()
         with contextlib.suppress(asyncio.CancelledError):
             await task
+    shutdown()  # flush traces
 
 
 app = FastAPI(title="Aeon API", version="0.2.0", lifespan=lifespan)
@@ -29,6 +33,7 @@ app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_me
 app.include_router(onboarding.router)
 app.include_router(scan.router)
 app.include_router(report.router)
+app.include_router(dashboard.router)
 
 
 @app.get("/api/health")

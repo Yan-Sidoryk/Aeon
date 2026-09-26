@@ -24,7 +24,9 @@ web versions via `node scripts/optimize-assets.mjs`).
 - **UI:** shadcn/ui (Radix primitives, Tailwind CSS v4, `cn()` utility)
 - **Icons:** Lucide React (default — will be replaced/supplemented by extracted SVGs)
 - **Styling:** Tailwind CSS v4 with oklch design tokens
-- **Backend:** Python 3.11+, FastAPI, SQLite, in-process asyncio jobs, live progress over SSE; Anthropic models (see `backend/README.md`)
+- **Backend:** Python 3.11+, FastAPI; agents on the Anthropic SDK tool runner (no LangChain); DataForSEO (Google AI
+  Overviews/AI Mode, real questions), Apify (competitor ads), openFDA; durable jobs in Postgres (Supabase) or SQLite;
+  Supabase Auth (anonymous first); Langfuse traces + evals. See `backend/README.md`
 - **Deployment:** frontend on Vercel. The backend needs its own long-running host (one process, in-memory jobs, SQLite, long SSE
   connections), not Vercel functions; point the frontend at it with `NEXT_PUBLIC_API_URL`
 
@@ -38,6 +40,7 @@ web versions via `node scripts/optimize-assets.mjs`).
 - `npm run dev:api:demo` — Backend on :8000 replaying the recorded demo (no API keys needed). `npm run dev:api` for live runs
   with keys in `backend/.env`
 - `npm run test:api` — Backend tests (no keys or network)
+- `cd backend && .venv/bin/python -m app.evals.run label-check|premlr|fix-loop` — Langfuse eval experiments (cost money)
 
 Local product development: `npm run dev:api:demo` in one terminal, `npm run dev` in another, then open `/start`.
 
@@ -74,7 +77,7 @@ src/
   types/api.ts      # Backend response shapes, hand-written (OpenAPI has no response schemas yet)
   hooks/
     useJobStream.ts # SSE progress for discovery, scan and "Fix this" jobs
-backend/            # FastAPI app, tests and the recorded demo (backend/README.md)
+backend/            # FastAPI app (agents/, services/, engines/, routers/, evals/), tests, recorded demo (backend/README.md)
 public/
   images/           # Downloaded images from target site
   videos/           # Downloaded videos from target site
@@ -91,5 +94,9 @@ scripts/            # Asset download scripts
   Demo mode replays one recorded scan for any website, so the product UI must keep its demo banner: a replay must never
   pass for a real scan of the site someone typed in.
 - When a backend response changes, update `src/types/api.ts` and `docs/architecture.md` in the same change.
+- Product results are yes/no checks and counts of checks. Never add scores, percentages or confidence intervals to
+  the product UI or report payloads.
+- Live runs spend real money (Anthropic, DataForSEO, Apify). Develop against demo mode; record a new bundle only when
+  the flow changes.
 
 @docs/research/INSPECTION_GUIDE.md

@@ -1,8 +1,7 @@
 from app.models import Answer, Product, Prompt
 from app.services import premlr
-from app.services.discovery import clean_company
 from app.services.openfda import dedupe_latest
-from app.services.report import aggregate, fallback_fixes, wilson
+from app.services.report import build_payload, fallback_fixes
 
 
 def test_parse_label(opzelura):
@@ -17,11 +16,6 @@ def test_dedupe_keeps_latest():
     old = {"brand": "Monjuvi", "molecule": "x", "effective_time": "20250101"}
     new = {**old, "effective_time": "20260101"}
     assert dedupe_latest([old, new, {**old, "brand": ""}]) == [new]
-
-
-def test_clean_company():
-    assert clean_company("Incyte Corporation") == "Incyte"
-    assert clean_company("Acme Pharmaceuticals, Inc.") == "Acme"
 
 
 def test_premlr_flags_bad_copy(opzelura):
@@ -45,37 +39,79 @@ def test_premlr_passes_clean_copy(opzelura):
     assert [f for f in flags if f["severity"] == "high"] == []
 
 
-def test_wilson():
-    lo, hi = wilson(34, 100)
-    assert lo < 34 < hi
-    assert wilson(0, 0) == (0.0, 0.0)
+def _answer(prompt_id, engine="claude", sample=0, **kw):
+    return Answer(scan_id=1, prompt_id=prompt_id, engine=engine, sample=sample, **kw)
 
 
-def test_aggregate():
+def test_cell_is_a_majority_vote():
+    from app.services.checks import aggregate_cell
+
+    two_of_three = [_answer(1, mentioned=True, position=2), _answer(1, sample=1, mentioned=True, position=4),
+                    _answer(1, sample=2, competitors_mentioned=["Dupixent"])]
+    cell = aggregate_cell(two_of_three)
+    assert cell["state"] == "you" and cell["votes"] == "2/3" and cell["position"] == 3
+    one_of_three = [_answer(1, mentioned=True), _answer(1, sample=1, competitors_mentioned=["Dupixent"]),
+                    _answer(1, sample=2, competitors_mentioned=["Dupixent"])]
+    cell = aggregate_cell(one_of_three)
+    assert cell["state"] == "competitor" and cell["competitors_mentioned"] == ["Dupixent"]
+    assert aggregate_cell([_answer(1, engine="google_aio", shown=False)])["state"] == "not_shown"
+    assert aggregate_cell([_answer(1, error="boom")])["state"] == "error"
+
+
+def test_report_counts_checks_not_scores():
+    from app.models import Company
+
     product = Product(id=1, company_id=1, brand="Opzelura", molecule="ruxolitinib")
-    prompts = [Prompt(id=i, product_id=1, text=f"q{i}") for i in (1, 2, 3)]
-    prompts.append(Prompt(id=4, product_id=1, text="off label", lane="off_label", monitor_only=True))
+    company = Company(id=1, org_id=1, domain="incyte.com", name="Incyte")
+    prompts = [Prompt(id=i, product_id=1, text=f"q{i}", lane="unbranded") for i in (1, 2, 3)]
+    prompts.append(Prompt(id=4, product_id=1, text="how is opzelura applied", lane="branded"))
     cite = lambda d: [{"url": f"https://{d}/x", "title": ""}]  # noqa: E731
+    issue = {"type": "dose", "ai_sentence": "a", "label_sentence": "b", "explanation": "e", "severity": "high"}
     answers = [
-        Answer(scan_id=1, prompt_id=1, engine="claude", mentioned=True, position=1, citations=cite("dailymed.nlm.nih.gov"),
-               accuracy_issues=[{"type": "dose", "ai_sentence": "a", "label_sentence": "b", "explanation": "e", "severity": "high"}]),
-        Answer(scan_id=1, prompt_id=2, engine="claude", competitors_mentioned=["Dupixent"], citations=cite("www.webmd.com")),
-        Answer(scan_id=1, prompt_id=3, engine="claude", competitors_mentioned=["Dupixent", "Eucrisa"], citations=cite("webmd.com")),
-        Answer(scan_id=1, prompt_id=4, engine="claude", competitors_mentioned=["Dupixent"]),
-        Answer(scan_id=1, prompt_id=1, engine="chatgpt", error="boom"),
+        _answer(1, mentioned=True, position=1, citations=cite("opzelura.com"), accuracy_issues=[issue]),
+        _answer(2, competitors_mentioned=["Dupixent"], citations=cite("www.webmd.com")),
+        _answer(3, competitors_mentioned=["Dupixent", "Eucrisa"], citations=cite("webmd.com")),
+        _answer(4, mentioned=True),
+        _answer(2, engine="google_aio", shown=False),
     ]
-    r = aggregate(product, prompts, ["Dupixent", "Eucrisa"], answers)
-    assert r["headline"]["scope"] == "unbranded"
-    assert r["headline"]["you"]["n"] == 3  # errored answer and off-label prompt excluded
-    assert r["headline"]["you"]["score"] == 33
-    assert r["headline"]["top_competitor"]["brand"] == "Dupixent"
-    assert r["headline"]["top_competitor"]["score"] == 67
-    assert r["all_prompts"]["you"]["score"] == 25
-    assert [p["prompt_id"] for p in r["lost_prompts"]] == [2, 3]  # monitor-only prompt 4 excluded
-    assert r["competitor_only_sources"][0] == {"domain": "webmd.com", "citations": 2, "competitors": ["Dupixent", "Eucrisa"]}
-    assert r["accuracy_issues"][0]["prompt"] == "q1"
+    r = build_payload(product, company, prompts, ["Dupixent", "Eucrisa"], answers, ["claude", "google_aio"])
+    claude = r["summary"]["claude"]
+    assert claude["unbranded"] == {"asked": 3, "you": 1, "competitor": 2, "none": 0, "not_shown": 0, "error": 0}
+    assert claude["top_competitor"] == {"brand": "Dupixent", "count": 2}
+    assert claude["label_conflicts"] == 1
+    assert r["summary"]["google_aio"]["unbranded"]["not_shown"] == 1
+    assert [q["prompt_id"] for q in r["lost_questions"]] == [2, 3]
+    assert r["sources"]["competitor_only"][0]["domain"] == "webmd.com"  # the brand's own site is never listed
+    assert all("opzelura" not in s["domain"] for s in r["sources"]["yours"])
+    assert "score" not in str(r["summary"])
     fixes = fallback_fixes(r)
     assert fixes[0]["kind"] == "accuracy_correction" and len(fixes) == 3
+
+
+def test_premlr_checklist(opzelura):
+    bad = "Opzelura is the best cream and completely safe."
+    result = premlr.checklist(premlr.rule_flags(bad, [{"text": "x", "label_quote": "not in the label at all"}],
+                                                opzelura["label"]))
+    failed = {c["id"] for c in result["checks"] if not c["passed"]}
+    assert {"no_overstatement", "isi", "claims_traced"} <= failed
+    assert result["status"] == "blocked" and "risk_score" not in result
+
+
+def test_dataforseo_parsing():
+    import json
+    from pathlib import Path
+
+    from app.services import dataforseo
+
+    data = Path(__file__).parent / "data" / "dataforseo"
+    res = json.loads((data / "aio_opzelura.json").read_text())["tasks"][0]["result"][0]
+    aio = dataforseo.overview(next(i for i in res["items"] if i["type"] == "ai_overview"))
+    assert aio["shown"] and aio["captured"] and "Opzelura" in aio["text"] and "[[" not in aio["text"]
+    assert any(r["domain"].endswith("opzelura.com") for r in aio["references"])
+    assert dataforseo.overview(None)["shown"] is False
+    paa = dataforseo.people_also_ask_from(json.loads((data / "paa_eczema.json").read_text())["tasks"][0]["result"][0])
+    assert "Which cream is best for eczema?" in paa
+    assert not any("Chinese" in q for q in paa)  # off-topic questions filtered
 
 
 def test_label_without_openfda_block():

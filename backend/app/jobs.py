@@ -121,7 +121,10 @@ async def _run(job: Job) -> None:
         fn = _handlers.get(job.kind)
         if fn is None:
             raise RuntimeError(f"no handler for job kind '{job.kind}'")
-        await fn(ctx, job.params)
+        from app.observability import job_trace
+
+        with job_trace(job.kind, job.id, job.org_id, job.params):
+            await fn(ctx, job.params)
         if not ctx.done:
             ctx.finish("done", {})
     except Exception as exc:  # a failing job must not take the worker down

@@ -88,7 +88,7 @@ flowchart LR
 ### Screen 4: "Who you're up against and what people ask"
 
 - **Competitors:** 4–6 chips. The agent proposes drugs for the same indication and keeps only the ones with a US FDA label. Removable, with "+ add".
-- **10 questions** grouped as Patients, Caregivers, Doctors:
+- **10 questions**, grouped by what they measure and tagged with their audience (patient, caregiver, doctor):
   - 6 unbranded (condition and treatment, never naming a drug). Taken from real questions people ask on Google where possible, marked "Asked on Google".
   - 2 branded ("How is Opzelura applied?").
   - 2 comparisons ("Opzelura or Protopic for a 4-year-old?").

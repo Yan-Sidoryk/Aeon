@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     database_url: str = DEFAULT_DATABASE_URL
 
     demo_mode: bool = False
+    environment: str = "development"  # Langfuse environment tag
 
     model_fast: str = "claude-haiku-4-5"
     model_smart: str = "claude-opus-5"
