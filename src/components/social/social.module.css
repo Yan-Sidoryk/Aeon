@@ -1,0 +1,44 @@
+/*
+ * Polaroid stack drop-in, measured on 7shifts (framer-motion whileInView, once):
+ * each polaroid and the sticker go from { opacity: 0; y: -60px } to { opacity: 1; y: 0 } in 550ms with framer's
+ * spring baked into the linear() curve below (peaks at 1.0533, so y overshoots to +3.2px before settling),
+ * staggered 0 / 200 / 400 / 600ms (delay set per item through --drop-delay). The stack reveals once 50% of it is
+ * visible (PolaroidStack sets data-inview). `translate` is used instead of `transform` so the polaroids' own
+ * `rotate` is left alone. The hidden start state only applies when scripting is on and motion is allowed, so
+ * no-JS and reduced-motion visitors always see the stack.
+ */
+.drop {
+  --spring: linear(
+    0 0%, 0.0125 1.85%, 0.0463 3.7%, 0.0963 5.56%, 0.1581 7.41%, 0.2277 9.26%, 0.302 11.11%, 0.3782 12.96%,
+    0.4541 14.81%, 0.528 16.67%, 0.5983 18.52%, 0.6643 20.37%, 0.7251 22.22%, 0.7803 24.07%, 0.8297 25.93%,
+    0.8733 27.78%, 0.9113 29.63%, 0.9437 31.48%, 0.971 33.33%, 0.9935 35.19%, 1.0116 37.04%, 1.0259 38.89%,
+    1.0366 40.74%, 1.0443 42.59%, 1.0494 44.44%, 1.0523 46.3%, 1.0533 48.15%, 1.0529 50%, 1.0512 51.85%,
+    1.0487 53.7%, 1.0455 55.56%, 1.0418 57.41%, 1.0379 59.26%, 1.0338 61.11%, 1.0298 62.96%, 1.0258 64.81%,
+    1.022 66.67%, 1.0185 68.52%, 1.0152 70.37%, 1.0122 72.22%, 1.0095 74.07%, 1.0071 75.93%, 1.005 77.78%,
+    1.0033 79.63%, 1.0018 81.48%, 1.0005 83.33%, 0.9995 85.19%, 0.9987 87.04%, 0.9981 88.89%, 0.9977 90.74%,
+    0.9974 92.59%, 1 94.44%, 1 96.3%, 1 98.15%, 1 100%
+  );
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .stack:not([data-inview]) .drop {
+    opacity: 0;
+    translate: 0 -60px;
+  }
+
+  .stack[data-inview] .drop {
+    animation: drop 550ms var(--spring) both;
+    animation-delay: var(--drop-delay, 0ms);
+  }
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    translate: 0 -60px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
