@@ -146,16 +146,16 @@ async def _discover(job: JobContext, company_id: int, url: str) -> None:
         step(f"{brand}: pipeline (no FDA label)" if pipeline else f"{brand}: no US FDA label, listed as pipeline")
         return f"Recorded {brand} as pipeline (no US FDA label)"
 
-    step(f"Reading {domain}", "active", key="start")
+    step(f"Finding {domain}'s products and FDA labels…", "active", key="start")
     messages = await run_agent(
         system=SYSTEM,
         user=f"Company website: {home}\nFind the company and all its products.",
         tools=[WEB_FETCH, find_company_labels, record_company, record_product],
         on_server_tool=on_server_tool, max_iterations=30)
-    step(f"Read {domain}", key="start")
     del messages
 
     launched = [p for p in products.values() if not p["pipeline"]]
+    step(f"Found {len(launched)} products with FDA labels", key="start")
     if not launched:
         raise RuntimeError(f"No US FDA-labeled products found for {domain}. Is this a US pharma company site?")
 

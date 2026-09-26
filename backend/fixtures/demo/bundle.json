@@ -5213,7 +5213,7 @@
     "event": "step",
     "data": {
      "key": "start",
-     "label": "Reading incyte.com",
+     "label": "Finding incyte.com's products and FDA labels\u2026",
      "status": "active"
     }
    },
@@ -5421,7 +5421,7 @@
     "event": "step",
     "data": {
      "key": "start",
-     "label": "Read incyte.com",
+     "label": "Found 9 products with FDA labels",
      "status": "done"
     }
    },
