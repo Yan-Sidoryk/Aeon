@@ -14,7 +14,7 @@ from sqlmodel import Session, select
 from app.db import engine
 from app.jobs import JobContext
 from app.models import (Answer, Company, Competitor, CompetitorAd, Draft, Job, JobEvent, Opportunity, Product, Prompt,
-                        Report, Scan)
+                        Report, Scan, active_competitors, active_prompts)
 
 BUNDLE = Path(__file__).resolve().parents[2] / "fixtures" / "demo" / "bundle.json"
 STEP_DELAY, CELL_DELAY = 0.35, 0.06  # seconds between replayed events; makes the replay feel live
@@ -59,7 +59,7 @@ def record(company_id: int) -> Path:
         hero = next(p for p in products if p.is_hero)
         scan = s.exec(select(Scan).where(Scan.product_id == hero.id, Scan.status == "done").order_by(Scan.id.desc())).first()
         report = s.get(Report, scan.report_id)
-        prompts = s.exec(select(Prompt).where(Prompt.product_id == hero.id)).all()
+        prompts = s.exec(active_prompts(hero.id)).all()
         text_of = {p.id: p.text for p in prompts}
         drafts = s.exec(select(Draft).where(Draft.report_id == report.id)).all()
         discovery_job = next(j for j in s.exec(select(Job).where(Job.kind == "discovery"))
@@ -69,7 +69,7 @@ def record(company_id: int) -> Path:
             "recorded_at": datetime.now(timezone.utc).isoformat(),
             "company": _row(company),
             "products": [_row(p) for p in products],
-            "competitors": [_row(c) for c in s.exec(select(Competitor).where(Competitor.product_id == hero.id))],
+            "competitors": [_row(c) for c in s.exec(active_competitors(hero.id))],
             "prompts": [_row(p) for p in prompts],
             "answers": [{**_row(a), "prompt_text": text_of[a.prompt_id]}
                         for a in s.exec(select(Answer).where(Answer.scan_id == scan.id))],
@@ -153,8 +153,8 @@ async def replay_scan(job: JobContext, scan_id: int) -> None:
         scan = s.get(Scan, scan_id)
         product = s.get(Product, scan.product_id)
         company = s.get(Company, product.company_id)
-        prompts = list(s.exec(select(Prompt).where(Prompt.product_id == product.id).order_by(Prompt.id)))
-        competitors = [c.brand for c in s.exec(select(Competitor).where(Competitor.product_id == product.id))]
+        prompts = list(s.exec(active_prompts(product.id).order_by(Prompt.id)))
+        competitors = [c.brand for c in s.exec(active_competitors(product.id))]
         id_of = {p.text: p.id for p in prompts}
         s.expunge_all()
     old_text = {int(k): v for k, v in b["events"].get("scan_prompts", {}).items()}

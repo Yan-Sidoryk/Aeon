@@ -1,14 +1,14 @@
 """Screens 1-4: /start, /start/portfolio, /start/hero, /start/setup."""
 
 from fastapi import APIRouter, Depends, HTTPException, Response
-from sqlmodel import Session, delete, select
+from sqlmodel import Session, select
 from sse_starlette.sse import EventSourceResponse
 
 from app import jobs
 from app.auth import current_org, owned_company, owned_competitor, owned_product
 from app.config import settings
 from app.db import get_session
-from app.models import Company, Competitor, Org, Product, Prompt
+from app.models import Company, Competitor, Org, Product, Prompt, active_competitors, active_prompts
 from app.schemas import AddProductIn, CompetitorIn, LabelerIn, OnboardingIn, ProductPatch, PromptIn
 from app.services import crawl, openfda
 
@@ -105,7 +105,8 @@ async def add_product(company_id: int, body: AddProductIn, org: Org = Depends(cu
     own = {p.labeler for p in session.exec(select(Product).where(Product.company_id == company_id)) if p.labeler}
     partner = bool(own and lab["manufacturer"] and lab["manufacturer"] not in own)
     product = Product(company_id=company_id, brand=lab["brand"], molecule=lab["molecule"], tier=lab["tier"],
-                      label_set_id=lab["set_id"], label=lab["label"], search_rank=50, labeler=lab["manufacturer"],
+                      label_set_id=lab["set_id"], label=lab["label"], label_version=lab.get("effective_time", ""),
+                      search_rank=50, labeler=lab["manufacturer"],
                       partner=partner, indication=lab["label"]["indications"][:140])
     session.add(product)
     session.commit()
@@ -129,12 +130,12 @@ def set_hero(product_id: int, org: Org = Depends(current_org), session: Session 
 
 
 def setup_view(session: Session, product_id: int) -> dict:
-    competitors = session.exec(select(Competitor).where(Competitor.product_id == product_id)).all()
-    prompts = session.exec(select(Prompt).where(Prompt.product_id == product_id)).all()
+    competitors = session.exec(active_competitors(product_id)).all()
+    prompts = session.exec(active_prompts(product_id)).all()
     return {
         "competitors": [c.model_dump() for c in competitors],
         # lane stays internal: the UI never shows it during onboarding
-        "prompts": [p.model_dump(exclude={"lane"}) | {"kind": p.lane} for p in prompts],
+        "prompts": [p.model_dump(exclude={"lane", "active"}) | {"kind": p.lane} for p in prompts],
         "markets": ["US"],
         "languages": ["en"],
     }
@@ -149,7 +150,7 @@ def setup_job_id(product_id: int) -> str:
 def build_setup(product_id: int, response: Response, regenerate: bool = False, org: Org = Depends(current_org),
                 session: Session = Depends(get_session)):
     owned_product(session, product_id, org)
-    has = session.exec(select(Prompt).where(Prompt.product_id == product_id)).first()
+    has = session.exec(active_prompts(product_id)).first()
     if has and not regenerate:
         return {"setup": setup_view(session, product_id), "job_id": None}
     job_id = jobs.enqueue("setup", {"product_id": product_id}, org_id=org.id, job_id=setup_job_id(product_id))
@@ -191,8 +192,11 @@ def replace_prompts(product_id: int, body: list[PromptIn], org: Org = Depends(cu
                     session: Session = Depends(get_session)):
     owned_product(session, product_id, org)
     # Keep each existing question's hidden lane: the setup view never sends it back.
-    lanes = {p.text: p.lane for p in session.exec(select(Prompt).where(Prompt.product_id == product_id))}
-    session.exec(delete(Prompt).where(Prompt.product_id == product_id))
+    current = session.exec(active_prompts(product_id)).all()
+    lanes = {p.text: p.lane for p in current}
+    for p in current:  # retire, never delete: past answers point at them
+        p.active = False
+        session.add(p)
     for p in body:
         lane = p.lane if "lane" in p.model_fields_set else lanes.get(p.text, "unbranded")
         session.add(Prompt(product_id=product_id, text=p.text, audience=p.audience, lane=lane,

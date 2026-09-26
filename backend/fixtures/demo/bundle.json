@@ -37,7 +37,8 @@
    "url": null,
    "is_hero": false,
    "pipeline": false,
-   "partner": false
+   "partner": false,
+   "label_version": "20260720"
   },
   {
    "molecule": "ruxolitinib",
@@ -59,7 +60,8 @@
    "url": null,
    "is_hero": true,
    "pipeline": false,
-   "partner": false
+   "partner": false,
+   "label_version": "20260630"
   },
   {
    "molecule": "tafasitamab-cxix",
@@ -81,7 +83,8 @@
    "url": null,
    "is_hero": false,
    "pipeline": false,
-   "partner": false
+   "partner": false,
+   "label_version": "20260202"
   },
   {
    "molecule": "pemigatinib",
@@ -103,7 +106,8 @@
    "url": null,
    "is_hero": false,
    "pipeline": false,
-   "partner": false
+   "partner": false,
+   "label_version": "20260609"
   },
   {
    "molecule": "retifanlimab-dlwr",
@@ -125,7 +129,8 @@
    "url": null,
    "is_hero": false,
    "pipeline": false,
-   "partner": false
+   "partner": false,
+   "label_version": "20260518"
   },
   {
    "molecule": "axatilimab-csfr",
@@ -147,7 +152,8 @@
    "url": null,
    "is_hero": false,
    "pipeline": false,
-   "partner": false
+   "partner": false,
+   "label_version": "20260624"
   },
   {
    "molecule": "ponatinib hydrochloride",
@@ -169,7 +175,8 @@
    "url": null,
    "is_hero": false,
    "pipeline": false,
-   "partner": true
+   "partner": true,
+   "label_version": "20260814"
   },
   {
    "molecule": "baricitinib",
@@ -191,7 +198,8 @@
    "url": null,
    "is_hero": false,
    "pipeline": false,
-   "partner": true
+   "partner": true,
+   "label_version": "20260630"
   },
   {
    "molecule": "capmatinib",
@@ -213,7 +221,8 @@
    "url": null,
    "is_hero": false,
    "pipeline": false,
-   "partner": true
+   "partner": true,
+   "label_version": "20251215"
   },
   {
    "molecule": "povorcitinib",

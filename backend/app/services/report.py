@@ -13,7 +13,7 @@ from sqlmodel import Session, select
 from app import llm
 from app.db import engine
 from app.engines.registry import COMING_SOON, ENGINES
-from app.models import Answer, Company, Competitor, Product, Prompt, Report, Scan
+from app.models import Answer, Company, Product, Prompt, Report, Scan, active_competitors
 from app.schemas import FixPlan
 from app.services.checks import _domain, aggregate_cell, owned_domains
 
@@ -85,7 +85,9 @@ def build_payload(product: Product, company: Company, prompts: list[Prompt], com
 
     return {
         "product": {"id": product.id, "brand": product.brand, "molecule": product.molecule,
-                    "indication": product.indication, "tier": product.tier},
+                    "indication": product.indication, "tier": product.tier,
+                    # which FDA label every answer was checked against (MLR audit trail)
+                    "label_set_id": product.label_set_id, "label_version": product.label_version},
         "company": {"name": company.name, "domain": company.domain},
         "engines": [{"name": e, "label": LABELS.get(e, e),
                      "samples": max((len(v) for k, v in by_cell.items() if k[1] == e), default=1)} for e in engines],
@@ -186,9 +188,10 @@ async def build_report(scan_id: int) -> str:
         scan = s.get(Scan, scan_id)
         product = s.get(Product, scan.product_id)
         company = s.get(Company, product.company_id)
-        prompts = list(s.exec(select(Prompt).where(Prompt.product_id == product.id).order_by(Prompt.id)))
-        competitors = [c.brand for c in s.exec(select(Competitor).where(Competitor.product_id == product.id))]
         answers = list(s.exec(select(Answer).where(Answer.scan_id == scan_id)))
+        asked = {a.prompt_id for a in answers}  # the questions this scan asked, even if since retired
+        prompts = list(s.exec(select(Prompt).where(Prompt.id.in_(asked)).order_by(Prompt.id)))
+        competitors = [c.brand for c in s.exec(active_competitors(product.id))]
         payload = build_payload(product, company, prompts, competitors, answers, scan.engines,
                                 previous=_previous_payload(s, scan))
         payload["scan"] = {"id": scan.id, "kind": scan.kind}

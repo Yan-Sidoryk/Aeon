@@ -1,4 +1,4 @@
-import { formatDate, plural } from "@/lib/format";
+import { formatDate, labelDate, plural } from "@/lib/format";
 import type { Report } from "@/types/api";
 import { Badge, Eyebrow, PageTitle, Panel, Screen, SectionTitle } from "../ui";
 import { AccuracyBox } from "./AccuracyBox";
@@ -19,6 +19,7 @@ import { Changes, Visibility } from "./Visibility";
  */
 export function ReportView({ report }: { report: Report }) {
   const { product } = report;
+  const labelVersion = labelDate(product.label_version);
   const molecule = product.molecule && product.molecule.toLowerCase() !== product.brand.toLowerCase() ? product.molecule : "";
   const weekly = report.scan.kind === "weekly";
 
@@ -86,6 +87,20 @@ export function ReportView({ report }: { report: Report }) {
             change from one run to the next, so this is a snapshot of one scan. Label checks compare each answer with
             the current FDA label and are a starting point for your medical and regulatory review.
           </p>
+          {labelVersion && product.label_set_id ? (
+            <p className="mt-3 max-w-[820px] text-[15px] leading-[1.6] text-graphite">
+              Checked against the {product.brand} label effective {labelVersion}{" "}
+              <a
+                className="text-royal-dark underline underline-offset-3"
+                href={`https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=${product.label_set_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                (DailyMed)
+              </a>
+              .
+            </p>
+          ) : null}
         </Panel>
         <SaveReport brand={product.brand} />
       </div>

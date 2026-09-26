@@ -2,7 +2,7 @@
 
 Demo mode replays one recorded live run (app/services/demo.py) through the same jobs and events."""
 
-from sqlmodel import Session, delete
+from sqlmodel import Session, delete, update
 
 from app import jobs
 from app.agents import discovery, fix, promo, setup
@@ -34,8 +34,9 @@ async def run_discovery(ctx: JobContext, params: dict) -> None:
 async def run_setup(ctx: JobContext, params: dict) -> None:
     product_id = params["product_id"]
     with Session(engine) as s:
-        s.exec(delete(Competitor).where(Competitor.product_id == product_id))
-        s.exec(delete(Prompt).where(Prompt.product_id == product_id))
+        # retire, never delete: answers from earlier scans still point at these questions
+        s.exec(update(Competitor).where(Competitor.product_id == product_id).values(active=False))
+        s.exec(update(Prompt).where(Prompt.product_id == product_id).values(active=False))
         s.commit()
     if _demo() and await demo.replay_setup(ctx, product_id):
         return

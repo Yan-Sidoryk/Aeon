@@ -11,8 +11,10 @@ npm run setup:api            # from the repo root: creates backend/.venv and ins
 cp backend/.env.example backend/.env   # then fill in the keys
 npm run dev:api:demo         # replays the recorded run, no keys needed
 npm run dev:api              # live, with the keys in backend/.env
-npm run test:api             # 18 tests, no keys or network
+npm run test:api             # 19 tests, no keys or network
 ```
+
+Local dev uses SQLite (leave `DATABASE_URL` empty): the same flow is about 3x slower against Supabase over the network. The tables and their rules are in `docs/data-model.md`.
 
 ## Keys (`backend/.env`)
 
@@ -60,6 +62,22 @@ DEMO_MODE=1 .venv/bin/uvicorn app.main:app --port 8000
 ```
 
 The bundle (`fixtures/demo/bundle.json`) holds the run's rows and each job's real event log, so replays show the agents' real steps and the fix loop's real rounds. Any website replays the recorded company, and the frontend shows a banner saying so.
+
+## Staging (Fly.io + Vercel)
+
+The API runs on Fly.io in London, next to Supabase (eu-west-1), as one always-on machine: the job worker and the weekly scheduler live inside the API process. `fly.toml` starts it in demo mode, so staging costs nothing until you switch it to live.
+
+```bash
+cd backend
+fly auth login
+fly launch --no-deploy --copy-config --name aeon-api-staging   # pick another name if it is taken
+grep -v '^DEMO_MODE=' .env | fly secrets import                   # keys + Supabase DATABASE_URL; demo mode stays from fly.toml
+fly deploy
+curl https://aeon-api-staging.fly.dev/api/health
+fly secrets set DEMO_MODE=0                                       # when you want live runs (they cost money)
+```
+
+Frontend on Vercel, from the repo root: `vercel link`, then set `NEXT_PUBLIC_API_URL` (the Fly URL), `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` for Preview and Production, and `vercel deploy`. `NEXT_PUBLIC_` values are baked in at build time, so redeploy after changing them. Add the Vercel URL to Supabase Auth's site URL and redirect URLs.
 
 ## Cost (live, incyte.com, Sep 2026)
 

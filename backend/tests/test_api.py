@@ -192,6 +192,11 @@ def test_full_flow(client, monkeypatch):
     saved = client.post("/api/orgs/save", json={"email": "Brand@Acme.com"}).json()
     assert saved["email"] == "brand@acme.com"
 
+    # editing questions after a scan retires the old ones: past answers still point at them (Postgres enforces it)
+    setup = client.put(f"/api/products/{hero['id']}/prompts", json=[{"text": "Is Opzelura safe for kids?"}]).json()
+    assert [p["text"] for p in setup["prompts"]] == ["Is Opzelura safe for kids?"]
+    assert client.get(f"/api/reports/{report_id}").json()["questions"][0]["text"] == Q1
+
 
 def test_ownership_and_public_report(client):
     """Another browser can read the shared report but not the company or its drafts."""
@@ -276,3 +281,16 @@ def test_weekly_schedule_starts_a_scan(client):
     assert len(started) == 1
     with Session(engine) as s:
         assert s.get(Scan, started[0]).kind == "weekly"
+
+
+def test_new_model_columns_reach_old_tables():
+    """create_all() never alters a table that exists: startup adds the columns models gained since."""
+    from sqlalchemy import inspect, text
+
+    from app.db import add_missing_columns, engine, init_db
+
+    init_db()
+    with engine.begin() as conn:
+        conn.execute(text('alter table "prompt" drop column "active"'))
+    add_missing_columns()
+    assert "active" in {c["name"] for c in inspect(engine).get_columns("prompt")}

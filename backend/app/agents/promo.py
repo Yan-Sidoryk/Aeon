@@ -9,13 +9,13 @@ import json
 import re
 
 from anthropic import beta_async_tool
-from sqlmodel import Session, delete, select
+from sqlmodel import Session, delete
 
 from app.agents.runner import WEB_FETCH, run_agent
 from app.db import engine
 from app.jobs import JobContext
 from app.llm import cached
-from app.models import Competitor, CompetitorAd, Opportunity, Product
+from app.models import CompetitorAd, Opportunity, Product, active_competitors
 from app.observability import observe
 from app.services import apify, premlr
 from app.services.checks import label_text
@@ -47,7 +47,7 @@ async def run(job: JobContext, product_id: int) -> None:
         s.exec(delete(CompetitorAd).where(CompetitorAd.product_id == product_id))
         s.commit()
         product = s.get(Product, product_id)
-        competitors = [c.brand for c in s.exec(select(Competitor).where(Competitor.product_id == product_id))]
+        competitors = [c.brand for c in s.exec(active_competitors(product_id))]
         s.expunge_all()
     label_norm = premlr._norm(" ".join(v for v in product.label.values() if v))
     opportunities: list[dict] = []

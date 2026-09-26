@@ -9,14 +9,14 @@ import asyncio
 import json
 from datetime import datetime, timezone
 
-from sqlmodel import Session, select
+from sqlmodel import Session
 
 from app import llm
 from app.config import settings
 from app.db import engine
 from app.engines.base import Engine
 from app.jobs import JobContext
-from app.models import Answer, Company, Competitor, Product, Prompt, Scan
+from app.models import Answer, Company, Competitor, Product, Prompt, Scan, active_competitors, active_prompts
 from app.observability import observe
 from app.schemas import AccuracyCheck, AnswerParse
 from app.services.checks import aggregate_cell, cites_owned, label_text, owned_domains
@@ -69,8 +69,8 @@ async def _scan(job: JobContext, scan_id: int, engines: list[Engine]) -> None:
         scan = s.get(Scan, scan_id)
         product = s.get(Product, scan.product_id)
         company = s.get(Company, product.company_id)
-        prompts = s.exec(select(Prompt).where(Prompt.product_id == product.id)).all()
-        comp_rows = s.exec(select(Competitor).where(Competitor.product_id == product.id)).all()
+        prompts = s.exec(active_prompts(product.id)).all()
+        comp_rows = s.exec(active_competitors(product.id)).all()
         s.expunge_all()
 
     engines = [e for e in engines if e.name in scan.engines] or engines

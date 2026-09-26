@@ -1,0 +1,29 @@
+# Staging for the Aeon API on Fly.io (London, next to Supabase eu-west-1).
+# Deploy: fly launch --no-deploy --copy-config --name <app> && fly secrets import < .env && fly deploy
+app = "aeon-api-staging"
+primary_region = "lhr"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  DEMO_MODE = "1"          # staging replays the recorded run by default: free. Set to "0" for live runs.
+  ENVIRONMENT = "staging"  # Langfuse environment tag
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "off"   # the job worker and weekly scheduler run inside the API process
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "20s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/health"
+    timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

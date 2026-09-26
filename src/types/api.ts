@@ -203,7 +203,16 @@ export type Change = { prompt_id: number; prompt: string; engine: string; before
 export type Report = {
   id: string;
   created_at: string;
-  product: { id: number; brand: string; molecule: string; indication: string; tier: string };
+  product: {
+    id: number;
+    brand: string;
+    molecule: string;
+    indication: string;
+    tier: string;
+    /** Which FDA label every answer was checked against (older reports may lack these). */
+    label_set_id?: string | null;
+    label_version?: string;
+  };
   company: { name: string; domain: string };
   engines: { name: string; label: string; samples: number }[];
   coming_soon: { name: string; label: string }[];

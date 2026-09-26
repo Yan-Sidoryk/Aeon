@@ -145,7 +145,7 @@ flowchart TB
 | Concern | Where |
 |---|---|
 | Settings (models, effort, samples, rounds, keys) | `app/config.py`, `backend/.env` |
-| Tables | `app/models.py` (plus `Job`, `JobEvent`, `Schedule`, `CompetitorAd`, `Opportunity`) |
+| Tables | `app/models.py`; see [data-model.md](data-model.md) for the ER diagram and the rules they follow |
 | Accounts and ownership | `app/auth.py` |
 | Tracing | `app/observability.py`: one Langfuse trace per job, agent/tool spans, Claude calls via OpenInference |
 | Evals | `python -m app.evals.run label-check \| premlr \| fix-loop --report <id>` (Langfuse datasets + experiments) |

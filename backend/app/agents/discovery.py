@@ -135,7 +135,8 @@ async def _discover(job: JobContext, company_id: int, url: str) -> None:
         if lab:
             partner = bool(own_labelers and lab["manufacturer"] and lab["manufacturer"] not in own_labelers)
             products[lab["brand"].lower()] = {"brand": lab["brand"], "molecule": lab["molecule"], "tier": lab["tier"],
-                                              "label_set_id": lab["set_id"], "label": lab["label"], "url": url or None,
+                                              "label_set_id": lab["set_id"], "label": lab["label"],
+                                              "label_version": lab["effective_time"], "url": url or None,
                                               "labeler": lab["manufacturer"], "partner": partner, "pipeline": False}
             who = f", labeled by {lab['manufacturer']}" if partner else ""
             step(f"{lab['brand']}: FDA label found{who}")
@@ -180,7 +181,8 @@ async def _discover(job: JobContext, company_id: int, url: str) -> None:
             rank = -volumes.get(p["brand"].lower(), 0) if not p["pipeline"] else 10**9
             s.add(Product(company_id=company_id, brand=p["brand"], molecule=p["molecule"], tier=p["tier"],
                           indication=e.indication_one_line if e else "", label_set_id=p["label_set_id"],
-                          label=p["label"], url=p["url"], search_rank=rank, labeler=p["labeler"],
+                          label=p["label"], label_version=p.get("label_version", ""), url=p["url"],
+                          search_rank=rank, labeler=p["labeler"],
                           partner=p["partner"], pipeline=p["pipeline"],
                           selected=not p["partner"] and not p["pipeline"]))
         s.flush()

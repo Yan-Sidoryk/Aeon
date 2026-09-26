@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from sqlalchemy import JSON, Column
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, select
 
 
 def _now() -> datetime:
@@ -49,6 +49,7 @@ class Product(SQLModel, table=True):
     tier: str = "Rx"  # Rx | OTC
     label_set_id: str | None = None
     label: dict = JsonField({})  # indications, dosage, boxed_warning, contraindications, warnings
+    label_version: str = ""  # openFDA effective_time of that label (e.g. 20250612): what answers were checked against
     url: str | None = None
     selected: bool = True
     is_hero: bool = False
@@ -64,6 +65,7 @@ class Competitor(SQLModel, table=True):
     brand: str
     molecule: str = ""
     source: str = "llm"  # openfda | llm | user
+    active: bool = True  # retired (False) when setup is rebuilt; kept for history
 
 
 class Prompt(SQLModel, table=True):
@@ -74,6 +76,16 @@ class Prompt(SQLModel, table=True):
     lane: str = "unbranded"  # branded | unbranded | comparison | off_label
     monitor_only: bool = False
     source: str = "claude"  # google_paa (a real question people ask on Google) | claude | user
+    active: bool = True  # retired, never deleted: answers from past scans still point at it
+
+
+def active_prompts(product_id: int):
+    """The product's current questions. Retired ones stay: past scans' answers point at them."""
+    return select(Prompt).where(Prompt.product_id == product_id, Prompt.active == True)  # noqa: E712
+
+
+def active_competitors(product_id: int):
+    return select(Competitor).where(Competitor.product_id == product_id, Competitor.active == True)  # noqa: E712
 
 
 class Scan(SQLModel, table=True):

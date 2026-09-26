@@ -62,6 +62,12 @@ export function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
+/** openFDA effective_time "20260630" → "Jun 30, 2026" ("" when missing or malformed). */
+export function labelDate(version: string | undefined): string {
+  const m = /^(\d{4})(\d{2})(\d{2})$/.exec(version ?? "");
+  return m ? formatDate(`${m[1]}-${m[2]}-${m[3]}T12:00:00Z`) : "";
+}
+
 /** "https://www.acme.com/x" or "acme.com" → "acme.com". */
 export function bareDomain(url: string): string {
   return url.replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/.*$/, "");

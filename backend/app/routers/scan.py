@@ -10,7 +10,7 @@ from app.auth import current_org, owned_product, owned_scan
 from app.config import settings
 from app.db import get_session
 from app.engines.registry import engine_status, enabled_engines
-from app.models import Org, Prompt, Scan, Schedule
+from app.models import Org, Scan, Schedule, active_prompts
 from app.routers.onboarding import stream_job, stream_org
 from app.services import demo
 
@@ -43,7 +43,7 @@ def start_scan_job(session: Session, product_id: int, org_id: int | None, kind: 
 @router.post("/products/{product_id}/scans")
 def start_scan(product_id: int, org: Org = Depends(current_org), session: Session = Depends(get_session)):
     owned_product(session, product_id, org)
-    if not session.exec(select(Prompt).where(Prompt.product_id == product_id)).first():
+    if not session.exec(active_prompts(product_id)).first():
         raise HTTPException(409, "Run setup first: no questions for this product")
     if not _demo() and not enabled_engines():
         raise HTTPException(503, "No AI engines configured; set ANTHROPIC_API_KEY")
