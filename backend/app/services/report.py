@@ -11,7 +11,6 @@ from collections import Counter, defaultdict
 from sqlmodel import Session, select
 
 from app import llm
-from app.config import settings
 from app.db import engine
 from app.engines.registry import COMING_SOON, ENGINES
 from app.models import Answer, Company, Competitor, Product, Prompt, Report, Scan
@@ -99,8 +98,10 @@ def build_payload(product: Product, company: Company, prompts: list[Prompt], com
         "sources": sources(answers, owned_domains(company, product), prompt_by_id),
         "changes": changes(questions, previous) if previous else None,
         "methodology": (
-            f"{len(questions)} questions ({len(unbranded)} unbranded) on {len(engines)} engines. Claude answers each "
-            f"question {settings.claude_samples} times with web search on; a check is ticked when most answers agree. "
+            f"{len(questions)} questions ({len(unbranded)} unbranded) on {len(engines)} engines. " + (
+                f"Claude answers each question {samples} times with web search on; a check is ticked when most answers "
+                "agree. " if (samples := max((len(v) for k, v in by_cell.items() if k[1] == "claude"), default=0)) > 1
+                else "Claude answers each question once with web search on. ") +
             "Google AI Overviews and AI Mode are fetched once per question (US, desktop). Every answer that names the "
             "drug is checked against its FDA label."),
     }
@@ -153,6 +154,11 @@ def changes(questions: list[dict], previous: dict) -> list[dict]:
     return out
 
 
+def unescape(text: str) -> str:
+    """The planner sometimes writes JSON escapes as literal text ("\\u2014"); turn them back into characters."""
+    return re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), text)
+
+
 def fallback_fixes(payload: dict) -> list[dict]:
     fixes = []
     if payload["accuracy_issues"]:
@@ -194,8 +200,10 @@ async def build_report(scan_id: int) -> str:
     try:
         plan = await llm.smart(FIX_SYSTEM, f"Brand: {product.brand}\n\n{json.dumps(findings)[:30000]}", FixPlan)
         payload["fixes"] = [f.model_dump() for f in plan.fixes[:3]]
-        for i, f in enumerate(payload["fixes"]):  # keys are used in URLs
-            f["key"] = re.sub(r"[^a-z0-9]+", "-", f["key"].lower()).strip("-") or f"fix-{i + 1}"
+        for i, f in enumerate(payload["fixes"]):
+            f["key"] = re.sub(r"[^a-z0-9]+", "-", f["key"].lower()).strip("-") or f"fix-{i + 1}"  # used in URLs
+            f["title"], f["why"] = unescape(f["title"]), unescape(f["why"])
+            f["target_prompts"] = [unescape(t) for t in f["target_prompts"]]
     except Exception:
         payload["fixes"] = fallback_fixes(payload)
 
