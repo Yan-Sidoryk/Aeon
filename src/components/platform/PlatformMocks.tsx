@@ -1,20 +1,8 @@
-export function TrackMock() {
-  return <div data-stub="TrackMock" className="p-10 text-center text-stone">TrackMock</div>;
-}
-
-export function VerifyMock() {
-  return <div data-stub="VerifyMock" className="p-10 text-center text-stone">VerifyMock</div>;
-}
-
-export function FixMock() {
-  return <div data-stub="FixMock" className="p-10 text-center text-stone">FixMock</div>;
-}
-
-export function ReviewMock() {
-  return <div data-stub="ReviewMock" className="p-10 text-center text-stone">ReviewMock</div>;
-}
-
-export function MeasureMock() {
-  return <div data-stub="MeasureMock" className="p-10 text-center text-stone">MeasureMock</div>;
-}
-
+// Product-UI panels for the platform cards, one per step of Aeon's loop, in 7shifts' panel rhythm:
+// Track (Hire anatomy, periwinkle) · Verify (Train, oat) · Fix (Schedule, flame) · Review (Pay, forest) · Measure (Retain, royal).
+// Spec: docs/research/components/PlatformMocks.spec.md. Each mock fills its box and is decorative (aria-hidden).
+export { TrackMock } from "./mocks/TrackMock";
+export { VerifyMock } from "./mocks/VerifyMock";
+export { FixMock } from "./mocks/FixMock";
+export { ReviewMock } from "./mocks/ReviewMock";
+export { MeasureMock } from "./mocks/MeasureMock";

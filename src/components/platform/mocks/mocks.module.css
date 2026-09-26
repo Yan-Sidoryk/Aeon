@@ -1,0 +1,393 @@
+/*
+ * Motion for the platform product mocks (spec: docs/research/components/PlatformMocks.spec.md).
+ *
+ * MockFrame sets data-state on `.frame`:
+ *   (unset) final frame: server render, no JS, reduced motion, or already on screen at hydration
+ *   armed   entrance targets hidden until the mock scrolls into view
+ *   play    entrance runs once; loops keep running
+ * Per-element knobs, set with Tailwind (e.g. [--mock-d:120ms]): --mock-d delay, --mock-t duration, --mock-loop-d loop
+ * start delay, --mock-rise fade-up distance in stage units, --mock-ease easing, --mock-pulse-scale ring size. They are
+ * registered as non-inheriting, so a parent's timing never leaks into nested animated children.
+ * Distances use var(--spacing), the 520-unit stage unit, so motion scales with the panel.
+ */
+
+@property --mock-d {
+  syntax: "*";
+  inherits: false;
+}
+@property --mock-t {
+  syntax: "*";
+  inherits: false;
+}
+@property --mock-loop-d {
+  syntax: "*";
+  inherits: false;
+}
+@property --mock-rise {
+  syntax: "*";
+  inherits: false;
+}
+@property --mock-ease {
+  syntax: "*";
+  inherits: false;
+}
+@property --mock-pulse-scale {
+  syntax: "*";
+  inherits: false;
+}
+
+.frame {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* 7shifts Hire table slide (Lottie out 0.07,0 / in 0,1). */
+  --ease-slide: cubic-bezier(0.07, 0, 0, 1);
+  /* 7shifts cursor moves and check-mark trim (Lottie out 0.33,0 / in 0.67,1). */
+  --ease-move: cubic-bezier(0.33, 0, 0.67, 1);
+}
+
+/* ——— Entrance: waiting for the viewport ——— */
+.frame[data-state="armed"] :is(.fadeUp, .fadeIn, .zoomIn, .pop, .popSettle, .popBounce, .slideDown, .dropIn) {
+  opacity: 0;
+}
+.frame[data-state="armed"] .fillX {
+  transform: scaleX(0);
+}
+.frame[data-state="armed"] .draw {
+  stroke-dashoffset: 1;
+}
+
+/* Paths drawn with stroke-dashoffset need pathLength="1". */
+.draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+/* ——— Entrance: play ——— */
+.frame[data-state="play"] .fadeUp {
+  animation: mock-fade-up var(--mock-t, 600ms) var(--ease-out) var(--mock-d, 0ms) both;
+}
+.frame[data-state="play"] .fadeIn {
+  animation: mock-fade-in var(--mock-t, 400ms) ease-out var(--mock-d, 0ms) both;
+}
+.frame[data-state="play"] .zoomIn {
+  animation: mock-zoom-in var(--mock-t, 500ms) var(--ease-out) var(--mock-d, 0ms) both;
+}
+.frame[data-state="play"] .pop {
+  animation: mock-pop var(--mock-t, 500ms) var(--ease-move) var(--mock-d, 0ms) both;
+}
+.frame[data-state="play"] .popSettle {
+  animation: mock-pop-settle var(--mock-t, 420ms) ease-in-out var(--mock-d, 0ms) both;
+}
+.frame[data-state="play"] .popBounce {
+  animation: mock-pop-bounce var(--mock-t, 500ms) ease-in-out var(--mock-d, 0ms) both;
+}
+.frame[data-state="play"] .dropIn {
+  animation: mock-drop-in var(--mock-t, 550ms) var(--ease-out) var(--mock-d, 0ms) both;
+}
+.frame[data-state="play"] .fillX {
+  animation: mock-fill-x var(--mock-t, 800ms) var(--ease-out) var(--mock-d, 0ms) both;
+}
+.frame[data-state="play"] .draw {
+  animation: mock-draw var(--mock-t, 330ms) var(--mock-ease, var(--ease-move)) var(--mock-d, 0ms) both;
+}
+.frame[data-state="play"] .slideDown {
+  animation: mock-slide-down var(--mock-t, 1250ms) linear var(--mock-d, 0ms) both;
+}
+
+@keyframes mock-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, calc(var(--spacing) * var(--mock-rise, 16)), 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes mock-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mock-zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hire success pop-up: scale 0 → 105% → 100% over 15 frames. */
+@keyframes mock-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  25% {
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Schedule shift pills: 0 → 105% → 95% → 100% over 10 frames. */
+@keyframes mock-pop-settle {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  30% {
+    opacity: 1;
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  80% {
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Retain "Submitted" pop-up: appears at 100%, then 108% → 92% → 100%. */
+@keyframes mock-pop-bounce {
+  0% {
+    opacity: 0;
+    transform: none;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  75% {
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes mock-drop-in {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, calc(var(--spacing) * -14), 0) scale(0.96);
+  }
+  60% {
+    opacity: 1;
+    transform: translate3d(0, calc(var(--spacing) * 2), 0) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes mock-fill-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes mock-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Track table card: fades in where 7shifts' table sits before the pop-up (103 units higher), then slides down. */
+@keyframes mock-slide-down {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, calc(var(--spacing) * -103), 0);
+    animation-timing-function: ease-out;
+  }
+  30% {
+    opacity: 1;
+    transform: translate3d(0, calc(var(--spacing) * -103), 0);
+    animation-timing-function: linear;
+  }
+  36% {
+    opacity: 1;
+    transform: translate3d(0, calc(var(--spacing) * -103), 0);
+    animation-timing-function: cubic-bezier(0.07, 0, 0, 1);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ——— Loops (the one micro-animation per mock) ——— */
+
+/* Track: cursor drifts between three cells with Hire-style click wiggles (rotate -7°), 6.5 s like the Hire loop. */
+.frame:not([data-state="armed"]) .cursorTrack {
+  animation: mock-cursor-track 6.5s var(--mock-loop-d, 0ms) infinite;
+}
+.frame[data-state="armed"] .cursorTrack {
+  opacity: 0;
+}
+.frame[data-state="play"] .cursorTrack {
+  animation:
+    mock-fade-in 300ms ease-out var(--mock-d, 0ms) both,
+    mock-cursor-track 6.5s var(--mock-loop-d, 0ms) infinite;
+}
+
+@keyframes mock-cursor-track {
+  0%,
+  14% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1);
+  }
+  26% {
+    transform: translate3d(calc(var(--spacing) * 78.75), calc(var(--spacing) * 89.25), 0);
+    animation-timing-function: ease-in-out;
+  }
+  28% {
+    transform: translate3d(calc(var(--spacing) * 78.75), calc(var(--spacing) * 89.25), 0) rotate(-7deg) scale(0.97);
+    animation-timing-function: ease-in-out;
+  }
+  30%,
+  52% {
+    transform: translate3d(calc(var(--spacing) * 78.75), calc(var(--spacing) * 89.25), 0);
+    animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1);
+  }
+  64% {
+    transform: translate3d(calc(var(--spacing) * -34.25), calc(var(--spacing) * 40.25), 0);
+    animation-timing-function: ease-in-out;
+  }
+  66% {
+    transform: translate3d(calc(var(--spacing) * -34.25), calc(var(--spacing) * 40.25), 0) rotate(-7deg) scale(0.97);
+    animation-timing-function: ease-in-out;
+  }
+  68%,
+  86% {
+    transform: translate3d(calc(var(--spacing) * -34.25), calc(var(--spacing) * 40.25), 0);
+    animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* Review: cursor glides in, clicks "Approve" (Schedule/Pay click: rotate -13°, scale .967, 3+3 frames), leaves. 5 s. */
+.frame[data-state="armed"] .cursorReview {
+  opacity: 0;
+}
+.frame:not([data-state="armed"]) .cursorReview {
+  animation: mock-cursor-review 5s var(--mock-loop-d, 0ms) infinite both;
+}
+.frame:not([data-state="armed"]) .press {
+  animation: mock-press 5s var(--mock-loop-d, 0ms) infinite;
+}
+
+@keyframes mock-cursor-review {
+  0% {
+    opacity: 0;
+    transform: translate3d(calc(var(--spacing) * 70), calc(var(--spacing) * 58), 0);
+    animation-timing-function: cubic-bezier(0, 0, 0.09, 1);
+  }
+  8% {
+    opacity: 1;
+  }
+  26% {
+    opacity: 1;
+    transform: none;
+    animation-timing-function: ease-in-out;
+  }
+  28.5% {
+    transform: rotate(-13deg) scale(0.967);
+    animation-timing-function: ease-in-out;
+  }
+  31%,
+  80% {
+    opacity: 1;
+    transform: none;
+    animation-timing-function: cubic-bezier(0.33, 0, 0.67, 1);
+  }
+  92%,
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(var(--spacing) * 46), calc(var(--spacing) * 38), 0);
+  }
+}
+
+/* Button press synced with the Review click (scale 1 → .95 → 1). */
+@keyframes mock-press {
+  0%,
+  26% {
+    transform: none;
+    animation-timing-function: ease-in-out;
+  }
+  28.5% {
+    transform: scale(0.95);
+    animation-timing-function: ease-in-out;
+  }
+  31%,
+  100% {
+    transform: none;
+  }
+}
+
+/* Verify alert icon and Measure's latest point: expanding ring. Rest pose is invisible. */
+.pulse {
+  opacity: 0;
+}
+.frame:not([data-state="armed"]) .pulse {
+  animation: mock-pulse 2s ease-out var(--mock-loop-d, 0ms) infinite;
+}
+
+@keyframes mock-pulse {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(var(--mock-pulse-scale, 1.6));
+  }
+}
+
+/* Fix: text caret. */
+.frame:not([data-state="armed"]) .caret {
+  animation: mock-caret 1.1s step-end var(--mock-loop-d, 0ms) infinite;
+}
+
+@keyframes mock-caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frame * {
+    animation-delay: 0s !important;
+  }
+}
