@@ -22,7 +22,12 @@ const hand = Nanum_Pen_Script({
   weight: "400",
 });
 
+// Absolute base for OG/Twitter image URLs. Set NEXT_PUBLIC_SITE_URL once the domain is live; without it,
+// Next.js falls back to the Vercel deployment URL (or localhost in local builds).
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
 export const metadata: Metadata = {
+  ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
   title: "Aeon: AI Visibility & GEO for Pharma Brands (ChatGPT, Claude, Gemini, Perplexity)",
   description:
     "Aeon shows pharma brands how ChatGPT, Claude, Gemini and Perplexity talk about their drugs, checks every answer against the label, and turns the gaps into MLR-ready fixes.",

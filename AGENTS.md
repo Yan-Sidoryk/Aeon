@@ -65,7 +65,7 @@ scripts/            # Asset download scripts
 ```
 
 ## MOST IMPORTANT NOTES
-- When launching Claude Code agent teams, ALWAYS have each teammate work in their own worktree branch and merge everyone's work at the end, resolving any merge conflicts smartly since you are basically serving the orchestrator role and have full context to our goals, work given, work achieved, and desired outcomes.
+- When launching Claude Code agent teams, give each teammate exclusive ownership of a disjoint set of files. Prefer separate worktree branches merged by the orchestrator; on this 16 GB machine the marketing-site build instead ran all builders in the main tree against one shared `next dev` server, because ten worktrees each with their own dev server would exhaust memory.
 - Aeon never shows fabricated customers, testimonials, ratings or results. Third-party stats always show their source.
 
 @docs/research/INSPECTION_GUIDE.md
