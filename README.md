@@ -1,12 +1,90 @@
-# Aeon
+<p align="center">
+  <img src="public/brand/aeon-logo.svg" alt="Aeon" width="150">
+</p>
 
-Aeon shows pharma brands how ChatGPT, Claude, Gemini and Perplexity talk about their drugs, checks every answer
-against the label, and turns the gaps into MLR-ready fixes.
+<h3 align="center">See what AI tells patients and doctors about your drugs, and fix it before it costs you.</h3>
 
-This repo holds the marketing site (`/`), the product (onboarding at `/start`, the shareable report at
-`/report/[id]`, the dashboard at `/app`) and its FastAPI backend (`backend/`). Product thinking lives in
-[`docs/PRD.md`](docs/PRD.md) and [`docs/user-journey-pharma-onboarding.md`](docs/user-journey-pharma-onboarding.md);
-the API contract is [`docs/architecture.md`](docs/architecture.md).
+<p align="center">
+  AI visibility and pre-MLR for pharma brands. Aeon asks Claude, Google AI Overviews and Google AI Mode the questions
+  real patients, caregivers and doctors ask, checks every answer against your FDA label, and turns what's wrong into
+  on-label content that has already passed a pre-MLR review.
+</p>
+
+<p align="center">
+  <img alt="Next.js 16" src="https://img.shields.io/badge/Next.js-16-000?logo=nextdotjs">
+  <img alt="React 19" src="https://img.shields.io/badge/React-19-149eca?logo=react&logoColor=white">
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-backend-009688?logo=fastapi&logoColor=white">
+  <img alt="Claude Sonnet 5" src="https://img.shields.io/badge/Claude-Sonnet%205-d97757?logo=anthropic&logoColor=white">
+  <img alt="openFDA" src="https://img.shields.io/badge/openFDA-labels-2b5797">
+</p>
+
+<p align="center">
+  <img src="docs/images/dashboard-overview.png" alt="Aeon dashboard: a live scan of arcutis.com for Zoryve, by engine, who AI recommends, where competitors win and label conflicts" width="100%">
+  <br><sub>The dashboard on a real live scan of arcutis.com (Zoryve), not a mock-up.</sub>
+</p>
+
+---
+
+## Why
+
+Patients, caregivers and doctors now ask AI about treatments. When an assistant recommends a competitor for "best cream for plaque
+psoriasis", or quotes an age limit from a label that has since changed, the brand team usually never finds out, and
+anything they publish to fix it has to get through medical, legal and regulatory (MLR) review first.
+
+Aeon shows both problems for one drug in about six minutes, from nothing but the company's website.
+
+## What it does
+
+| | |
+|---|---|
+| **Finds your portfolio** | An agent reads your website and confirms every product against its FDA label on openFDA. No forms. |
+| **Asks the real questions** | 10 questions per drug, drawn from what people ask on Google and rounded out by the setup agent: unbranded, branded and comparison questions for patients, caregivers and doctors. |
+| **Asks every engine** | Claude (asked 3 times, majority vote), Google AI Overviews and Google AI Mode. ChatGPT, Gemini and Perplexity are next. |
+| **Checks, not scores** | Every result is a yes/no check you can open: does the answer name you, name a competitor instead, or contradict your label? Summaries are counts of checks ("2 of 18"), never a made-up 0–100 score. |
+| **Label conflicts** | Each answer is compared with the current FDA label, quoting the AI sentence next to the label sentence. |
+| **Fix this** | Drafts on-label content for each gap from the label alone, and revises it round by round until an automated pre-MLR checklist passes, so MLR sees a clean first draft. |
+| **Tracks it weekly** | The same questions every week, so you see where AI moves toward or away from your brand. |
+
+<p align="center">
+  <img src="docs/images/dashboard-answer.png" alt="Opening one check shows the full AI answer, every sample, and who it recommended" width="100%">
+  <br><sub>Every check opens the answer behind it: all three Claude samples, the sources, and who it named instead.</sub>
+</p>
+
+## How it works
+
+```mermaid
+flowchart LR
+    W[Company website] --> D[Discovery agent<br/>Claude + openFDA]
+    D --> S[Setup agent<br/>competitors + 10 real questions]
+    S --> Q[Scan<br/>Claude ×3 · AI Overviews · AI Mode]
+    Q --> C[Checks<br/>named? competitor? label conflict?]
+    C --> R[Report + dashboard]
+    R --> F[Fix this<br/>draft → pre-MLR review → revise]
+```
+
+- **Agents** run on the Anthropic SDK's tool runner: they read pages, look labels up and record what they find,
+  and every step streams live to the screen.
+- **Measurement is not an agent.** The scan is a fixed workflow, so the instructions never change the answers being
+  measured.
+- **Durable jobs** live in the database, so a restart or a dropped connection resumes the work instead of losing it.
+- **Every call is traced** in Langfuse, with evals for the label checks, the pre-MLR review and the fix loop.
+
+| Measured on a live run (arcutis.com, Sonnet 5) | Time | Cost |
+|---|---|---|
+| Discovery: website → products and FDA labels | ~1 min | $0.07 |
+| Setup: competitors and questions | ~1 min | $0.06 |
+| Scan: 10 questions × 3 engines, label checks | ~4 min | $2.93 |
+| **A full report** | **~6 min** | **~$3** |
+
+## Built to be trusted
+
+- **No fabricated numbers.** No invented customers, ratings or results. Third-party figures show their source.
+- **Demo mode says so.** The free demo replays one recorded scan, and a banner on every screen says which site it
+  is. It never passes for a scan of the site you typed.
+- **Guardrails on live runs.** Anything that isn't a real website is refused before anything runs. Visitors get one
+  free report a day, "Fix this" and weekly tracking need an account, and live spend stops at a daily cap.
+- **Your label is the reference.** Checks compare answers with the label on openFDA, across every form of the
+  brand (Zoryve cream and foam, for example).
 
 ## Run it on your machine
 
@@ -15,15 +93,15 @@ Needs Node 24 (`.nvmrc`) and Python 3.11+.
 ```bash
 npm install
 npm run setup:api                 # backend/.venv with the backend installed
-cp .env.example .env.local        # frontend: points at the API on localhost:8000
+cp .env.example .env.local        # frontend → API on localhost:8000
 ```
 
-Then start the API in one of two modes, and the frontend in a second terminal:
+Start the API in one terminal and the app in another:
 
 | Mode | API | What you get | Keys |
 |---|---|---|---|
-| **Demo** | `npm run dev:api:demo` | Every website replays one recorded live run (incyte.com); a banner says so. Free. | none |
-| **Live** | `npm run dev:api` | A real analysis of any US pharma website: its products and FDA labels, 10 questions asked on Claude, Google AI Overviews and AI Mode, every answer checked against the label. | `backend/.env` |
+| **Demo** | `npm run dev:api:demo` | Every website replays one recorded live scan (incyte.com), labelled as such. Free. | none |
+| **Live** | `npm run dev:api` | A real analysis of any US pharma website. | `backend/.env` |
 
 ```bash
 npm run dev                       # http://localhost:3000/start
@@ -31,64 +109,44 @@ npm run dev                       # http://localhost:3000/start
 
 For live mode, `cp backend/.env.example backend/.env` and set `ANTHROPIC_API_KEY`, `DATAFORSEO_LOGIN` and
 `DATAFORSEO_PASSWORD` (`APIFY_TOKEN` only for promo research). Leave the Supabase and `DATABASE_URL` lines empty:
-the API keeps its data in `backend/aeon.db` and every browser is its own account. A full live report costs about
-$3 (Sonnet 5); the API stops starting new runs once a day's spend reaches `DAILY_SPEND_CAP_USD` (default $10).
-Anything that isn't a real website is refused before anything runs.
-
-Checks before a pull request:
+the API keeps its data in `backend/aeon.db` and each browser is its own account. The API stops starting new runs
+once a day's measured spend reaches `DAILY_SPEND_CAP_USD` (default $10).
 
 ```bash
 npm run test:api                  # backend tests, no keys or network
 npm run check                     # lint + typecheck + production build
 ```
 
-Set `NEXT_PUBLIC_SITE_URL` (e.g. `https://aeon.example`) in production so the share image resolves to the live
-domain; on Vercel it falls back to the deployment URL.
-
-## Branches and pull requests
-
-`main` is what runs in production and what anyone should be able to clone and run. Work happens on a short-lived
-branch off `main` (`feat/…`, `fix/…`, `docs/…`), one topic per branch, merged through a pull request once
-`npm run test:api` and `npm run check` pass. Rebase on `main` before asking for review; never push to `main` directly.
-
 ## Stack
 
-Next.js 16 (App Router, React 19), TypeScript strict, Tailwind CSS v4 and shadcn/ui primitives. Fonts come from
-`next/font/google`: Geist for headings, Inter Tight for body text and Nanum Pen Script for handwritten accents.
+| Layer | |
+|---|---|
+| Frontend | Next.js 16 (App Router), React 19, TypeScript strict, Tailwind CSS v4, shadcn/ui |
+| Backend | Python, FastAPI, SQLModel; SQLite locally, Supabase Postgres + Auth in production |
+| AI | Claude Sonnet 5 (agents, the Claude engine, label checks, drafts), Haiku 4.5 (parsing) |
+| Data | openFDA (labels), DataForSEO (Google AI Overviews, AI Mode, real questions, search volume), Apify (competitor ads) |
+| Ops | Langfuse traces and evals, Vercel |
 
-## How the marketing site was made
-
-- **Design:** layout, spacing, type scale, palette and interactions follow https://www.7shifts.com/, reproduced
-  section by section with the `/clone-website` workflow. Research, screenshots and per-component specs are in
-  [`docs/research/`](docs/research/) and [`docs/design-references/`](docs/design-references/).
-- **Messaging:** adapted from https://pharma-geo.com/ and the PRD. The full copy deck is
-  [`docs/research/AEON_CONTENT.md`](docs/research/AEON_CONTENT.md).
-- **Visual direction:** product-led. The hero and feature sections show the product UI (built in HTML/CSS), and
-  third-party AI engines and tools appear with their real logos (`src/components/brand-logos.tsx`, sources in
-  `third_party/LOGOS.md`). No stock people photos or photo backgrounds.
-- **Visual assets:** the Aeon logo, doodle icons and the "old way" desk photo were generated with Higgsfield. Raw
-  vector sources are in `assets-src/`; `node scripts/optimize-assets.mjs` turns them into the web versions in
-  `public/`.
-
-## Project structure
+The API contract is [`docs/architecture.md`](docs/architecture.md); the product thinking is in
+[`docs/PRD.md`](docs/PRD.md) and [`docs/user-journey-pharma-onboarding.md`](docs/user-journey-pharma-onboarding.md).
 
 ```
-src/app/                 page, layout, global tokens (globals.css), favicon
-src/components/          one file per page section, plus section helpers in sub-folders
-src/components/ui/       shared primitives (PillButton, shadcn button)
-src/components/icons.tsx icons extracted from the reference site
-public/images/           doodles and the one remaining photo (web-ready)
-public/logos/            AI engine and tool logos (colour, mono, wordmark)
-assets-src/              raw Higgsfield vector outputs
-docs/                    PRD, user journey, research and component specs
+src/app/           marketing site (/), onboarding (/start), report (/report/[id]), dashboard (/app)
+src/components/    marketing sections; app/ holds the product screens, report and dashboard
+src/lib/api.ts     typed client for the backend; response types in src/types/api.ts
+backend/app/       agents/, engines/, services/, routers/, evals/, guardrails (guard.py), spend metering (spend.py)
+docs/              PRD, user journey, API contract, research
 ```
 
-## Content rules
+## Contributing
 
-Aeon does not show customers, testimonials, ratings or results it does not have. Third-party statistics always
-show their source, and numbers inside product UI mocks are illustrative.
+`main` is what runs in production and what anyone should be able to clone and run. Work on a short-lived branch off
+`main` (`feat/…`, `fix/…`, `docs/…`), one topic per branch, and merge through a pull request once
+`npm run test:api` and `npm run check` pass. Rebase on `main` before asking for review; never push to `main` directly.
 
 ## Credits
 
-Scaffolded from the [AI Website Cloner Template](https://github.com/JCodesMore/ai-website-cloner-template)
-(MIT, see `third_party/`).
+The marketing site's layout follows [7shifts](https://www.7shifts.com/), rebuilt with the
+[AI Website Cloner Template](https://github.com/JCodesMore/ai-website-cloner-template) (MIT, see `third_party/`).
+The logo, doodles and hero video were generated with Higgsfield; third-party logos are listed in
+`third_party/LOGOS.md`.
