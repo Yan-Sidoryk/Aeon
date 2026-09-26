@@ -5,15 +5,20 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { PillButton } from "@/components/ui/pill-button";
 import { api, errorMessage } from "@/lib/api";
-import { AUDIENCE_LABEL } from "@/lib/format";
-import { loadSetup } from "@/lib/setup-cache";
+import { AUDIENCE_SINGULAR } from "@/lib/format";
+import { loadSetup, stopListening } from "@/lib/setup-cache";
 import { cn } from "@/lib/utils";
-import type { Audience, Company, Competitor, Product, SetupView } from "@/types/api";
+import type { Company, Competitor, Product, QuestionKind, SetupView, StepEvent } from "@/types/api";
 import { heroCandidates } from "./PortfolioScreen";
-import { ActionBar, ErrorNote, Eyebrow, Lead, PageTitle, Panel, Screen, SectionTitle, Skeleton, Spinner, inputClass } from "./ui";
+import { StepChecklist } from "./StepChecklist";
+import { ActionBar, Badge, ErrorNote, Eyebrow, Lead, PageTitle, Panel, Screen, SectionTitle, Skeleton, inputClass } from "./ui";
 
-const PREVIEW = 20; // the journey shows 20 questions and a "+20 more" counter
-const AUDIENCES: Audience[] = ["patient", "caregiver", "hcp"];
+// What each group of questions measures. "Lane" never appears in the UI.
+const GROUPS: { kind: QuestionKind; title: (brand: string) => string; note: string }[] = [
+  { kind: "unbranded", title: () => "Questions that name no drug", note: "Where AI decides what to recommend on its own." },
+  { kind: "branded", title: (brand) => `About ${brand}`, note: "Checked against your FDA label." },
+  { kind: "comparison", title: (brand) => `${brand} vs competitors`, note: "Checked against your FDA label." },
+];
 
 /** Screen 4, "Who you're up against and what people ask": glance, maybe drop a competitor, run the scan. */
 export function SetupScreen({ companyId }: { companyId: number }) {
@@ -23,11 +28,12 @@ export function SetupScreen({ companyId }: { companyId: number }) {
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
-  const [showAll, setShowAll] = useState(false);
+  const [steps, setSteps] = useState<StepEvent[]>([]);
   const [starting, setStarting] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
+    let listener: { id: number; fn: (steps: StepEvent[]) => void } | null = null;
     (async () => {
       try {
         const company: Company = await api.company(companyId);
@@ -35,7 +41,9 @@ export function SetupScreen({ companyId }: { companyId: number }) {
         if (!product) throw new Error("Pick a hero drug first.");
         if (cancelled) return;
         setHero(product);
-        const view = await loadSetup(product.id); // joins the request the hero screen started
+        const listen = (next: StepEvent[]) => !cancelled && setSteps(next);
+        listener = { id: product.id, fn: listen };
+        const view = await loadSetup(product.id, listen); // joins the run the hero screen started
         if (cancelled) return;
         setSetup(view);
         setCompetitors(view.competitors);
@@ -45,6 +53,7 @@ export function SetupScreen({ companyId }: { companyId: number }) {
     })();
     return () => {
       cancelled = true;
+      if (listener) stopListening(listener.id, listener.fn);
     };
   }, [companyId, attempt]);
 
@@ -87,13 +96,26 @@ export function SetupScreen({ companyId }: { companyId: number }) {
           </ErrorNote>
         ) : (
           <>
-            <p className="mt-6 flex items-center gap-2 text-[15px] text-stone">
-              <Spinner /> Picking competitors from FDA labels and writing the questions people ask AI. This takes about 15
-              seconds the first time.
+            <p className="mt-6 max-w-[640px] text-[15px] text-stone">
+              Our setup agent is checking competitors against their FDA labels and pulling the questions people really ask
+              Google. About a minute the first time.
             </p>
-            <div className="mt-8 grid gap-4 lg:grid-cols-[1fr_1.6fr]">
+            <Panel className="mt-6 max-w-[720px]">
+              <StepChecklist
+                rows={
+                  steps.length
+                    ? steps.slice(-8).map((st, i, arr) => ({
+                        key: st.key,
+                        label: st.label,
+                        status: st.status === "active" || (i === arr.length - 1 && st.status !== "done") ? "active" : "done",
+                      }))
+                    : [{ key: "wait", label: `Researching ${hero?.brand ?? "your drug"}…`, status: "active" }]
+                }
+              />
+            </Panel>
+            <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_1.6fr]">
+              <Skeleton className="h-48 rounded-2xl" />
               <Skeleton className="h-64 rounded-2xl" />
-              <Skeleton className="h-96 rounded-2xl" />
             </div>
           </>
         )}
@@ -101,8 +123,6 @@ export function SetupScreen({ companyId }: { companyId: number }) {
     );
   }
 
-  const shown = showAll ? setup.prompts : setup.prompts.slice(0, PREVIEW);
-  const hidden = setup.prompts.length - shown.length;
 
   return (
     <Screen>
@@ -155,21 +175,30 @@ export function SetupScreen({ companyId }: { companyId: number }) {
 
         <Panel>
           <SectionTitle className="text-[20px] md:text-[20px]">Questions we&apos;ll ask AI</SectionTitle>
-          <p className="mt-1 text-[14px] text-stone">Written from the FDA label and indication, the way people actually ask.</p>
+          <p className="mt-1 text-[14px] text-stone">
+            Real questions people ask Google where we could find them, the rest written from your label.
+          </p>
           <div className="mt-5 flex flex-col gap-6">
-            {AUDIENCES.map((audience) => {
-              const group = shown.filter((p) => p.audience === audience);
-              if (group.length === 0) return null;
+            {GROUPS.map((group) => {
+              const items = setup.prompts.filter((p) => p.kind === group.kind);
+              if (items.length === 0) return null;
               return (
-                <section key={audience}>
-                  <h3 className="mb-2 text-[13px] font-medium tracking-wide text-stone uppercase">
-                    {AUDIENCE_LABEL[audience]} · {setup.prompts.filter((p) => p.audience === audience).length}
+                <section key={group.kind}>
+                  <h3 className="text-[15px] font-medium">
+                    {group.title(hero?.brand ?? "Your drug")} <span className="font-normal text-stone">· {items.length}</span>
                   </h3>
+                  <p className="mb-2 text-[13px] text-stone">{group.note}</p>
                   <ul className="flex flex-col gap-1.5">
-                    {group.map((p) => (
+                    {items.map((p) => (
                       <li key={p.id} className="flex items-start gap-3 rounded-xl bg-offwhite px-4 py-3 text-[15px] leading-[1.4]">
                         <MessageCircleQuestionMark className="mt-0.5 size-4 shrink-0 text-royal" />
-                        {p.text}
+                        <span className="min-w-0 flex-1">
+                          {p.text}
+                          <span className="mt-1.5 flex flex-wrap gap-1.5">
+                            <Badge tone="white">{AUDIENCE_SINGULAR[p.audience]}</Badge>
+                            {p.source === "google_paa" && <Badge tone="lime">Asked on Google</Badge>}
+                          </span>
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -177,15 +206,6 @@ export function SetupScreen({ companyId }: { companyId: number }) {
               );
             })}
           </div>
-          {setup.prompts.length > PREVIEW && (
-            <button
-              type="button"
-              onClick={() => setShowAll((v) => !v)}
-              className="mt-4 cursor-pointer text-[14px] font-medium text-royal-dark underline-offset-4 hover:underline"
-            >
-              {hidden > 0 ? `+${hidden} more` : "Show fewer"}
-            </button>
-          )}
         </Panel>
       </div>
 
@@ -193,7 +213,7 @@ export function SetupScreen({ companyId }: { companyId: number }) {
 
       <ActionBar>
         <p className="hidden text-[14px] text-stone sm:block">
-          {setup.prompts.length} questions · {competitors.length} competitors · about 3 minutes
+          {setup.prompts.length} questions · {competitors.length} competitors · Claude, Google AI Overviews and AI Mode · about 3 minutes
         </p>
         <PillButton onClick={run} disabled={starting} className="ml-auto">
           {starting ? "Starting…" : "Run my first scan"}

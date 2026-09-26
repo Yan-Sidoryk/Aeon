@@ -8,7 +8,7 @@ import { useJobStream } from "@/hooks/useJobStream";
 import { api, errorMessage } from "@/lib/api";
 import { AUDIENCE_SINGULAR } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import type { AnswerEvent, Engine, Prompt, ScanCounters, ScanEvents } from "@/types/api";
+import type { CellEvent, Engine, Prompt, ScanCounters, ScanEvents } from "@/types/api";
 import { AnswerCell, AnswerLegend } from "./AnswerCell";
 import { ErrorNote, Eyebrow, Lead, PageTitle, Panel, Screen, Skeleton } from "./ui";
 
@@ -21,7 +21,7 @@ export function ScanScreen({ scanId }: { scanId: number }) {
   const [prompts, setPrompts] = useState<Prompt[] | null>(null);
   const [engines, setEngines] = useState<Engine[]>([]);
   const [scanned, setScanned] = useState<string[]>([]);
-  const [cells, setCells] = useState<Record<string, AnswerEvent>>({});
+  const [cells, setCells] = useState<Record<string, CellEvent>>({});
   const [counters, setCounters] = useState<ScanCounters | null>(null);
   const [reportId, setReportId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -40,14 +40,15 @@ export function ScanScreen({ scanId }: { scanId: number }) {
         setBrand(product.brand);
         setPrompts(setup.prompts);
         setScanned(scan.engines);
-        // Scanned engines first, so the live column is on screen on a phone.
+        // Scanned engines first, so the live columns are on screen on a phone; "coming soon" ones last.
         setEngines([...allEngines].sort((a, b) => Number(scan.engines.includes(b.name)) - Number(scan.engines.includes(a.name))));
         if (scan.status === "failed") setError("This scan failed. Go back and run it again.");
         if (scan.status === "done" && scan.report_id) {
           // Finished earlier: the stream may be gone (server restart), so fill the grid from the report.
           const report = await api.report(scan.report_id);
           if (cancelled) return;
-          setCells(Object.fromEntries(report.grid.map((c) => [cellKey(c.prompt_id, c.engine), { ...c, error: null }])));
+          setCells(Object.fromEntries(report.questions.flatMap((q) =>
+            Object.entries(q.cells).map(([engine, cell]) => [cellKey(q.id, engine), { ...cell, prompt_id: q.id, engine }]))));
           setReportId(scan.report_id);
         }
       } catch (err) {
@@ -95,13 +96,13 @@ export function ScanScreen({ scanId }: { scanId: number }) {
       <Eyebrow>Live scan</Eyebrow>
       <PageTitle>{brand ? `What AI tells people about ${brand}` : "Asking AI your questions"}</PageTitle>
       <Lead>
-        Each cell is one AI answer to one question, checked against your FDA label as it arrives. A live scan takes about 3
-        minutes.
+        Each cell is one question on one engine, checked against your FDA label as answers arrive. Claude is asked three
+        times per question and a cell shows what most answers said. A live scan takes about 3 minutes.
       </Lead>
 
       <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
         <Stat label="Answers read" value={answered} of={total} progress={total ? answered / total : 0} />
-        <Stat label="Mention you" value={counters?.mentions ?? 0} tone="royal" />
+        <Stat label="Name you" value={counters?.mentions ?? 0} tone="royal" />
         <Stat label="Name a competitor" value={counters?.competitor_mentions ?? 0} />
         <Stat label="Label conflicts found" value={counters?.accuracy_issues ?? 0} tone="alert" />
       </div>
@@ -120,7 +121,7 @@ export function ScanScreen({ scanId }: { scanId: number }) {
 
       {error && <ErrorNote className="mt-4">{error}</ErrorNote>}
 
-      <AnswerLegend className="mt-8 mb-3" />
+      <AnswerLegend className="mt-8 mb-3" multiSample />
 
       {prompts === null ? (
         <Skeleton className="h-[480px] rounded-2xl" />
@@ -137,7 +138,8 @@ export function ScanScreen({ scanId }: { scanId: number }) {
                   return (
                     <th key={engine.name} scope="col" className={cn("px-3 py-3 font-medium", !live && "text-taupe")}>
                       {engine.label}
-                      {!live && <span className="block text-[11px] font-normal">Not connected</span>}
+                      {live && engine.samples > 1 && <span className="block text-[11px] font-normal text-taupe">asked {engine.samples}×</span>}
+                      {!live && <span className="block text-[11px] font-normal">{engine.coming_soon ? "Coming soon" : "Off"}</span>}
                     </th>
                   );
                 })}
@@ -155,6 +157,7 @@ export function ScanScreen({ scanId }: { scanId: number }) {
                       <AnswerCell
                         cell={cells[cellKey(prompt.id, engine.name)]}
                         pending={scanned.includes(engine.name) && !reportId}
+                        comingSoon={!scanned.includes(engine.name) && engine.coming_soon}
                       />
                     </td>
                   ))}

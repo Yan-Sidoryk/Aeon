@@ -33,6 +33,7 @@ export const RULE_LABEL: Record<PremlrRule, string> = {
   fair_balance: "Fair balance",
   overstatement: "Overstatement",
   missing_isi: "Safety information",
+  unsupported_comparison: "Unsupported comparison",
   other: "Other",
 };
 

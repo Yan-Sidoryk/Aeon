@@ -21,6 +21,7 @@ const FOCUS = "rounded-md focus-visible:outline-2 focus-visible:outline-offset-4
 export function AppHeader() {
   const pathname = usePathname();
   const onReport = pathname.startsWith("/report");
+  const onDashboard = pathname.startsWith("/app");
   const current = Math.max(0, STEPS.findIndex((s) => s.path === pathname));
 
   return (
@@ -30,10 +31,17 @@ export function AppHeader() {
           <AeonLogo className="w-[84px]" />
         </Link>
 
-        {onReport ? (
-          <PillButton href={START_HREF} variant="secondary" className="h-10 px-4 text-[14px]">
-            New report
-          </PillButton>
+        {onReport || onDashboard ? (
+          <div className="flex items-center gap-2">
+            {!onDashboard && (
+              <Link href="/app" className={cn(FOCUS, "px-3 text-[14px] font-medium text-stone hover:text-black")}>
+                Dashboard
+              </Link>
+            )}
+            <PillButton href={START_HREF} variant="secondary" className="h-10 px-4 text-[14px]">
+              New report
+            </PillButton>
+          </div>
         ) : (
           <>
             <ol aria-label="Onboarding steps" className="hidden items-center gap-2 md:flex">
