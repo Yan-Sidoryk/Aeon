@@ -4,6 +4,9 @@ Verified Sep 2026: the Meta Ad Library hides Rx drug ad copy from logged-out scr
 so we use Google's transparency data instead. The actor `s-r/google-ads-transparency` (community-maintained,
 $0.0015 per ad) returns each text ad as a rendered PNG; Claude reads the images. Every run has a hard spend cap."""
 
+import asyncio
+import base64
+
 import httpx
 
 from app.config import settings
@@ -40,3 +43,22 @@ async def google_search_ads(domain: str, limit: int = 5) -> list[dict]:
                         "image_url": it["image_url"], "url": it.get("deeplink", ""),
                         "id": it.get("creative_id", "")})
     return ads[:limit]
+
+
+async def ad_image(url: str) -> dict | None:
+    """The ad PNG as a base64 image block. Anthropic won't fetch these URLs itself (the ad CDN's robots.txt blocks
+    it), so we download them. None if the image can't be fetched."""
+    try:
+        async with httpx.AsyncClient(timeout=20, follow_redirects=True) as c:
+            r = await c.get(url)
+        media = r.headers.get("content-type", "").split(";")[0].strip()
+        if r.status_code != 200 or media not in ("image/png", "image/jpeg", "image/gif", "image/webp"):
+            return None
+        return {"type": "image", "source": {"type": "base64", "media_type": media,
+                                            "data": base64.b64encode(r.content).decode()}}
+    except httpx.HTTPError:
+        return None
+
+
+async def ad_images(urls: list[str]) -> list[dict | None]:
+    return await asyncio.gather(*(ad_image(u) for u in urls))

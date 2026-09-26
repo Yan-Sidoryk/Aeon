@@ -74,11 +74,12 @@ async def run(job: JobContext, product_id: int) -> None:
             seen_ads.append(CompetitorAd(product_id=product_id, competitor=competitor, ad_id=ad["id"],
                                          page_name=ad["advertiser"], url=ad["url"], platforms=["google_search"],
                                          started_at=ad["first_shown"], title="", body="", cta=""))
+        images = await apify.ad_images([ad["image_url"] for ad in ads])
         blocks: list[dict] = [{"type": "text", "text": f"{len(ads)} current US search ads for {competitor} ({domain}). "
                                "Each image below is one ad as Google renders it."}]
-        for ad in ads:
+        for ad, image in zip(ads, images):
             blocks.append({"type": "text", "text": f"Ad {ad['id']} by {ad['advertiser']}, shown {ad['first_shown']} to {ad['last_shown']}:"})
-            blocks.append({"type": "image", "source": {"type": "url", "url": ad["image_url"]}})
+            blocks.append(image or {"type": "text", "text": "(image unavailable)"})
         return blocks
 
     @beta_async_tool
