@@ -9,6 +9,8 @@ Rules for all copy on the page:
 - Third-party statistics always show their source.
 - Any number inside a product UI mock is illustrative UI, not a claim.
 - Primary CTA everywhere: **Start your free report**. Secondary: **Book a walkthrough**. Sign-in link: **Sign in**.
+- Visual direction (user feedback, 2026-09-26): product-led. Illustrate with the product UI and real logos of the
+  AI engines and tools we name (`src/components/brand-logos.tsx`), never stock people photos or photo backgrounds.
 
 ---
 
@@ -34,34 +36,35 @@ Rules for all copy on the page:
     - Agencies
     - Rx, OTC & biotech brands
   - **Aeon Index** (link)
-  - **Research** ▾
-    - Research hub
-    - GEO Playbook 2026
-    - GEO for pharma: the guide
-    - AEO for pharma
-    - Methodology
+  - (Research ▾ removed with the resources section; bring both back together.)
 - Right: `Start your free report` (royal blue pill; `Free report` below 375px), `Sign in` (sand pill)
-- Mega-menu panels (7shifts panel anatomy): titles `Run the whole loop in one place` (Platform),
-  `Built for every team that touches the brand` (Built for), `Research on AI answers in pharma` (Research);
+- Mega-menu panels (7shifts panel anatomy): titles `Run the whole loop in one place` (Platform) and
+  `Built for every team that touches the brand` (Built for);
   Platform cards Track / Verify / Fix / Review / Audit with feature links (Visibility tracking, Prompt libraries,
   Citation map, Accuracy vs. label, Side-by-side view, Safety signals, Content fixes, Recommendations,
   Claims library, AI pre-MLR review, Claim-to-source, Veeva export, Technical SEO, ISI & PDF checks, HCP gate checks);
   bottom bar `Running a whole portfolio? Book a walkthrough with our team.`
 
-## 3. Hero
+## 3. Hero (product-led)
 - Eyebrow (handwritten): `More than rank tracking`
 - H1: `See how AI actually talks about` / `your pharma brand` (orange hand-drawn underline under "your pharma brand")
 - Sub: `Audit how ChatGPT, Claude, Gemini and Perplexity answer about your brand, by indication, market and audience.`
-- CTA: `Start your free report`
-- Micro: `Free first scan. No credit card required.`
-- Media: `/videos/hero-loop.mp4` (poster `/videos/hero-poster.webp`) with floating UI cards layered on top:
-  - Card A "AI visibility": `You 34` vs `Competitor X 71`, label "Share of answers, last 7 days"
-  - Card B "Accuracy check": red dot + `2 answers state the wrong dose`, sub "ChatGPT · Perplexity"
-  - Card C "Scanning": `Reading answers… 128 / 200` progress bar
+- CTA (onboarding screen 1): one field `Your company website` (placeholder `acmepharma.com`) + `Scan my brands`;
+  submits GET `/start?website=…`
+- Micro: `Free first scan. No credit card required.` · link `or book a walkthrough`
+- Media: the Aeon app running a first scan (HTML/CSS, no video or photo) on a periwinkle→lavender panel:
+  - Top bar: `Brand A · Atopic dermatitis`, tabs Overview / Prompts / Accuracy (2) / Fixes (3), `Scanning…` → `Scan complete`
+  - Counters: `Answers read 200/200`, `Mentions of you 34%`, `Competitor X 71%`, `Accuracy issues 2`
+  - Grid: 6 prompts (Patient / Caregiver / HCP) × ChatGPT, Claude, Gemini, Perplexity, AI Overviews (real logos);
+    cells `You` / `Comp. X` / `—`, one red `Wrong dose`
+  - Report rail: `You 34 · Competitor X 71`, red box `2 answers state the wrong dose` (AI sentence vs FDA label),
+    `Top fixes` with `Fix this`
+  - All names and numbers are placeholders (`src/components/hero/hero.content.ts`)
 
 ## 4. Engine strip (7shifts: customer logo row)
 - Label above (small, stone): `Tracking answers across`
-- Wordmarks (grayscale text, no third-party logo files): ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews, Copilot
+- Real logos (muted black, full opacity on hover): Claude, Gemini, Perplexity and Copilot wordmarks; ChatGPT and
+  Google AI Overviews as icon + name
 - Hover tooltip (7shifts "Read their story"): `How we sample it`
 
 ## 5. Platform (7shifts: sticky Hire/Train/Schedule/Pay/Retain stack), anchor `#platform`
@@ -105,27 +108,33 @@ Rules for all copy on the page:
   - ✓ `Indication-level competitive landscape` ✓ `Every claim linked to the label` ✓ `Safety signals routed to your PV inbox`
   - Visual: Aeon app dashboard mock on royal-blue panel (sidebar: Overview, Prompts, Accuracy, Drafts, Reviews; main: "Share of voice" chart for a brand)
 
-## 7. Coverage (7shifts: "Works with the tools you already love" glass card over fixed photo)
-- Fixed page background photo: `/images/photos/pharmacy-night.webp`
+## 7. Coverage (7shifts: "Works with the tools you already love" card)
+- No photo: white card on a full-bleed sand band.
 - H2: `Tracks every engine your audience asks`
 - Chips: `General LLMs` `Clinical LLMs` `AI search` `Label data` `MLR workflow` `SEO data`
-- Scrolling tiles (text wordmarks): ChatGPT, Claude, Gemini, Perplexity, Copilot, Meta AI, Grok, Mistral, Google AI Overviews, OpenEvidence, DailyMed, openFDA, Veeva PromoMats, Semrush, Ahrefs, Google Search Console
+- Scrolling tiles (real logos + name): General LLMs: ChatGPT, Claude, Gemini, Copilot, Meta AI, Grok, Mistral, DeepSeek ·
+  Clinical LLMs: OpenEvidence · AI search: Perplexity, Google AI Overviews, Google AI Mode · Label data: DailyMed, openFDA ·
+  MLR workflow: Veeva PromoMats · SEO data: Semrush, Ahrefs, Search Console (OpenEvidence, DailyMed, openFDA, Veeva and
+  Ahrefs have no open logo and show a monogram)
 - CTA: `See coverage`
 
-## 8. Social proof (7shifts: black section, polaroid, stats, stories, marquee)
-- Polaroid photo: `/images/photos/hcp-phone.webp` + doodle `doodle-phone.png`
-- H2: `HCPs and patients are` / `[asking AI] first` ("asking AI" handwritten in flame orange)
-- Stats (flame orange numbers):
+## 8. Social proof (7shifts: polaroid, stats, stories, marquee — rebuilt light and product-led)
+- White sheet over the sand coverage band (no black background, no people photos).
+- AI answer stack (replaces the polaroid): tilted answer cards from ChatGPT, Perplexity and Gemini for
+  "What's the best treatment for moderate eczema in adults?" — Competitor X ranked #1, [Brand] #2, "Sources: 4";
+  doodle `doodle-phone.png` sticker.
+- H2: `HCPs and patients are` / `[asking AI] first` ("asking AI" handwritten in orange #E85D04 for contrast on white)
+- Stats (orange numbers):
   - `2 in 3`: `US HCPs use AI tools daily` · source `American Medical Association, 2025`
   - `1 in 5`: `HCPs use GenAI for diagnosis and treatment choices` · source `The Guardian, 2025`
   - `70%`: `of US HCPs find AI helpful for diagnosis` · source `Talker Research, 2025`
   - `1 in 3`: `American patients use AI to manage their health` · source `Talker Research, 2025`
 - H3: `Built for every team that touches the brand`
-- Persona cards (photo + overlay title; hover reveals the one-liner):
-  - `Win back lost prompts` · Brand & digital marketing · `/images/photos/persona-brand.webp` · "See where competitors are recommended and you are not, then ship the fix."
-  - `Catch wrong doses` · Medical affairs · `/images/photos/persona-medical.webp` · "AI sentence next to the label sentence, routed to medical information."
-  - `Review, don't rewrite` · Regulatory & MLR · `/images/photos/persona-regulatory.webp` · "Drafts arrive claim-referenced with a pre-MLR risk score."
-  - `Run every client brand` · Agencies · `/images/photos/persona-agency.webp` · "One website-in flow per client, one multi-brand overview."
+- Feature cards (light panel + mini product UI; hover/focus reveals the one-liner):
+  - `Win back lost prompts` · Brand & digital marketing · share-of-voice bars + "3 prompts lost" · "See where competitors are recommended and you are not, then ship the fix."
+  - `Catch wrong doses` · Medical affairs · AI sentence (wrong dose) vs label sentence · "AI sentence next to the label sentence, routed to medical information."
+  - `Review, don't rewrite` · Regulatory & MLR · checklist, "Risk: Low", Approve · "Drafts arrive claim-referenced with a pre-MLR risk score."
+  - `Run every client brand` · Agencies · multi-brand visibility table · "One website-in flow per client, one multi-brand overview."
 - Lime marquee (therapeutic areas, doodles in `/images/doodles/ta-*.png`): Obesity (`ta-obesity`), Immunology (`ta-immunology`), Oncology (`ta-oncology`), Neurology (`ta-neurology`), Cardiology (`ta-cardiology`), Women's health (`ta-womens-health`), Dermatology (`ta-dermatology`)
 
 ## 9. Get started (7shifts: "Get running in under 30 days" timeline)
@@ -158,19 +167,14 @@ Rules for all copy on the page:
   - `100%` · `human sign-off before publish`
 
 ## 12. Free resources
-- H2: `Free resources` · link `View all research`
-- Cards:
-  1. tag `Playbook` (lavender) · cover `/images/covers/playbook.webp` · title `The GEO Playbook 2026` · body `Field-tested tactics for getting pharma brands cited accurately in AI answers, from source priorities to GEO in MLR.` · link `Download free`
-  2. tag `Index` (lime) · cover `/images/covers/index.webp` · title `The Aeon Index` · body `The first public ranking of pharma brand reputation in AI answers. Free to read, no login required.` · link `See the ranking`
-  3. tag `Guide` (periwinkle) · cover `/images/covers/guide.webp` · title `GEO for pharma: the guide` · body `What generative engine optimization means for Rx, OTC and biotech brands, and how it fits your MLR process.` · link `Read the guide`
+- Removed for now (user feedback, 2026-09-26). The copy and component live in git history (commit 85fc718).
 
 ## 13. Footer
 - Columns:
   - **Platform**: AI visibility tracking, Accuracy vs. label, Content fixes, AI pre-MLR review, Technical SEO audit, Citation map, Recommendations
   - **Company**: About, Careers, Contact, Security, Pricing, Book a walkthrough
-  - **Research**: Research hub, GEO Playbook 2026, Aeon Index, GEO for pharma, GEO for life sciences, AEO for pharma, Methodology
   - **Built for**: Brand & digital marketing, Medical affairs, Regulatory & MLR, Pharmacovigilance, Agencies, Rx brands, OTC & consumer health, Biotech
   - **Support**: Help center, Contact sales, System status
-- Row: `Ask AI for a summary of Aeon` + 5 square buttons (ChatGPT, Claude, Perplexity, Gemini, Grok) that open each assistant with the prompt "Summarize what Aeon (AI visibility and pre-MLR platform for pharma brands) does"
+- Row: `Ask AI for a summary of Aeon` + 5 square buttons with the real logos (ChatGPT, Claude, Perplexity, Gemini, Grok) that open each assistant with the prompt "Summarize what Aeon (AI visibility and pre-MLR platform for pharma brands) does"
 - Social icons: LinkedIn, X, YouTube
 - Bottom bar (black): `Aeon © 2026` · Privacy · Terms · DPA · Security · Cookie preferences

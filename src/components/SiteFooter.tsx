@@ -1,13 +1,9 @@
 import Link from "next/link";
 import type { ComponentType, ReactNode, SVGProps } from "react";
 import { AeonLogo } from "@/components/AeonLogo";
+import { BrandLogo, type BrandId } from "@/components/brand-logos";
 import {
-  CompassGlyph,
   LinkedInIcon,
-  OrbitGlyph,
-  SlashedCircleGlyph,
-  SparkleGlyph,
-  SunburstGlyph,
   XSocialIcon,
   YouTubeIcon,
 } from "@/components/footer/FooterIcons";
@@ -32,7 +28,7 @@ type FooterColumn = {
 
 type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
-type Assistant = { name: string; href: string; tileClassName: string; Glyph: IconComponent };
+type Assistant = { name: string; href: string; tileClassName: string; logo: BrandId; logoVariant: "color" | "mono"; logoClassName?: string };
 
 type SocialLink = { label: string; href: string; Icon: IconComponent };
 
@@ -73,23 +69,6 @@ const FOOTER_COLUMNS: FooterColumn[] = [
     ],
   },
   {
-    id: "research",
-    title: "Research",
-    equalRows: true,
-    links: toLinks(
-      [
-        "Research hub",
-        "GEO Playbook 2026",
-        "Aeon Index",
-        "GEO for pharma",
-        "GEO for life sciences",
-        "AEO for pharma",
-        "Methodology",
-      ],
-      "#resources",
-    ),
-  },
-  {
     id: "built-for",
     title: "Built for",
     links: toLinks(
@@ -122,37 +101,46 @@ const ASK_AI_PROMPT = encodeURIComponent(
   "Summarize what Aeon (AI visibility and pre-MLR platform for pharma brands) does and who it is for.",
 );
 
-// Tile colours sampled from 7shifts' assistant tiles; the glyphs are generic shapes.
+// Tile colours sampled from 7shifts' assistant tiles; logos from /public/logos (white on colour, Gemini in colour on white).
 const ASSISTANTS: Assistant[] = [
   {
     name: "ChatGPT",
     href: `https://chatgpt.com/?q=${ASK_AI_PROMPT}`,
     tileClassName: "bg-[#74AB9B] text-[#FAFEFF]",
-    Glyph: OrbitGlyph,
+    logo: "chatgpt",
+    logoVariant: "mono",
+    logoClassName: "brightness-0 invert",
   },
   {
     name: "Claude",
     href: `https://claude.ai/new?q=${ASK_AI_PROMPT}`,
     tileClassName: "bg-[#D67657] text-[#FFFDF1]",
-    Glyph: SunburstGlyph,
+    logo: "claude",
+    logoVariant: "mono",
+    logoClassName: "brightness-0 invert",
   },
   {
     name: "Perplexity",
     href: `https://www.perplexity.ai/search?q=${ASK_AI_PROMPT}`,
     tileClassName: "bg-[#1F1F1F] text-white",
-    Glyph: CompassGlyph,
+    logo: "perplexity",
+    logoVariant: "mono",
+    logoClassName: "brightness-0 invert",
   },
   {
     name: "Gemini",
     href: `https://www.google.com/search?udm=50&aep=11&q=${ASK_AI_PROMPT}`,
     tileClassName: "bg-white shadow-[inset_-1px_-1px_0_#EBEAE9]",
-    Glyph: SparkleGlyph,
+    logo: "gemini",
+    logoVariant: "color",
   },
   {
     name: "Grok",
     href: `https://x.com/i/grok?text=${ASK_AI_PROMPT}`,
     tileClassName: "bg-black text-white",
-    Glyph: SlashedCircleGlyph,
+    logo: "grok",
+    logoVariant: "mono",
+    logoClassName: "brightness-0 invert",
   },
 ];
 
@@ -253,7 +241,7 @@ export function SiteFooter() {
             <div className="flex flex-col gap-4">
               <h3 className="font-display text-sm font-medium text-gray-700">{ASK_AI_HEADING}</h3>
               <div className="flex items-center gap-4">
-                {ASSISTANTS.map(({ name, href, tileClassName, Glyph }) => (
+                {ASSISTANTS.map(({ name, href, tileClassName, logo, logoVariant, logoClassName }) => (
                   <FooterLink
                     key={name}
                     href={href}
@@ -261,7 +249,7 @@ export function SiteFooter() {
                     className={cn("block size-10 transition-opacity hover:opacity-70", FOCUS_RING)}
                   >
                     <span className={cn("flex size-10 items-center justify-center rounded-[8px]", tileClassName)}>
-                      <Glyph />
+                      <BrandLogo id={logo} variant={logoVariant} size={22} alt="" className={logoClassName} />
                     </span>
                   </FooterLink>
                 ))}
