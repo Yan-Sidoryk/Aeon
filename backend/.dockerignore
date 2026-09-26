@@ -1,7 +1,0 @@
-.env
-.venv
-*.db
-__pycache__
-.pytest_cache
-*.egg-info
-tests

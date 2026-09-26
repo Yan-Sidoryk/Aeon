@@ -1,7 +1,12 @@
-# The frontend deploy needs none of these. backend/ holds .env with API keys: never upload it.
-backend/
-docs/
-scripts/
+# Uploaded: the Next.js app and the backend service's code. Never keys, local databases or dev files.
 .env
 .env.*
 *.db
+docs/
+scripts/
+backend/.venv/
+backend/tests/
+backend/evals/
+**/*.egg-info/
+**/__pycache__/
+**/.pytest_cache/

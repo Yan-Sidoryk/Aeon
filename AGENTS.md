@@ -27,8 +27,8 @@ web versions via `node scripts/optimize-assets.mjs`).
 - **Backend:** Python 3.11+, FastAPI; agents on the Anthropic SDK tool runner (no LangChain); DataForSEO (Google AI
   Overviews/AI Mode, real questions), Apify (competitor ads), openFDA; durable jobs in Postgres (Supabase) or SQLite;
   Supabase Auth (anonymous first); Langfuse traces + evals. See `backend/README.md`
-- **Deployment:** frontend on Vercel. The backend needs its own long-running host (one process, in-memory jobs, SQLite, long SSE
-  connections), not Vercel functions; point the frontend at it with `NEXT_PUBLIC_API_URL`
+- **Deployment:** one Vercel project: the Next.js frontend plus the backend as a Python service at `/api/backend`
+  (`vercel.json`). On Vercel, jobs run inside the request that streams them (no background worker); see `backend/README.md`
 
 ## Commands
 - `npm run dev` — Start dev server

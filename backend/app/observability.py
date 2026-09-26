@@ -36,6 +36,11 @@ def langfuse() -> Langfuse:
     return get_client()
 
 
+def flush() -> None:
+    if settings.langfuse_enabled:
+        get_client().flush()
+
+
 def shutdown() -> None:
     if settings.langfuse_enabled:  # a disabled client's shutdown blocks on threads that never started
         get_client().shutdown()

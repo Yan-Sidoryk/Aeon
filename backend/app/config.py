@@ -1,3 +1,5 @@
+import os
+
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -27,6 +29,8 @@ class Settings(BaseSettings):
 
     model_fast: str = "claude-haiku-4-5"
     model_smart: str = "claude-opus-5"
+    jobs_inline: bool = False  # run each job inside the request that streams it (automatic on Vercel)
+    cron_secret: str = ""  # Vercel Cron sends it as a bearer token
     model_engine_claude: str = "claude-sonnet-5"  # the "Claude" people ask; ~60% cheaper per scan than Opus 5
     model_accuracy: str = "claude-opus-5"  # label checks; chosen by the label-accuracy benchmark
     engine_effort: str = "low"  # scan answers: speed matters more than depth
@@ -46,6 +50,10 @@ class Settings(BaseSettings):
     @classmethod
     def _default_db(cls, v: str | None) -> str:
         return v or DEFAULT_DATABASE_URL  # an empty DATABASE_URL= line means "use the default"
+
+    @property
+    def inline_jobs(self) -> bool:
+        return self.jobs_inline or bool(os.environ.get("VERCEL"))  # Vercel sets VERCEL=1 in its functions
 
     @property
     def auth_enabled(self) -> bool:

@@ -294,3 +294,42 @@ def test_new_model_columns_reach_old_tables():
         conn.execute(text('alter table "prompt" drop column "active"'))
     add_missing_columns()
     assert "active" in {c["name"] for c in inspect(engine).get_columns("prompt")}
+
+
+@pytest.fixture
+def inline(monkeypatch):
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "jobs_inline", True)  # what Vercel gets: no worker, the stream runs the job
+
+
+def test_serverless_jobs_run_in_their_stream(inline, client):
+    r = client.post("/api/backend/api/onboarding", json={"url": "incyte.com"}).json()  # Vercel's mount path works too
+    assert events(client, f"/api/backend/api/onboarding/{r['job_id']}/events")[-1][0] == "done"
+    hero = next(p for p in client.get(f"/api/companies/{r['company_id']}").json()["products"] if p["is_hero"])
+    job_id = client.post(f"/api/products/{hero['id']}/setup").json()["job_id"]
+    assert events(client, f"/api/setup/{job_id}/events")[-1][0] == "done"
+    scan = client.post(f"/api/products/{hero['id']}/scans").json()
+    assert events(client, f"/api/scans/{scan['scan_id']}/events")[-1][0] == "done"
+
+
+def test_cut_off_job_is_taken_over(inline, client):
+    from datetime import timedelta
+
+    from sqlmodel import Session
+
+    from app import jobs
+    from app.db import engine
+    from app.models import Job
+
+    r = client.post("/api/onboarding", json={"url": "incyte.com"}).json()
+    with Session(engine) as s:  # its run was cut off: still 'running', no heartbeat for minutes
+        job = s.get(Job, r["job_id"])
+        job.status, job.attempts, job.updated_at = "running", 1, jobs._now() - timedelta(minutes=5)
+        s.add(job)
+        s.commit()
+    assert events(client, f"/api/onboarding/{r['job_id']}/events")[-1][0] == "done"
+    with Session(engine) as s:
+        assert s.get(Job, r["job_id"]).attempts == 2
+    with pytest.raises(jobs.Superseded):  # the old run, if its process ever wakes up, stops at its next event
+        jobs.JobContext(r["job_id"], attempt=1).emit("step", {})

@@ -152,7 +152,7 @@ flowchart TB
 
 ## Known limits
 
-- One API process (worker and scheduler run inside it). Scale by moving the worker to its own process that shares the database.
+- Locally the worker and the weekly scheduler run inside the API process. On Vercel there is no worker: each job runs inside the request that streams it, weekly scans run from Vercel Cron, and a job must finish within the function time limit (300 s on Hobby).
 - ChatGPT, Gemini and Perplexity are "coming soon" (DataForSEO LLM endpoints, no new vendor).
 - The label check's precision needs medical-affairs review. Run the `label-check` eval before and after any prompt change.
 - Competitors' Meta (Facebook/Instagram) ad copy is hidden from logged-out scrapers for Rx drugs; the promo agent uses Google's Ads Transparency Center instead.

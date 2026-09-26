@@ -63,21 +63,25 @@ DEMO_MODE=1 .venv/bin/uvicorn app.main:app --port 8000
 
 The bundle (`fixtures/demo/bundle.json`) holds the run's rows and each job's real event log, so replays show the agents' real steps and the fix loop's real rounds. Any website replays the recorded company, and the frontend shows a banner saying so.
 
-## Staging (Fly.io + Vercel)
+## Staging (Vercel)
 
-The API runs on Fly.io in London, next to Supabase (eu-west-1), as one always-on machine: the job worker and the weekly scheduler live inside the API process. `fly.toml` starts it in demo mode, so staging costs nothing until you switch it to live.
+One Vercel project runs both halves: the Next.js frontend and this API as a Python service at `/api/backend`
+(`vercel.json`), in Dublin next to Supabase. Same origin, so there's no CORS, and preview deployments sit behind Vercel login.
+
+Vercel keeps nothing running between requests, so there is no background worker there: the request that streams a job's
+progress runs the job (every job the UI starts is streamed). A running job updates a heartbeat; if its request is cut
+off, the next stream of that job starts it again, and the old run stops at its next event. Weekly tracking runs from
+Vercel Cron (`/api/cron/weekly`, daily, production deployments only). Jobs must finish within the function time limit
+(300 s on Hobby), which demo replays and most live jobs do.
 
 ```bash
-cd backend
-fly auth login
-fly launch --no-deploy --copy-config --name aeon-api-staging   # pick another name if it is taken
-grep -v '^DEMO_MODE=' .env | fly secrets import                   # keys + Supabase DATABASE_URL; demo mode stays from fly.toml
-fly deploy
-curl https://aeon-api-staging.fly.dev/api/health
-fly secrets set DEMO_MODE=0                                       # when you want live runs (they cost money)
+vercel link                      # project abdul3532s-projects/aeon
+vercel env ls                    # the backend's keys + DATABASE_URL (Supabase transaction pooler, port 6543), DEMO_MODE=1
+vercel deploy --target preview   # protected preview URL
+vercel curl /api/backend/api/health --deployment <preview-url>
 ```
 
-Frontend on Vercel, from the repo root: `vercel link`, then set `NEXT_PUBLIC_API_URL` (the Fly URL), `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` for Preview and Production, and `vercel deploy`. `NEXT_PUBLIC_` values are baked in at build time, so redeploy after changing them. Add the Vercel URL to Supabase Auth's site URL and redirect URLs.
+Set `DEMO_MODE=0` only when you want live runs: they cost money.
 
 ## Cost (live, incyte.com, Sep 2026)
 
