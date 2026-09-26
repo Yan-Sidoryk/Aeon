@@ -1,0 +1,158 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Aeon design tokens.
+ * Layout, type scale and palette follow the 7shifts reference (docs/research/DESIGN_TOKENS.md);
+ * values are the computed styles extracted from https://www.7shifts.com/.
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* Type families (set by next/font in layout.tsx) */
+  --font-sans: var(--font-inter-tight), "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-geist), "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-hand: var(--font-nanum-pen), "Nanum Pen Script", cursive;
+  --font-heading: var(--font-display);
+
+  /* Brand palette (exact 7shifts computed colors) */
+  --color-ink: #000000;
+  --color-paper: #ffffff;
+  --color-sand: #f1f0ec; /* 7shifts light-gray / Neutrals-Cream: section bg, secondary pill */
+  --color-oat: #e2ded6; /* 7shifts medium-gray / Neutrals-Oat: secondary pill hover */
+  --color-offwhite: #fbfaf8; /* 7shifts extra-light-gray: footer, FAQ rows */
+  --color-royal: #4570ff; /* 7shifts royal-blue: primary buttons, CTA panel */
+  --color-royal-dark: #3658c9; /* 7shifts dark-curacao: primary hover/active, focus */
+  --color-navy: #193f78; /* 7shifts navy-blue */
+  --color-charcoal: #141515; /* 7shifts dark-gray */
+  --color-flame: #ff6808; /* hand-drawn underline, stats, tab indicator (computed #ff6808; token #ff6608) */
+  --color-flame-light: #ffa770; /* 7shifts light-orange */
+  --color-lime: #c6ff94; /* 7shifts lime-green: "New:" badge, marquee band, highlights */
+  --color-lavender: #ebdcff; /* 7shifts light-purple */
+  --color-violet: #c293f1; /* 7shifts purple / Primary-Violet */
+  --color-periwinkle: #d6e0ff; /* 7shifts sky-blue */
+  --color-periwinkle-dark: #a3baff; /* 7shifts sky-blue-darker */
+  --color-lilac: #dad8ff;
+  --color-eggplant: #453d74; /* 7shifts deep-blue / Secondary-Eggplant */
+  --color-mint: #00feb2; /* 7shifts mint-green */
+  --color-mint-dark: #06df9d;
+  --color-forest: #244f47; /* 7shifts forest-green */
+  --color-stone: #6e6d6c; /* 7shifts steel-gray: muted text */
+  --color-taupe: #878787; /* 7shifts taupe-gray */
+  --color-graphite: #555555;
+
+  /* shadcn token mapping */
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Shared motion primitives (marquees used by the engine tiles, TA band and CTA stat cards). */
+@theme {
+  --animate-marquee-x: marquee-x var(--marquee-duration, 40s) linear infinite;
+  --animate-marquee-y: marquee-y var(--marquee-duration, 30s) linear infinite;
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  @keyframes marquee-x {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  @keyframes marquee-y {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(0, -50%, 0);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #4570ff;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f0ec;
+  --secondary-foreground: #000000;
+  --muted: #f1f0ec;
+  --muted-foreground: #6e6d6c;
+  --accent: #c6ff94;
+  --accent-foreground: #000000;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #e2ded6;
+  --input: #e2ded6;
+  --ring: #4570ff;
+  --radius: 0.625rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  ::selection {
+    background: #c6ff94;
+    color: #000;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
