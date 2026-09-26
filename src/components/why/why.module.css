@@ -1,0 +1,140 @@
+/*
+ * Product-tour motion for the "With Aeon" app mock.
+ * Mirrors 7shifts' "with-7shifts" Lottie (30 fps): bars grow from the baseline over 28 frames with
+ * cubic-bezier(.333,0,0,1) starting 2 frames after the screen appears, table rows fade in over 9 frames
+ * (cubic-bezier(.333,0,.667,1)) at frames 2, 6 and 11, and the hand pointer glides between nav rows with
+ * cubic-bezier(.333,0,.667,1) while a #d6e0ff pill marks the row it hovers.
+ * One loop = 6 s = 180 frames, so 1 frame = 0.5556%. Frame 0 is the "click" on Overview that redraws the chart.
+ */
+
+.bar,
+.row1,
+.row2,
+.row3,
+.pointer,
+.hover {
+  animation-duration: 6s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+/* SVG <g> per bar: scale from its own bottom edge. */
+.bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation-name: why-bar;
+}
+
+.row1 {
+  animation-name: why-row-1;
+}
+
+.row2 {
+  animation-name: why-row-2;
+}
+
+.row3 {
+  animation-name: why-row-3;
+}
+
+.pointer {
+  animation-name: why-pointer;
+}
+
+/* Second pill: shown while the pointer rests on "Prompts" (frames 127-165). */
+.hover {
+  opacity: 0;
+  animation-name: why-hover;
+  animation-timing-function: step-end;
+}
+
+@keyframes why-bar {
+  0%,
+  1.111% {
+    transform: scaleY(0);
+    animation-timing-function: cubic-bezier(0.333, 0, 0, 1);
+  }
+  16.667%,
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes why-row-1 {
+  0%,
+  1.111% {
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.333, 0, 0.667, 1);
+  }
+  6.111%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes why-row-2 {
+  0%,
+  3.333% {
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.333, 0, 0.667, 1);
+  }
+  8.333%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes why-row-3 {
+  0%,
+  6.111% {
+    opacity: 0;
+    animation-timing-function: cubic-bezier(0.333, 0, 0.667, 1);
+  }
+  11.111%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Rest on Overview, glide down one row (62.3 units) at frame 120-132, back up at frame 160-175. */
+@keyframes why-pointer {
+  0%,
+  66.667% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.333, 0, 0.667, 1);
+  }
+  73.333%,
+  88.889% {
+    transform: translateY(calc(var(--u) * 62.3));
+    animation-timing-function: cubic-bezier(0.333, 0, 0.667, 1);
+  }
+  97.222%,
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes why-hover {
+  0% {
+    opacity: 0;
+  }
+  70.556% {
+    opacity: 1;
+  }
+  91.667%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Reduced motion: the finished frame (bars grown, rows shown, pointer on Overview, no hover pill). */
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .row1,
+  .row2,
+  .row3,
+  .pointer,
+  .hover {
+    animation: none;
+  }
+}
