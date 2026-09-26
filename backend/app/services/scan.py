@@ -98,8 +98,8 @@ async def _scan(job: JobContext, scan_id: int, engines: list[Engine]) -> None:
                     ans.mentioned, ans.position, ans.sentiment = parsed.mentioned, parsed.position, parsed.sentiment
                     ans.competitors_mentioned = match_competitors(parsed.competitors_mentioned, comp_rows)
                     if parsed.mentioned and label:
-                        check = await llm.smart(accuracy_system, f"AI ANSWER:\n{res.text}", AccuracyCheck,
-                                                effort=settings.accuracy_effort)
+                        check = await llm.parse(settings.model_accuracy, accuracy_system, f"AI ANSWER:\n{res.text}",
+                                                AccuracyCheck, effort=settings.accuracy_effort)
                         ans.accuracy_issues = [iss.model_dump() for iss in check.issues]
             except Exception as exc:  # one failed sample must not sink the scan
                 ans.error = str(exc)[:500]

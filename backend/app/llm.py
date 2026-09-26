@@ -25,7 +25,8 @@ def cached(system: str, document: str) -> list[dict]:
 
 async def parse(model: str, system: str | list[dict], user: str, schema: type[T], max_tokens: int = 16000,
                 effort: str | None = None) -> T:
-    extra = {"output_config": {"effort": effort}} if effort else {}
+    # Haiku 4.5 rejects the effort parameter; every current Sonnet/Opus model takes it.
+    extra = {"output_config": {"effort": effort}} if effort and "haiku" not in model else {}
     try:
         response = await client.messages.parse(
             model=model,

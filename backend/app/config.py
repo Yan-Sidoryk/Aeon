@@ -27,7 +27,8 @@ class Settings(BaseSettings):
 
     model_fast: str = "claude-haiku-4-5"
     model_smart: str = "claude-opus-5"
-    model_engine_claude: str = "claude-opus-5"
+    model_engine_claude: str = "claude-sonnet-5"  # the "Claude" people ask; ~60% cheaper per scan than Opus 5
+    model_accuracy: str = "claude-opus-5"  # label checks; chosen by the label-accuracy benchmark
     engine_effort: str = "low"  # scan answers: speed matters more than depth
     accuracy_effort: str = "medium"
     draft_effort: str = "medium"  # "Fix this" is interactive

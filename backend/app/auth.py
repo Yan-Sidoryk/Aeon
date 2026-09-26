@@ -37,6 +37,8 @@ async def verify_token(token: str) -> dict:
 
 def _org_for_user(session: Session, user: dict, session_id: str | None) -> Org:
     org = session.exec(select(Org).where(Org.user_id == user["id"])).first()
+    if org and (not user.get("email") or org.email == user["email"]):
+        return org  # the common case: no write per request
     if not org and session_id:  # adopt work done before sign-in on this browser
         org = session.exec(select(Org).where(Org.session_id == session_id, Org.user_id == None)).first()  # noqa: E711
     org = org or Org()
