@@ -1,12 +1,13 @@
 import { EngineStrip } from "@/components/hero/EngineStrip";
 import { HERO_CONTENT } from "@/components/hero/hero.content";
-import { HeroMedia } from "@/components/hero/HeroMedia";
+import { HeroForm } from "@/components/hero/HeroForm";
+import { ProductMock } from "@/components/hero/ProductMock";
 import { UnderlineSwoosh } from "@/components/icons";
-import { PillButton, START_HREF } from "@/components/ui/pill-button";
 
 // Layout, type scale and spacing from 7shifts' hero (docs/research/components/Hero.spec.md).
 // Breakpoints are 7shifts' (globals.css): md = 810px, xl = 1200px.
-// The section tucks the next one (-60px margin) under its 40px bottom radius.
+// Product-led: the CTA is onboarding Screen 1 (website in, "Scan my brands") and the media frame shows the product.
+// The whole hero is server-rendered; the preview's motion is CSS-only.
 
 const C = HERO_CONTENT;
 
@@ -42,14 +43,12 @@ export function Hero() {
 
           <p className="py-10 text-center font-display text-[16px] leading-none font-medium">{C.subtitle}</p>
 
-          <PillButton href={START_HREF} className="mx-auto mb-1 flex w-fit">
-            {C.cta}
-          </PillButton>
-
-          <p className="mb-10 text-center text-[11px] leading-[1.5em] text-stone">{C.micro}</p>
+          <div className="mb-10">
+            <HeroForm />
+          </div>
         </div>
 
-        <HeroMedia />
+        <ProductMock />
 
         <EngineStrip />
       </div>
