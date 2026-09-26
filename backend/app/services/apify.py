@@ -9,6 +9,7 @@ import base64
 
 import httpx
 
+from app import spend
 from app.config import settings
 
 API = "https://api.apify.com/v2"
@@ -25,6 +26,7 @@ async def run_sync(actor: str, actor_input: dict, max_charge_usd: float = 0.05, 
         r = await c.post(f"{API}/acts/{actor}/run-sync-get-dataset-items",
                          params={"timeout": timeout_s, "maxTotalChargeUsd": max_charge_usd, "format": "json", "clean": "true"},
                          headers={"Authorization": f"Bearer {settings.apify_token}"}, json=actor_input)
+    spend.add(max_charge_usd)  # counted at the run's hard cap: Apify bills at most that
     if r.status_code not in (200, 201):
         raise ApifyError(f"Apify {actor}: HTTP {r.status_code} {r.text[:200]}")
     return r.json()

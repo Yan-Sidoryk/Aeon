@@ -72,6 +72,7 @@ async def _discover(job: JobContext, company_id: int, url: str) -> None:
     company: dict = {}
     products: dict[str, dict] = {}  # brand (lower) -> product fields incl. label
     own_labelers: set[str] = set()
+    own_labels: list[dict] = []  # the company's own FDA labels, from find_company_labels
     step_n = {"n": 0}
 
     def step(label: str, status: str = "done", key: str | None = None, **detail) -> None:
@@ -94,6 +95,7 @@ async def _discover(job: JobContext, company_id: int, url: str) -> None:
         """
         labels = await openfda.labels_by_manufacturer(company_name)
         own_labelers.update(l["manufacturer"] for l in labels if l["manufacturer"] and l["indexed"])
+        own_labels.extend(labels)
         step(f"Found {len(labels)} FDA labels held by {company_name}")
         return json.dumps([{"brand": l["brand"], "molecule": l["molecule"], "labeler": l["manufacturer"],
                             "tier": l["tier"]} for l in labels][:60])
@@ -129,7 +131,11 @@ async def _discover(job: JobContext, company_id: int, url: str) -> None:
             return f"{brand} is already recorded"
         lab = None
         if not pipeline:
-            lab = await openfda.label_by_name(brand) or (await openfda.label_by_name(molecule) if molecule else None)
+            # The company's own label wins: recording the molecule ("roflumilast") must still find its brand
+            # (Zoryve), not another company's generic.
+            names = {key, molecule.lower().strip()} - {""}
+            lab = next((l for l in own_labels if l["brand"].lower() in names or l["molecule"].lower() in names), None)
+            lab = lab or await openfda.label_by_name(brand) or (await openfda.label_by_name(molecule) if molecule else None)
         if lab and lab["brand"].lower() in products:  # "Jakafi XR" resolves to Jakafi's label
             return f"{brand} resolves to {lab['brand']}'s FDA label, which is already recorded"
         if lab:

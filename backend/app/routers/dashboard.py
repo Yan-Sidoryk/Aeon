@@ -3,8 +3,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlmodel import Session, select
 
-from app import jobs
-from app.auth import current_org, owned_draft, owned_product
+from app import guard, jobs
+from app.auth import Caller, current_caller, current_org, owned_draft, owned_product
 from app.config import settings
 from app.db import get_session
 from app.models import CompetitorAd, Draft, Opportunity, Org, Report, Scan
@@ -34,11 +34,12 @@ def promo_job_id(product_id: int) -> str:
 
 
 @router.post("/products/{product_id}/opportunities", summary="Research competitors' promotion (202 {job_id})")
-def start_promo(product_id: int, response: Response, org: Org = Depends(current_org),
+def start_promo(product_id: int, response: Response, caller: Caller = Depends(current_caller),
                 session: Session = Depends(get_session)):
-    owned_product(session, product_id, org)
+    owned_product(session, product_id, caller.org)
+    job_id = guard.start(session, caller, "promo", {"product_id": product_id}, job_id=promo_job_id(product_id))
     response.status_code = 202
-    return {"job_id": jobs.enqueue("promo", {"product_id": product_id}, org_id=org.id, job_id=promo_job_id(product_id))}
+    return {"job_id": job_id}
 
 
 @router.get("/promo/{job_id}/events", summary="SSE: agent step events, then done or error")
@@ -64,9 +65,9 @@ def list_opportunities(product_id: int, org: Org = Depends(current_org), session
 
 @router.post("/products/{product_id}/opportunities/{key}/draft",
              summary="Draft an on-label answer to a competitor theme: {draft_id} if ready, else 202 {job_id}")
-def draft_opportunity(product_id: int, key: str, response: Response, org: Org = Depends(current_org),
+def draft_opportunity(product_id: int, key: str, response: Response, caller: Caller = Depends(current_caller),
                       session: Session = Depends(get_session)):
-    owned_product(session, product_id, org)
+    owned_product(session, product_id, caller.org)
     opp = session.exec(select(Opportunity).where(Opportunity.product_id == product_id, Opportunity.key == key)).first()
     if not opp:
         raise HTTPException(404, f"No opportunity '{key}'")
@@ -75,8 +76,8 @@ def draft_opportunity(product_id: int, key: str, response: Response, org: Org = 
         return {"draft_id": existing.id, "job_id": None}
     if settings.demo_mode and demo.available():  # demo mode never spends money
         raise HTTPException(409, "Drafting from an opportunity runs in live mode; the demo recording has none.")
-    job_id = jobs.enqueue("opportunity_draft", {"product_id": product_id, "opportunity_id": opp.id}, org_id=org.id,
-                          job_id=f"oppdraft-{product_id}-{key}")
+    job_id = guard.start(session, caller, "opportunity_draft", {"product_id": product_id, "opportunity_id": opp.id},
+                         job_id=f"oppdraft-{product_id}-{key}")
     response.status_code = 202
     return {"draft_id": None, "job_id": job_id}
 

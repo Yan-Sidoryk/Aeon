@@ -1,3 +1,4 @@
+from app import spend
 from app.config import settings
 from app.engines.base import Engine, EngineAnswer, dedupe_citations
 from app.llm import client
@@ -33,6 +34,7 @@ class ClaudeEngine(Engine):
                 messages=messages,
                 output_config={"effort": settings.engine_effort},
             )
+            spend.claude(resp.model, resp.usage)
             for block in resp.content:
                 if block.type == "text":
                     text_parts.append(block.text)

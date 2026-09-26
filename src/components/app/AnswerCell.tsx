@@ -8,6 +8,8 @@ type AnswerCellProps = {
   pending?: boolean;
   /** The engine isn't live yet (ChatGPT, Gemini, Perplexity). */
   comingSoon?: boolean;
+  /** No entrance animation: the cell isn't arriving live (dashboard grid). */
+  still?: boolean;
   className?: string;
 };
 
@@ -17,13 +19,17 @@ function votesNote(cell: Cell): string {
 
 // One question × engine: a check, not a score. Royal "You" pill (with position), stone competitor pill, a dash when
 // neither is named, "no answer shown" when Google shows no AI Overview, and a red warning when it contradicts the label.
-export function AnswerCell({ cell, pending, comingSoon, className }: AnswerCellProps) {
+export function AnswerCell({ cell, pending, comingSoon, still = false, className }: AnswerCellProps) {
+  const appear = still ? "" : "animate-[fade-up_0.35s_ease-out_both]";
   if (comingSoon) {
     return <span className={cn("text-[12px] text-oat", className)}>Soon</span>;
   }
   if (!cell) {
     return pending ? (
-      <span aria-label="Waiting for answer" className={cn("block h-7 w-16 animate-pulse rounded-full bg-sand", className)} />
+      <span
+        aria-label="Waiting for answer"
+        className={cn("block h-7 w-16 animate-pulse rounded-full bg-sand", className)}
+      />
     ) : (
       <span aria-label="Not asked" className={cn("text-[15px] text-oat", className)}>
         ·
@@ -33,7 +39,10 @@ export function AnswerCell({ cell, pending, comingSoon, className }: AnswerCellP
 
   if (cell.state === "error") {
     return (
-      <span title={cell.error ?? "No answer"} className={cn("inline-flex h-7 items-center rounded-full bg-sand px-2.5 text-[12px] text-stone", className)}>
+      <span
+        title={cell.error ?? "No answer"}
+        className={cn("inline-flex h-7 items-center rounded-full bg-sand px-2.5 text-[12px] text-stone", className)}
+      >
         No answer
       </span>
     );
@@ -41,7 +50,10 @@ export function AnswerCell({ cell, pending, comingSoon, className }: AnswerCellP
 
   if (cell.state === "not_shown") {
     return (
-      <span title="Google showed no AI answer for this question" className={cn("text-[12px] whitespace-nowrap text-taupe", className)}>
+      <span
+        title="Google showed no AI answer for this question"
+        className={cn("text-[12px] whitespace-nowrap text-taupe", className)}
+      >
         Not shown
       </span>
     );
@@ -61,7 +73,10 @@ export function AnswerCell({ cell, pending, comingSoon, className }: AnswerCellP
       <span className={cn("inline-flex items-center gap-1.5", className)}>
         <span
           title={`Names you${cell.position ? ` at position ${cell.position}` : ""}${votesNote(cell)}`}
-          className="inline-flex h-7 animate-[fade-up_0.35s_ease-out_both] items-center rounded-full bg-royal/15 px-2.5 text-[12px] font-medium whitespace-nowrap text-royal-dark"
+          className={cn(
+            "inline-flex h-7 items-center rounded-full bg-royal/15 px-2.5 text-[12px] font-medium whitespace-nowrap text-royal-dark",
+            appear,
+          )}
         >
           You{cell.position ? ` #${cell.position}` : ""}
         </span>
@@ -76,7 +91,10 @@ export function AnswerCell({ cell, pending, comingSoon, className }: AnswerCellP
       <span className={cn("inline-flex items-center gap-1.5", className)}>
         <span
           title={`Recommends instead: ${(cell.competitors_mentioned ?? []).join(", ")}${votesNote(cell)}`}
-          className="inline-flex h-7 max-w-[128px] animate-[fade-up_0.35s_ease-out_both] items-center rounded-full bg-stone/12 px-2.5 text-[12px] font-medium whitespace-nowrap text-graphite"
+          className={cn(
+            "inline-flex h-7 max-w-[128px] items-center rounded-full bg-stone/12 px-2.5 text-[12px] font-medium whitespace-nowrap text-graphite",
+            appear,
+          )}
         >
           <span className="truncate">{first}</span>
           {rest.length > 0 && <span className="ml-1 text-stone">+{rest.length}</span>}
@@ -100,11 +118,15 @@ export function AnswerLegend({ className, multiSample = false }: { className?: s
   return (
     <ul className={cn("flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-stone", className)}>
       <li className="flex items-center gap-2">
-        <span className="inline-flex h-6 items-center rounded-full bg-royal/15 px-2 text-[12px] font-medium text-royal-dark">You #2</span>
+        <span className="inline-flex h-6 items-center rounded-full bg-royal/15 px-2 text-[12px] font-medium text-royal-dark">
+          You #2
+        </span>
         AI names you (and where)
       </li>
       <li className="flex items-center gap-2">
-        <span className="inline-flex h-6 items-center rounded-full bg-stone/12 px-2 text-[12px] font-medium text-graphite">Rival</span>
+        <span className="inline-flex h-6 items-center rounded-full bg-stone/12 px-2 text-[12px] font-medium text-graphite">
+          Rival
+        </span>
         A competitor instead
       </li>
       <li className="flex items-center gap-2">

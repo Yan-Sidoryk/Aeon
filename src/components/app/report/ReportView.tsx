@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { formatDate, labelDate, plural } from "@/lib/format";
 import type { Report } from "@/types/api";
 import { Badge, Eyebrow, PageTitle, Panel, Screen, SectionTitle } from "../ui";
@@ -25,6 +26,16 @@ export function ReportView({ report }: { report: Report }) {
 
   return (
     <Screen className="max-w-[1120px]">
+      {report.sample && (
+        // A recording must never pass for a scan of someone's own site.
+        <p className="mb-8 rounded-2xl bg-lime px-5 py-3.5 text-[15px] leading-[1.45] text-forest">
+          <strong className="font-semibold">Sample report.</strong> A recorded live scan of {report.sample.domain} (
+          {formatDate(report.sample.recorded_at)}).{" "}
+          <Link href="/start" className="font-medium underline underline-offset-3">
+            Scan your own site
+          </Link>
+        </p>
+      )}
       <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0">
           <Eyebrow>Your AI visibility report</Eyebrow>
@@ -102,7 +113,7 @@ export function ReportView({ report }: { report: Report }) {
             </p>
           ) : null}
         </Panel>
-        <SaveReport brand={product.brand} />
+        {!report.sample && <SaveReport brand={product.brand} />}
       </div>
     </Screen>
   );

@@ -76,15 +76,29 @@ async def _search(query: str, limit: int = 100) -> list[dict]:
 
 
 def dedupe_latest(labels: list[dict]) -> list[dict]:
-    """One label per brand + molecule, keeping the most recent version."""
-    best: dict[tuple, dict] = {}
+    """One label per brand + molecule + labeler, from the latest version of each label. A brand with several labels
+    (Zoryve cream and Zoryve foam) gets their sections merged, so label checks know every approved form; set_id and
+    effective_time are the newest label's."""
+    def brand_key(lab: dict) -> tuple:
+        return lab["brand"].lower(), lab["molecule"], lab.get("manufacturer", "")
+
+    latest: dict = {}
     for lab in labels:
-        if not lab["brand"]:
-            continue
-        key = (lab["brand"].lower(), lab["molecule"])
-        if key not in best or lab["effective_time"] > best[key]["effective_time"]:
-            best[key] = lab
-    return list(best.values())
+        key = lab.get("set_id") or brand_key(lab)  # versions of one label share its set_id
+        if lab["brand"] and (key not in latest or lab["effective_time"] > latest[key]["effective_time"]):
+            latest[key] = lab
+    groups: dict[tuple, list[dict]] = {}
+    for lab in latest.values():
+        groups.setdefault(brand_key(lab), []).append(lab)
+    out = []
+    for group in groups.values():
+        group.sort(key=lambda lab: lab["effective_time"], reverse=True)
+        merged = dict(group[0])
+        if len(group) > 1:
+            merged["label"] = {k: "\n\n".join(dict.fromkeys(g["label"].get(k) for g in group if g["label"].get(k)))
+                               for k in group[0]["label"]}
+        out.append(merged)
+    return out
 
 
 def _q(term: str) -> str:

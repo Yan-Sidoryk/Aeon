@@ -44,8 +44,11 @@ flowchart LR
 | Identity | With Supabase configured (`health.auth`): `Authorization: Bearer <access token>`. The browser signs in anonymously on its first visit, and the save gate adds an email to the same user. Without Supabase (demo, local): `X-Session-Id: <uuid per browser>`. The frontend sends it on every call (`src/lib/auth.ts`). |
 | SSE auth | EventSource can't send headers: pass `?access_token=` (`streamUrl()` does it). Without auth, job ids are unguessable UUIDs, or scoped ids checked against the owner. |
 | Ownership | Every endpoint except reports checks that the row belongs to the caller (404 otherwise). Reports are public by their random UUID: the report link is the share link. |
-| Errors | Non-2xx returns `{"detail": "..."}`; show `detail`. |
-| Health | `GET /api/health` → `{ok, demo_mode, auth, demo_domain?}` |
+| Errors | Non-2xx returns `{"detail": "..."}`; show `detail`. Guardrails (live mode only, `backend/app/guard.py`): **403** "Sign in to …" when a visitor starts something that needs an account ("Fix this", promo research, opportunity drafts, weekly tracking); **429** when a daily limit or the daily spend cap is reached. |
+| Health | `GET /api/health` → `{ok, demo_mode, auth, sample_report_id, demo_domain?}`. `sample_report_id`: the recorded run loaded as a public sample report (live mode; null until seeded). |
+| Accounts | `GET /api/me` → `{org_id, email, signed_in}`. `signed_in` means a confirmed email; anonymous visitors are false. Without Supabase every caller counts as signed in. |
+
+**Live-mode limits.** Visitors (anonymous accounts) get one full live report a day: discovery, setup and one scan, also capped per IP address. Signed-in users get everything within per-account daily limits. All live jobs count against `DAILY_SPEND_CAP_USD` (default $10 per UTC day), measured per job from Claude usage, web searches, DataForSEO's reported cost and Apify's run cap (`job.cost_usd`). Weekly scans wait when the cap is reached.
 
 **Demo mode** (`DEMO_MODE=1`, `npm run dev:api:demo`): any website replays one recorded live run (`backend/fixtures/demo/bundle.json`) through the same jobs and events: the agents' real steps, the scan's cells, the fix loop's rounds. The frontend shows a banner naming the recorded site. Record a new bundle after a live run with `python -m app.scripts.record_demo --company <id>`.
 
@@ -74,7 +77,7 @@ sequenceDiagram
 
 | Screen | Calls |
 |---|---|
-| 1 `/start` | `POST /api/onboarding {url}`, then follow `step` events. Each step is one agent action ("Reading incyte.com/…", "Opzelura: FDA label found"). On `done`, go to portfolio. |
+| 1 `/start` | `POST /api/onboarding {url}`: **422** with a message when it isn't a live website (not a domain, doesn't resolve to a public address, doesn't answer over HTTP); nothing runs. In live mode the same caller entering the same site within a day gets that earlier discovery back (same `job_id`). Then follow `step` events. Each step is one agent action ("Reading incyte.com/…", "Opzelura: FDA label found"). On `done`, go to portfolio. |
 | 2 `/start/portfolio` | `GET /api/companies/{id}`; `PATCH /api/products/{id} {selected}`; `POST /api/companies/{id}/products {brand}` (404 if no US label); `POST /api/companies/{id}/labeler {labeler}` when `labeler_candidates` has 2+. |
 | 3 `/start/hero` | Pre-selected hero = most Google searches for the brand (DataForSEO). `POST /api/products/{id}/hero`. Start setup in the background here (`src/lib/setup-cache.ts`). |
 | 4 `/start/setup` | `POST /api/products/{id}/setup` → 200 `{setup}` or 202 `{job_id}` → `step` events → `GET /api/products/{id}/setup`. Competitors: `POST /api/products/{id}/competitors`, `DELETE /api/competitors/{id}`. The 10 questions have `kind` (`unbranded` / `branded` / `comparison`) and `source` (`google_paa` = asked on Google). |
@@ -107,6 +110,7 @@ A cell is one question × engine, the majority vote over its samples (Claude is 
 | `sources` | `competitor_only` (cited only in competitor answers: where to get content placed), `yours`, `by_competitor` |
 | `changes` | Cells that changed since the previous scan of the same drug (`null` on the first) |
 | `fixes[]` | 3 fixes `{key, title, why, kind, target_prompts}` |
+| `sample` | Only on the sample report: `{domain, recorded_at}` of the recording. Its "Fix this" opens the recorded draft; other fixes return 409. |
 
 ## Pre-MLR checklist
 

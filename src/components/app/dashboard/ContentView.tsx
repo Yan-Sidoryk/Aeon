@@ -32,8 +32,8 @@ export function ContentView() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeading
-        title="Content"
-        description="Drafts written from the FDA label only. Each one ran the pre-MLR checklist, round by round, before you see it."
+        title="Fixes"
+        description="What to change so AI gets it right, from the latest scan. Aeon drafts each fix from the FDA label and runs the pre-MLR checklist until it passes."
       />
 
       {drafts.error ? (
@@ -44,16 +44,18 @@ export function ContentView() {
           <Skeleton className="h-24 rounded-2xl" />
         </div>
       ) : list.length === 0 ? (
-        <Panel className="flex flex-col items-start gap-3 p-6 md:p-8">
-          <span className="grid size-11 place-items-center rounded-xl bg-lavender text-eggplant">
-            <FileText className="size-5" />
-          </span>
-          <p className="font-display text-[24px] leading-[1.15] font-medium tracking-[-0.02em]">No drafts yet</p>
-          <p className="max-w-[560px] text-[15px] leading-[1.55] text-stone">
-            Start one from a fix in the latest report or from a competitor opportunity. Aeon drafts from the label and
-            revises until the pre-MLR checks pass.
-          </p>
-        </Panel>
+        suggested.length > 0 ? null : (
+          <Panel className="flex flex-col items-start gap-3 p-6 md:p-8">
+            <span className="grid size-11 place-items-center rounded-xl bg-lavender text-eggplant">
+              <FileText className="size-5" />
+            </span>
+            <p className="font-display text-[24px] leading-[1.15] font-medium tracking-[-0.02em]">No drafts yet</p>
+            <p className="max-w-[560px] text-[15px] leading-[1.55] text-stone">
+              Start one from a fix in the latest report or from a competitor opportunity. Aeon drafts from the label and
+              revises until the pre-MLR checks pass.
+            </p>
+          </Panel>
+        )
       ) : (
         <>
           <dl className="grid grid-cols-3 gap-3">
@@ -62,7 +64,12 @@ export function ContentView() {
               return (
                 <div key={status} className="rounded-2xl border border-oat/70 bg-white p-4">
                   <dt className="text-[13px] leading-[1.3] text-stone">{label}</dt>
-                  <dd className={cn("mt-2 font-display text-[30px] leading-none font-medium tabular-nums", n > 0 ? tone : "text-taupe")}>
+                  <dd
+                    className={cn(
+                      "mt-2 font-display text-[30px] leading-none font-medium tabular-nums",
+                      n > 0 ? tone : "text-taupe",
+                    )}
+                  >
                     {n}
                   </dd>
                 </div>
@@ -81,7 +88,7 @@ export function ContentView() {
                     aria-hidden="true"
                     className={cn(
                       "hidden size-10 shrink-0 place-items-center rounded-xl sm:grid",
-                      fromOpportunity(d) ? "bg-periwinkle text-navy" : "bg-lavender text-eggplant"
+                      fromOpportunity(d) ? "bg-periwinkle text-navy" : "bg-lavender text-eggplant",
                     )}
                   >
                     {fromOpportunity(d) ? <Megaphone className="size-[18px]" /> : <FileText className="size-[18px]" />}
@@ -90,7 +97,8 @@ export function ContentView() {
                     <span className="flex flex-wrap items-center gap-2">
                       <DraftStatusBadge status={d.status} />
                       <span className="text-[12px] text-stone">
-                        {plural(d.rounds, "review round")} · {fromOpportunity(d) ? "From an opportunity" : "From a report fix"}
+                        {plural(d.rounds, "review round")} ·{" "}
+                        {fromOpportunity(d) ? "From an opportunity" : "From a report fix"}
                       </span>
                     </span>
                     <span className="mt-2 line-clamp-2 block text-[16px] leading-[1.35] font-medium group-hover:underline">
@@ -105,12 +113,13 @@ export function ContentView() {
         </>
       )}
 
-      {(suggested.length > 0 || report) && (
-        <section aria-labelledby="suggested-title" className="mt-4">
+      {suggested.length > 0 && (
+        <section aria-labelledby="suggested-title" className={cn(list.length > 0 && "mt-4")}>
           <PanelTitle>
-            <span id="suggested-title">Draft next</span>
+            <span id="suggested-title">
+              {list.length > 0 ? "Draft next" : `${suggested.length} fixes from the latest scan`}
+            </span>
           </PanelTitle>
-          <p className="mt-1 text-[14px] text-stone">Fixes from the latest report that don&apos;t have a draft yet.</p>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {suggested.map((fix) => (
               <article key={fix.key} className="flex flex-col rounded-2xl border border-oat/70 bg-white p-5">
@@ -129,20 +138,6 @@ export function ContentView() {
                 )}
               </article>
             ))}
-            <Link
-              href={`${base}/opportunities`}
-              className="group flex flex-col justify-between gap-4 rounded-2xl border-2 border-dashed border-oat p-5 transition-colors hover:border-royal/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal"
-            >
-              <span>
-                <span className="block font-display text-[17px] leading-[1.3] font-medium">Answer a competitor&apos;s ad</span>
-                <span className="mt-2 block text-[14px] leading-[1.5] text-stone">
-                  See what competitors advertise right now and draft an on-label answer to a theme.
-                </span>
-              </span>
-              <span className="inline-flex items-center gap-1 text-[14px] font-medium text-royal-dark">
-                Opportunities <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-              </span>
-            </Link>
           </div>
         </section>
       )}

@@ -102,7 +102,8 @@ async def _replay(job: JobContext, events: list[dict], *, skip_terminal: bool = 
         if data is None:
             continue
         job.emit(e["event"], data)
-        await asyncio.sleep(CELL_DELAY if e["event"] in ("answer", "counters") else STEP_DELAY)
+        if isinstance(job, JobContext):  # paced so the replay feels live; nobody watches a LocalJob (sample.py)
+            await asyncio.sleep(CELL_DELAY if e["event"] in ("answer", "counters") else STEP_DELAY)
 
 
 def recorded_fix_keys() -> set[str]:
