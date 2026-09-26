@@ -16,9 +16,17 @@ class LLMError(RuntimeError):
     pass
 
 
-async def parse(model: str, system: str, user: str, schema: type[T], max_tokens: int = 16000,
+def cached(system: str, document: str) -> list[dict]:
+    """System prompt plus a large, repeated document (e.g. an FDA label) marked for prompt caching: calls that
+    share it (every label check in a scan) read it from cache at a tenth of the price."""
+    return [{"type": "text", "text": system},
+            {"type": "text", "text": document, "cache_control": {"type": "ephemeral"}}]
+
+
+async def parse(model: str, system: str | list[dict], user: str, schema: type[T], max_tokens: int = 16000,
                 effort: str | None = None) -> T:
-    extra = {"output_config": {"effort": effort}} if effort else {}
+    # Haiku 4.5 rejects the effort parameter; every current Sonnet/Opus model takes it.
+    extra = {"output_config": {"effort": effort}} if effort and "haiku" not in model else {}
     try:
         response = await client.messages.parse(
             model=model,
@@ -37,9 +45,9 @@ async def parse(model: str, system: str, user: str, schema: type[T], max_tokens:
     return response.parsed_output
 
 
-def fast(system: str, user: str, schema: type[T], max_tokens: int = 8000):
+def fast(system: str | list[dict], user: str, schema: type[T], max_tokens: int = 8000):
     return parse(settings.model_fast, system, user, schema, max_tokens)
 
 
-def smart(system: str, user: str, schema: type[T], max_tokens: int = 16000, effort: str | None = None):
+def smart(system: str | list[dict], user: str, schema: type[T], max_tokens: int = 16000, effort: str | None = None):
     return parse(settings.model_smart, system, user, schema, max_tokens, effort)

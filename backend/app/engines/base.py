@@ -8,11 +8,13 @@ import httpx
 class EngineAnswer:
     text: str
     citations: list[dict] = field(default_factory=list)  # [{"url": ..., "title": ...}]
+    shown: bool = True  # False: the engine gave no answer for this query (e.g. Google showed no AI Overview)
 
 
 class Engine(ABC):
     name: str  # stable id used in the API and DB
     label: str  # display name for the grid
+    samples: int = 1  # times each question is asked per scan; checks are a majority vote
 
     @abstractmethod
     def enabled(self) -> bool: ...

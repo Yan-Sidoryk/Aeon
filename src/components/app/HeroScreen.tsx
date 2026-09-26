@@ -36,12 +36,12 @@ export function HeroScreen({ companyId, demo }: { companyId: number; demo: boole
     };
   }, [companyId]);
 
-  // Start setup (~15s live) while the user is still here, once they've settled on a drug.
+  // Start the setup agent (~1 min live) while the user is still here, once they've settled on a drug.
   useEffect(() => {
     if (picked === null) return;
     const timer = setTimeout(() => {
       loadSetup(picked).catch((err) => setUnavailable((prev) => ({ ...prev, [picked]: errorMessage(err) })));
-    }, 600);
+    }, 1200);
     return () => clearTimeout(timer);
   }, [picked]);
 

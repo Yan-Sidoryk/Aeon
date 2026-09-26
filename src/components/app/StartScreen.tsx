@@ -10,27 +10,23 @@ import type { DiscoveryEvents, OnboardingStart, StepEvent } from "@/types/api";
 import { StepChecklist, type ChecklistRow } from "./StepChecklist";
 import { ErrorNote, Eyebrow, Lead, PageTitle, Panel, Screen, inputClass } from "./ui";
 
-// Keys the discovery job emits (backend/app/services/discovery.py), shown as pending rows up front.
-const DISCOVERY_STEPS = [
-  { key: "read", label: "Reading your website" },
-  { key: "extract", label: "Finding your products" },
-  { key: "labels", label: "Pulling FDA labels" },
-  { key: "map", label: "Mapping indications" },
-] as const;
+// The discovery agent (backend/app/agents/discovery.py) streams one step per page it reads and label it checks.
+const MAX_ROWS = 9;
 
 /** Screen 1, "How does AI talk about your drugs?": one input, then a live checklist while discovery runs. */
 export function StartScreen({ initialUrl }: { initialUrl: string }) {
   const router = useRouter();
   const [url, setUrl] = useState(initialUrl);
   const [job, setJob] = useState<OnboardingStart | null>(null);
-  const [steps, setSteps] = useState<Record<string, StepEvent>>({});
+  const [steps, setSteps] = useState<StepEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const portfolioHref = (companyId: number) => `/start/portfolio?company=${companyId}`;
 
   const status = useJobStream<DiscoveryEvents>(job ? `/api/onboarding/${job.job_id}/events` : null, {
-    step: (step) => setSteps((prev) => ({ ...prev, [step.key]: step })),
+    step: (step) =>
+      setSteps((prev) => (prev.some((p) => p.key === step.key) ? prev.map((p) => (p.key === step.key ? step : p)) : [...prev, step])),
     done: ({ company_id }) => router.push(portfolioHref(company_id)),
     error: ({ message }) => setError(message),
   });
@@ -55,7 +51,7 @@ export function StartScreen({ initialUrl }: { initialUrl: string }) {
     const value = url.trim();
     if (!value) return;
     setError(null);
-    setSteps({});
+    setSteps([]);
     setSubmitting(true);
     try {
       setJob(await api.startOnboarding(value));
@@ -67,18 +63,26 @@ export function StartScreen({ initialUrl }: { initialUrl: string }) {
   }
 
   const running = job !== null && error === null;
-  const rows: ChecklistRow[] = DISCOVERY_STEPS.map(({ key, label }) => {
-    const step = steps[key];
-    return { key, label: step?.label ?? label, status: step?.status ?? (step ? "done" : "pending") };
-  });
+  // Newest steps last; while the agent works, the latest row spins.
+  const visible = steps.slice(-MAX_ROWS);
+  const rows: ChecklistRow[] = visible.length
+    ? visible.map((step, i) => ({
+        key: step.key,
+        label: step.label,
+        status: step.status === "active" || (running && status !== "done" && i === visible.length - 1 && step.status !== "done")
+          ? "active"
+          : "done",
+      }))
+    : [{ key: "start", label: "Starting the discovery agent…", status: "active" }];
+  const hidden = steps.length - visible.length;
 
   return (
     <Screen className="max-w-[760px] text-center">
       <Eyebrow>Free first report</Eyebrow>
       <PageTitle>How does AI talk about your drugs?</PageTitle>
       <Lead className="mx-auto">
-        Type your company website. We find your products and their FDA labels, then ask AI the questions patients,
-        caregivers and doctors ask. No account needed.
+        Type your company website. Our agents find your products and their FDA labels, then ask AI the questions
+        patients, caregivers and doctors really ask. No account needed.
       </Lead>
 
       <form onSubmit={submit} className="mx-auto mt-10 flex max-w-[600px] flex-col gap-3 sm:flex-row">
@@ -107,8 +111,13 @@ export function StartScreen({ initialUrl }: { initialUrl: string }) {
       {job !== null && (
         <Panel className="mx-auto mt-10 max-w-[600px] text-left">
           <p className="mb-4 text-[14px] font-medium text-stone">
-            {error ? "Stopped" : status === "lost" ? "Still working… (reconnecting)" : "Usually about 20 seconds"}
+            {error
+              ? "Stopped"
+              : status === "lost"
+                ? "Still working… (reconnecting)"
+                : "Claude is reading your site and checking every product against its FDA label. Usually under a minute."}
           </p>
+          {hidden > 0 && <p className="mb-2 text-[13px] text-taupe">+{hidden} earlier steps</p>}
           <StepChecklist rows={rows} />
         </Panel>
       )}

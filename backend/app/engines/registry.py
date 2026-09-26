@@ -1,11 +1,11 @@
-from app.engines.ai_overviews import AIOverviewsEngine
 from app.engines.base import Engine
 from app.engines.claude import ClaudeEngine
-from app.engines.gemini import GeminiEngine
-from app.engines.openai import OpenAIEngine
-from app.engines.perplexity import PerplexityEngine
+from app.engines.google import GoogleAIMode, GoogleAIOverviews
 
-ENGINES: list[Engine] = [OpenAIEngine(), ClaudeEngine(), GeminiEngine(), PerplexityEngine(), AIOverviewsEngine()]
+ENGINES: list[Engine] = [ClaudeEngine(), GoogleAIOverviews(), GoogleAIMode()]
+
+# On the roadmap through DataForSEO's LLM endpoints (no new vendor); shown greyed out as "coming soon".
+COMING_SOON = [("chatgpt", "ChatGPT"), ("gemini", "Gemini"), ("perplexity", "Perplexity")]
 
 
 def enabled_engines() -> list[Engine]:
@@ -13,4 +13,7 @@ def enabled_engines() -> list[Engine]:
 
 
 def engine_status() -> list[dict]:
-    return [{"name": e.name, "label": e.label, "enabled": e.enabled()} for e in ENGINES]
+    live = [{"name": e.name, "label": e.label, "enabled": e.enabled(), "coming_soon": False, "samples": e.samples}
+            for e in ENGINES]
+    soon = [{"name": n, "label": label, "enabled": False, "coming_soon": True, "samples": 0} for n, label in COMING_SOON]
+    return live + soon

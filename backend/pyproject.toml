@@ -1,6 +1,6 @@
 [project]
 name = "aeon-backend"
-version = "0.1.0"
+version = "0.2.0"
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.115",
@@ -11,6 +11,10 @@ dependencies = [
   "sse-starlette",
   "pydantic-settings",
   "brotli>=1.2",  # httpx2 (used by anthropic 1.x) needs output_buffer_limit
+  "psycopg[binary]>=3.2",  # Supabase Postgres
+  "langfuse==4.15.6",
+  "openinference-instrumentation-anthropic==2.1.6",  # traces messages.parse and the tool runner
+  "certifi",
 ]
 
 [project.optional-dependencies]

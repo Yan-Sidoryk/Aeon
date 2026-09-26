@@ -4,19 +4,28 @@ import { cn } from "@/lib/utils";
 // Product UI atoms. Palette and shapes follow the platform mocks (src/components/platform/mocks): white cards on
 // off-white, royal for "you", stone for competitors, lime for passes, alert red for label conflicts.
 
+/**
+ * tailwind-merge treats a text size and a line-height as conflicting, so a caller overriding an atom's size (e.g.
+ * text-[30px]) would silently drop the atom's leading. Apply the leading last, unless the caller sets its own.
+ */
+function withLeading(base: string, leading: string, className?: string): string {
+  return cn(base, className, /(^|\s)(\w+:)*leading-/.test(className ?? "") ? undefined : leading);
+}
+
 export function Screen({ children, className }: { children: ReactNode; className?: string }) {
   return <div className={cn("mx-auto w-full max-w-[1040px] px-4 pt-10 pb-36 md:px-8 md:pt-16", className)}>{children}</div>;
 }
 
 export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
-  return <p className={cn("font-hand text-[26px] leading-none text-black", className)}>{children}</p>;
+  return <p className={withLeading("font-hand text-[26px] text-black", "leading-none", className)}>{children}</p>;
 }
 
 export function PageTitle({ children, className }: { children: ReactNode; className?: string }) {
   return (
     <h1
-      className={cn(
-        "mt-2 font-display text-[34px] leading-[1.05] font-medium tracking-[-0.03em] text-balance md:text-[48px]",
+      className={withLeading(
+        "mt-2 font-display text-[34px] font-medium tracking-[-0.03em] text-balance md:text-[48px]",
+        "leading-[1.05]",
         className
       )}
     >
@@ -26,12 +35,18 @@ export function PageTitle({ children, className }: { children: ReactNode; classN
 }
 
 export function Lead({ children, className }: { children: ReactNode; className?: string }) {
-  return <p className={cn("mt-4 max-w-[640px] text-[16px] leading-[1.55] text-stone md:text-[18px]", className)}>{children}</p>;
+  return (
+    <p className={withLeading("mt-4 max-w-[640px] text-[16px] text-stone md:text-[18px]", "leading-[1.55]", className)}>
+      {children}
+    </p>
+  );
 }
 
 export function SectionTitle({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <h2 className={cn("font-display text-[22px] leading-[1.15] font-medium tracking-[-0.02em] md:text-[26px]", className)}>
+    <h2
+      className={withLeading("font-display text-[22px] font-medium tracking-[-0.02em] md:text-[26px]", "leading-[1.15]", className)}
+    >
       {children}
     </h2>
   );
@@ -57,9 +72,9 @@ const TONES: Record<Tone, string> = {
 export function Badge({ tone = "sand", children, className }: { tone?: Tone; children: ReactNode; className?: string }) {
   return (
     <span
-      className={cn(
-        "inline-flex h-6 shrink-0 items-center gap-1 rounded-full px-2.5 text-[12px] leading-none font-medium whitespace-nowrap",
-        TONES[tone],
+      className={withLeading(
+        cn("inline-flex h-6 shrink-0 items-center gap-1 rounded-full px-2.5 text-[12px] font-medium whitespace-nowrap", TONES[tone]),
+        "leading-none",
         className
       )}
     >

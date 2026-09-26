@@ -1,0 +1,249 @@
+{
+ "version": "0.1.20260917",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "time": "7.9624 sec.",
+ "cost": 0.004,
+ "tasks_count": 1,
+ "tasks_error": 0,
+ "tasks": [
+  {
+   "id": "09261343-2286-0139-0000-aa2d01a2bd36",
+   "status_code": 20000,
+   "status_message": "Ok.",
+   "time": "7.8947 sec.",
+   "cost": 0.004,
+   "result_count": 1,
+   "path": [
+    "v3",
+    "serp",
+    "google",
+    "ai_mode",
+    "live",
+    "advanced"
+   ],
+   "data": {
+    "api": "serp",
+    "function": "live",
+    "se": "google",
+    "se_type": "ai_mode",
+    "keyword": "best treatment for moderate eczema in kids",
+    "location_code": 2840,
+    "language_code": "en",
+    "device": "desktop",
+    "os": "windows"
+   },
+   "result": [
+    {
+     "keyword": "best treatment for moderate eczema in kids",
+     "type": "ai_mode",
+     "se_domain": "google.com",
+     "location_code": 2840,
+     "language_code": "en",
+     "check_url": "https://www.google.com/search?q=best%20treatment%20for%20moderate%20eczema%20in%20kids&hl=en&gl=US&udm=50&uule=w+CAIQIFISCQs2MuSEtepUEUK33kOSuTsc",
+     "datetime": "2026-09-26 13:43:32 +00:00",
+     "spell": null,
+     "refinement_chips": null,
+     "item_types": [
+      "ai_overview"
+     ],
+     "se_results_count": 0,
+     "items_count": 1,
+     "items": [
+      {
+       "type": "ai_overview",
+       "rank_group": 1,
+       "rank_absolute": 1,
+       "page": 1,
+       "position": "left",
+       "markdown": "Managing moderate eczema (atopic dermatitis) in children requires a consistent, multi-layered approach to repair the skin barrier, calm inflammation, and prevent painful, itchy flares . According to guidance from groups like the [American Academy of Dermatology](https://www.aad.org/news/aad-issues-first-pediatric-atopic-dermatitis-guidelines) (AAD) and the [American Academy of Pediatrics](https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/) (AAP), a standard regimen combines daily maintenance with active medical treatment during flares.[[1]](https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/)[[2]](https://www.aad.org/news/aad-issues-first-pediatric-atopic-dermatitis-guidelines)[[3]](https://www.contemporarypediatrics.com/view/aad-issues-pediatric-atopic-dermatitis-guidelines-for-optimal-patient-care)\n\n### 1. Daily Foundation (The Baseline Care)\n\n- **Gentle Cleansing:** Give short baths (5 to 10 minutes) using lukewarm water\u2014never hot. Use a mild, fragrance-free cleanser rather than harsh soaps that strip natural oils.\n- **The \"Soak and Seal\" Method:** Immediately after bathing, gently pat the child's skin dry with a towel so it remains slightly damp. Within 3 minutes, apply your prescribed or recommended moisturizer to lock in hydration.\n- **Thick Emollients over Lotions:** Ointments (like plain petrolatum) or thick, fragrance-free creams in a tub are significantly more effective at repairing the skin barrier than thin, pump-bottled lotions. Apply at least twice a day.\n\n### 2. Treating Active Inflammation (Prescription Topicals)\n\nWhen moderate redness, scaling, and intense itching occur, daily moisturizing alone is usually not enough. Doctors typically step up treatment with targeted anti-inflammatory topicals:\n\n- **Topical Corticosteroids:** These are the first-line medical treatment. A low-to-medium-strength prescription steroid ointment or cream is applied directly to active red patches (usually twice daily) until the flare subsides. Ointments are generally preferred because they penetrate well and do not sting.[[1]](https://www.contemporarypediatrics.com/view/aad-issues-pediatric-atopic-dermatitis-guidelines-for-optimal-patient-care)[[2]](https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/)\n- **Topical Calcineurin Inhibitors (TCIs):** Non-steroidal options like tacrolimus ointment or pimecrolimus cream can be used for sensitive areas (like the face or eyelids) or for intermittent maintenance to prevent frequent flare-ups.[[1]](https://www.contemporarypediatrics.com/view/aad-issues-pediatric-atopic-dermatitis-guidelines-for-optimal-patient-care)\n- **Newer Non-Steroidal Topicals:** Options such as PDE4 inhibitors (e.g., roflumilast or crisaborole) or topical JAK inhibitors may also be prescribed depending on the child's age and specific symptom presentation.[[1]](https://www.contemporarypediatrics.com/view/aad-issues-pediatric-atopic-dermatitis-guidelines-for-optimal-patient-care)\n\n### 3. Managing Triggers and Infections\n\n- **Identify Personal Triggers:** Common irritants include rough clothing fabrics (like wool), heavily scented laundry detergents, cigarette smoke, and sudden changes in temperature or sweat.\n- **Watch for Signs of Infection:** Eczema skin is prone to cracking and secondary bacterial infections (Staph). If you notice honey-colored crusting, pus, worsening pain, or weeping fluid, contact a pediatrician immediately. Sometimes, doctors recommend brief diluted bleach baths (2 times a week) to reduce surface bacteria on infection-prone kids.[[1]](https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/)\n\nTo help tailor this, let me know:\n\n- How old is your **child**?\n- What **areas of the body** are most affected right now?\n\nI can share more specific age-appropriate guidance or questions to ask your **pediatrician or dermatologist**.",
+       "items": [
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": null,
+         "text": "Managing moderate eczema (atopic dermatitis) in children requires a consistent, multi-layered approach to repair the skin barrier, calm inflammation, and prevent painful, itchy flares. According to guidance from groups like the American Academy of Dermatology (AAD) and the American Academy of Pediatrics (AAP), a standard regimen combines daily maintenance with active medical treatment during flares.",
+         "markdown": "Managing moderate eczema (atopic dermatitis) in children requires a consistent, multi-layered approach to repair the skin barrier, calm inflammation, and prevent painful, itchy flares . According to guidance from groups like the [American Academy of Dermatology](https://www.aad.org/news/aad-issues-first-pediatric-atopic-dermatitis-guidelines) (AAD) and the [American Academy of Pediatrics](https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/) (AAP), a standard regimen combines daily maintenance with active medical treatment during flares.[[1]](https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/)[[2]](https://www.aad.org/news/aad-issues-first-pediatric-atopic-dermatitis-guidelines)[[3]](https://www.contemporarypediatrics.com/view/aad-issues-pediatric-atopic-dermatitis-guidelines-for-optimal-patient-care)",
+         "links": [
+          {
+           "type": "link_element",
+           "title": "American Academy of Dermatology",
+           "description": null,
+           "url": "https://www.aad.org/news/aad-issues-first-pediatric-atopic-dermatitis-guidelines",
+           "domain": "www.aad.org"
+          },
+          {
+           "type": "link_element",
+           "title": "American Academy of Pediatrics",
+           "description": null,
+           "url": "https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/",
+           "domain": "www.aap.org"
+          }
+         ],
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "AAP",
+           "domain": "www.aap.org",
+           "url": "https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/",
+           "title": "Treatment of Atopic Dermatitis",
+           "text": "**Treating inflammation** * Apply a topical corticosteroid twice daily to affected areas until improvement occurs. * Ointments are..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "American Academy of Dermatology",
+           "domain": "www.aad.org",
+           "url": "https://www.aad.org/news/aad-issues-first-pediatric-atopic-dermatitis-guidelines",
+           "title": "American Academy of Dermatology issues first-ever pediatric ...",
+           "text": "The new guidelines, published in the Journal of the American Academy of Dermatology (JAAD), will guide dermatologists in deciding ..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Contemporary Pediatrics",
+           "domain": "www.contemporarypediatrics.com",
+           "url": "https://www.contemporarypediatrics.com/view/aad-issues-pediatric-atopic-dermatitis-guidelines-for-optimal-patient-care",
+           "title": "AAD issues pediatric atopic dermatitis guidelines for optimal ...",
+           "text": "For preventing AD, the guidelines highlight limitations in current options available. Research has indicated no proven benefit fro..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "1. Daily Foundation (The Baseline Care)",
+         "text": "Gentle Cleansing: Give short baths (5 to 10 minutes) using lukewarm water\u2014never hot. Use a mild, fragrance-free cleanser rather than harsh soaps that strip natural oils. The \"Soak and Seal\" Method: Immediately after bathing, gently pat the child's skin dry with a towel so it remains slightly damp. Within 3 minutes, apply your prescribed or recommended moisturizer to lock in hydration. Thick Emollients over Lotions: Ointments (like plain petrolatum) or thick, fragrance-free creams in a tub are significantly more effective at repairing the skin barrier than thin, pump-bottled lotions. Apply at least twice a day.",
+         "markdown": "- **Gentle Cleansing:** Give short baths (5 to 10 minutes) using lukewarm water\u2014never hot. Use a mild, fragrance-free cleanser rather than harsh soaps that strip natural oils.\n- **The \"Soak and Seal\" Method:** Immediately after bathing, gently pat the child's skin dry with a towel so it remains slightly damp. Within 3 minutes, apply your prescribed or recommended moisturizer to lock in hydration.\n- **Thick Emollients over Lotions:** Ointments (like plain petrolatum) or thick, fragrance-free creams in a tub are significantly more effective at repairing the skin barrier than thin, pump-bottled lotions. Apply at least twice a day.",
+         "links": null,
+         "images": null,
+         "references": null
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "2. Treating Active Inflammation (Prescription Topicals)",
+         "text": "When moderate redness, scaling, and intense itching occur, daily moisturizing alone is usually not enough. Doctors typically step up treatment with targeted anti-inflammatory topicals:",
+         "markdown": "When moderate redness, scaling, and intense itching occur, daily moisturizing alone is usually not enough. Doctors typically step up treatment with targeted anti-inflammatory topicals:",
+         "links": null,
+         "images": null,
+         "references": null
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": null,
+         "text": "Topical Corticosteroids: These are the first-line medical treatment. A low-to-medium-strength prescription steroid ointment or cream is applied directly to active red patches (usually twice daily) until the flare subsides. Ointments are generally preferred because they penetrate well and do not sting. Topical Calcineurin Inhibitors (TCIs): Non-steroidal options like tacrolimus ointment or pimecrolimus cream can be used for sensitive areas (like the face or eyelids) or for intermittent maintenance to prevent frequent flare-ups. Newer Non-Steroidal Topicals: Options such as PDE4 inhibitors (e.g., roflumilast or crisaborole) or topical JAK inhibitors may also be prescribed depending on the child's age and specific symptom presentation.",
+         "markdown": "- **Topical Corticosteroids:** These are the first-line medical treatment. A low-to-medium-strength prescription steroid ointment or cream is applied directly to active red patches (usually twice daily) until the flare subsides. Ointments are generally preferred because they penetrate well and do not sting.[[1]](https://www.contemporarypediatrics.com/view/aad-issues-pediatric-atopic-dermatitis-guidelines-for-optimal-patient-care)[[2]](https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/)\n- **Topical Calcineurin Inhibitors (TCIs):** Non-steroidal options like tacrolimus ointment or pimecrolimus cream can be used for sensitive areas (like the face or eyelids) or for intermittent maintenance to prevent frequent flare-ups.[[1]](https://www.contemporarypediatrics.com/view/aad-issues-pediatric-atopic-dermatitis-guidelines-for-optimal-patient-care)\n- **Newer Non-Steroidal Topicals:** Options such as PDE4 inhibitors (e.g., roflumilast or crisaborole) or topical JAK inhibitors may also be prescribed depending on the child's age and specific symptom presentation.[[1]](https://www.contemporarypediatrics.com/view/aad-issues-pediatric-atopic-dermatitis-guidelines-for-optimal-patient-care)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Contemporary Pediatrics",
+           "domain": "www.contemporarypediatrics.com",
+           "url": "https://www.contemporarypediatrics.com/view/aad-issues-pediatric-atopic-dermatitis-guidelines-for-optimal-patient-care",
+           "title": "AAD issues pediatric atopic dermatitis guidelines for optimal ...",
+           "text": "For preventing AD, the guidelines highlight limitations in current options available. Research has indicated no proven benefit fro..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "AAP",
+           "domain": "www.aap.org",
+           "url": "https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/",
+           "title": "Treatment of Atopic Dermatitis",
+           "text": "**Treating inflammation** * Apply a topical corticosteroid twice daily to affected areas until improvement occurs. * Ointments are..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "3. Managing Triggers and Infections",
+         "text": "Identify Personal Triggers: Common irritants include rough clothing fabrics (like wool), heavily scented laundry detergents, cigarette smoke, and sudden changes in temperature or sweat. Watch for Signs of Infection: Eczema skin is prone to cracking and secondary bacterial infections (Staph). If you notice honey-colored crusting, pus, worsening pain, or weeping fluid, contact a pediatrician immediately. Sometimes, doctors recommend brief diluted bleach baths (2 times a week) to reduce surface bacteria on infection-prone kids.",
+         "markdown": "- **Identify Personal Triggers:** Common irritants include rough clothing fabrics (like wool), heavily scented laundry detergents, cigarette smoke, and sudden changes in temperature or sweat.\n- **Watch for Signs of Infection:** Eczema skin is prone to cracking and secondary bacterial infections (Staph). If you notice honey-colored crusting, pus, worsening pain, or weeping fluid, contact a pediatrician immediately. Sometimes, doctors recommend brief diluted bleach baths (2 times a week) to reduce surface bacteria on infection-prone kids.[[1]](https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "AAP",
+           "domain": "www.aap.org",
+           "url": "https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/",
+           "title": "Treatment of Atopic Dermatitis",
+           "text": "**Treating inflammation** * Apply a topical corticosteroid twice daily to affected areas until improvement occurs. * Ointments are..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": null,
+         "text": "To help tailor this, let me know:",
+         "markdown": "To help tailor this, let me know:",
+         "links": null,
+         "images": null,
+         "references": null
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": null,
+         "text": "How old is your child ? What areas of the body are most affected right now?",
+         "markdown": "- How old is your **child**?\n- What **areas of the body** are most affected right now?",
+         "links": null,
+         "images": null,
+         "references": null
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": null,
+         "text": "I can share more specific age-appropriate guidance or questions to ask your pediatrician or dermatologist.",
+         "markdown": "I can share more specific age-appropriate guidance or questions to ask your **pediatrician or dermatologist**.",
+         "links": null,
+         "images": null,
+         "references": null
+        }
+       ],
+       "references": [
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "AAP",
+         "domain": "www.aap.org",
+         "url": "https://www.aap.org/en/patient-care/atopic-dermatitis/treatment-of-atopic-dermatitis/",
+         "title": "Treatment of Atopic Dermatitis",
+         "text": "**Treating inflammation** * Apply a topical corticosteroid twice daily to affected areas until improvement occurs. * Ointments are..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "American Academy of Dermatology",
+         "domain": "www.aad.org",
+         "url": "https://www.aad.org/news/aad-issues-first-pediatric-atopic-dermatitis-guidelines",
+         "title": "American Academy of Dermatology issues first-ever pediatric ...",
+         "text": "The new guidelines, published in the Journal of the American Academy of Dermatology (JAAD), will guide dermatologists in deciding ..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "Contemporary Pediatrics",
+         "domain": "www.contemporarypediatrics.com",
+         "url": "https://www.contemporarypediatrics.com/view/aad-issues-pediatric-atopic-dermatitis-guidelines-for-optimal-patient-care",
+         "title": "AAD issues pediatric atopic dermatitis guidelines for optimal ...",
+         "text": "For preventing AD, the guidelines highlight limitations in current options available. Research has indicated no proven benefit fro..."
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

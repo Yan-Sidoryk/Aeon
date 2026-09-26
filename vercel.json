@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["dub1"],
+  "services": {
+    "frontend": { "root": ".", "framework": "nextjs" },
+    "backend": { "root": "backend", "entrypoint": "app.main:app" }
+  },
+  "rewrites": [
+    { "source": "/api/backend(/.*)?", "destination": { "type": "service", "service": "backend" } },
+    { "source": "/(.*)", "destination": { "type": "service", "service": "frontend" } }
+  ],
+  "crons": [{ "path": "/api/backend/api/cron/weekly", "schedule": "0 7 * * *" }]
+}

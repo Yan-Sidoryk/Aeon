@@ -9,8 +9,6 @@ from app import llm
 from app.config import settings
 from app.schemas import ClaimReview
 
-SEVERITY_WEIGHT = {"high": 25, "medium": 10, "low": 3}
-
 BANNED = [
     (r"\bcures?\b|\bcured\b", "Implies a cure; use approved efficacy language."),
     (r"\b(completely |totally |perfectly )?safe\b", "Absolute safety claims are not allowed; describe the safety profile with risk information."),
@@ -79,29 +77,46 @@ def rule_flags(content: str, claims: list[dict], label: dict) -> list[dict]:
 
 REVIEW_SYSTEM = (
     "You are an experienced US pharma MLR (medical, legal, regulatory) reviewer applying FDA/OPDP standards. "
-    "Review the draft against the FDA label. Flag: claims not supported by the label, implied off-label uses, "
-    "populations or doses, fair-balance problems (risk information less prominent than benefits), overstated "
-    "efficacy, and a misleading overall impression (headline vs body). Quote the exact excerpt and give a concrete "
-    "compliant rewrite as the suggestion. Do not flag things that are fine."
+    "Review the draft against the FDA label. Flag: claims not supported by the label (unsupported_claim), implied "
+    "off-label uses, populations or doses (off_label), fair-balance problems where risk information is less "
+    "prominent than benefits (fair_balance), overstated efficacy or a misleading overall impression (overstatement), "
+    "comparisons with other drugs that lack head-to-head data (unsupported_comparison), and a missing or incomplete "
+    "Important Safety Information section (missing_isi). Quote the exact excerpt and give a concrete compliant "
+    "rewrite as the suggestion. Use severity low for style nits. Do not flag things that are fine."
 )
+
+# The pre-MLR checklist. A check fails on any high or medium flag of its rules; low flags are notes.
+CHECKS = [
+    ("claims_traced", "Every claim traced to the label", {"unsupported_claim"}),
+    ("on_label", "On-label only: indication, population, dose", {"off_label"}),
+    ("no_overstatement", "No overstatement (safe, cure, superlatives, unqualified numbers)", {"overstatement"}),
+    ("fair_balance", "Risk information as prominent as benefits", {"fair_balance"}),
+    ("isi", "Important Safety Information present, boxed warning first", {"missing_isi"}),
+    ("comparisons", "No comparison without head-to-head data", {"unsupported_comparison"}),
+]
+
+
+def checklist(flags: list[dict]) -> dict:
+    """{status, blocked, checks: [{id, label, passed, detail}], flags}. status: ready | needs_changes | blocked."""
+    checks = []
+    for cid, label, rules in CHECKS:
+        failing = [f for f in flags if f["rule"] in rules and f["severity"] in ("high", "medium")]
+        checks.append({"id": cid, "label": label, "passed": not failing,
+                       "detail": failing[0]["suggestion"] if failing else ""})
+    # An untraceable claim found by the deterministic rule blocks export outright.
+    blocked = any(f["rule"] == "unsupported_claim" and f["source"] == "rule" for f in flags)
+    status = "blocked" if blocked else "ready" if all(c["passed"] for c in checks) else "needs_changes"
+    return {"status": status, "blocked": blocked, "checks": checks, "flags": flags}
 
 
 async def review(content: str, claims: list[dict], label: dict, brand: str) -> dict:
     flags = rule_flags(content, claims, label)
     label_text = "\n\n".join(f"[{k}]\n{v}" for k, v in label.items() if v)
     try:
-        ai = await llm.smart(REVIEW_SYSTEM, f"Brand: {brand}\n\nFDA LABEL:\n{label_text}\n\nDRAFT:\n{content}", ClaimReview,
-                             effort=settings.draft_effort)
+        ai = await llm.smart(llm.cached(REVIEW_SYSTEM, f"Brand: {brand}\n\nFDA LABEL:\n{label_text}"),
+                             f"DRAFT:\n{content}", ClaimReview, effort=settings.draft_effort)
         flags += [{**f.model_dump(), "source": "ai"} for f in ai.flags]
     except Exception as exc:
         flags.append({"excerpt": "", "rule": "other", "severity": "low", "source": "system",
                       "suggestion": f"AI review unavailable ({exc}); rule checks only."})
-    score = min(100, sum(SEVERITY_WEIGHT[f["severity"]] for f in flags))
-    blocked = any(f["rule"] == "unsupported_claim" and f["source"] == "rule" for f in flags)
-    return {
-        "risk_score": score,
-        "risk_level": "high" if score >= 50 else "medium" if score >= 20 else "low",
-        "blocked": blocked,
-        "fast_track": score < 20 and not blocked,
-        "flags": flags,
-    }
+    return checklist(flags)

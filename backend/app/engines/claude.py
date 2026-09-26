@@ -13,6 +13,10 @@ class ClaudeEngine(Engine):
     name = "claude"
     label = "Claude"
 
+    @property
+    def samples(self) -> int:  # Claude's answers vary: ask several times, checks are a majority vote
+        return settings.claude_samples
+
     def enabled(self) -> bool:
         return bool(settings.anthropic_api_key)
 

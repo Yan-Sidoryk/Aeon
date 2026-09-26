@@ -33,6 +33,7 @@ export const RULE_LABEL: Record<PremlrRule, string> = {
   fair_balance: "Fair balance",
   overstatement: "Overstatement",
   missing_isi: "Safety information",
+  unsupported_comparison: "Unsupported comparison",
   other: "Other",
 };
 
@@ -45,6 +46,8 @@ export const ENGINE_LABEL: Record<string, string> = {
   gemini: "Gemini",
   perplexity: "Perplexity",
   ai_overviews: "Google AI Overviews",
+  google_aio: "Google AI Overviews",
+  google_ai_mode: "Google AI Mode",
 };
 
 export function engineLabel(name: string): string {
@@ -57,6 +60,12 @@ export function plural(n: number, one: string, many = `${one}s`): string {
 
 export function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+/** openFDA effective_time "20260630" → "Jun 30, 2026" ("" when missing or malformed). */
+export function labelDate(version: string | undefined): string {
+  const m = /^(\d{4})(\d{2})(\d{2})$/.exec(version ?? "");
+  return m ? formatDate(`${m[1]}-${m[2]}-${m[3]}T12:00:00Z`) : "";
 }
 
 /** "https://www.acme.com/x" or "acme.com" → "acme.com". */

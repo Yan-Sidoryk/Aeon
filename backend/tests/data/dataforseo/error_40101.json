@@ -1,0 +1,41 @@
+{
+ "version": "0.1.20260917",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "time": "17.6390 sec.",
+ "cost": 0.002,
+ "tasks_count": 1,
+ "tasks_error": 0,
+ "tasks": [
+  {
+   "id": "09261342-2286-0139-0000-6943c90339cc",
+   "status_code": 40101,
+   "status_message": "Internal SE Server Error.",
+   "time": "17.5752 sec.",
+   "cost": 0.002,
+   "result_count": 0,
+   "path": [
+    "v3",
+    "serp",
+    "google",
+    "organic",
+    "live",
+    "advanced"
+   ],
+   "data": {
+    "api": "serp",
+    "function": "live",
+    "se": "google",
+    "se_type": "organic",
+    "keyword": "best treatment for moderate eczema in kids",
+    "location_code": 2840,
+    "language_code": "en",
+    "device": "desktop",
+    "os": "windows",
+    "depth": 10,
+    "load_async_ai_overview": true
+   },
+   "result": null
+  }
+ ]
+}

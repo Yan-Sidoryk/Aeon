@@ -1,0 +1,375 @@
+{
+ "version": "0.1.20260917",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "time": "6.2753 sec.",
+ "cost": 0.002,
+ "tasks_count": 1,
+ "tasks_error": 0,
+ "tasks": [
+  {
+   "id": "09261343-2286-0139-0000-ce6b1b77588a",
+   "status_code": 20000,
+   "status_message": "Ok.",
+   "time": "5.3286 sec.",
+   "cost": 0.002,
+   "result_count": 1,
+   "path": [
+    "v3",
+    "serp",
+    "google",
+    "organic",
+    "live",
+    "advanced"
+   ],
+   "data": {
+    "api": "serp",
+    "function": "live",
+    "se": "google",
+    "se_type": "organic",
+    "keyword": "what is opzelura cream",
+    "location_code": 2840,
+    "language_code": "en",
+    "device": "desktop",
+    "os": "windows",
+    "depth": 10,
+    "load_async_ai_overview": true
+   },
+   "result": [
+    {
+     "keyword": "what is opzelura cream",
+     "type": "organic",
+     "se_domain": "google.com",
+     "location_code": 2840,
+     "language_code": "en",
+     "check_url": "https://www.google.com/search?q=what%20is%20opzelura%20cream&hl=en&gl=US&ie=UTF-8&uule=w+CAIQIFISCQs2MuSEtepUEUK33kOSuTsc",
+     "datetime": "2026-09-26 13:43:19 +00:00",
+     "spell": null,
+     "refinement_chips": null,
+     "item_types": [
+      "ai_overview",
+      "organic",
+      "people_also_ask"
+     ],
+     "se_results_count": 10,
+     "pages_count": 1,
+     "items_count": 11,
+     "items": [
+      {
+       "type": "ai_overview",
+       "rank_group": 1,
+       "rank_absolute": 1,
+       "page": 1,
+       "position": "left",
+       "asynchronous_ai_overview": false,
+       "markdown": "**Opzelura** (ruxolitinib) 1.5% is `a prescription topical cream applied to the skin to treat mild-to-moderate eczema and nonsegmental vitiligo`.[[1]](https://www.drugs.com/opzelura.html)[[2]](https://nationaleczema.org/treatments/drug-faq/ruxolitinib-faq/)\n\n### What It Treats\n\n- **Eczema (Atopic Dermatitis):** Used for short-term and non-continuous chronic treatment in adults and children aged 2 years and older whose condition is not well-controlled by other prescription topical treatments.[[1]](https://www.opzelura.com/)\n- **Vitiligo:** Used for the treatment of nonsegmental vitiligo (a condition causing patches of skin to lose their color) in adults and children aged 12 years and older to help restore skin pigmentation.[[1]](https://investor.incyte.com/news-releases/news-release-details/incyte-announces-us-fda-approval-opzeluratm-ruxolitinib-cream-0)[[2]](https://www.opzelura.com/)\n\n### How It Works\n\n- **JAK Inhibitor:** It belongs to a class of medications called Janus kinase (JAK) inhibitors, specifically targeting JAK1 and JAK2.\n- **Calming Immunity:** It blocks overactive immune system pathways and chemical messengers (cytokines) that drive inflammation, itching, and the loss of skin pigment.[[1]](https://www.webmd.com/drugs/opzelura-ruxolitinib)[[2]](https://www.drugs.com/opzelura.html)[[3]](https://dailymed.nlm.nih.gov/dailymed/medguide.cfm?setid=24da5509-6631-4795-9d42-273faecd08e7)\n\n### Important Safety Information\n\n- **External Use Only:** Opzelura is meant for application on the skin only. It should not be used in the eyes, mouth, or vagina.[[1]](https://www.opzelura.com/atopic-dermatitis/what-is-opzelura)\n- **Boxed Warnings:** Because it affects the immune system, JAK inhibitors carry warnings for serious risks, including serious infections, increased risk of cancer, blood clots, and major cardiovascular events (mostly studied with oral forms).[[1]](https://www.opzelura.com/atopic-dermatitis/safety-side-effects)[[2]](https://www.drugs.com/opzelura.html)[[3]](https://dailymed.nlm.nih.gov/dailymed/medguide.cfm?setid=24da5509-6631-4795-9d42-273faecd08e7)\n- **Combination Restrictions:** It should not be used at the same time as therapeutic biologics, other JAK inhibitors, or strong immunosuppressants like cyclosporine or azathioprine.[[1]](https://www.opzelura.com/atopic-dermatitis/what-is-opzelura)\n\nIf you'd like, let me know:\n\n- Are you considering Opzelura for **eczema** or **vitiligo**?\n- Do you have any specific **questions about side effects or usage**?\n\nI can provide more targeted information for your situation.",
+       "items": [
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": null,
+         "text": "Opzelura (ruxolitinib) 1.5% is a prescription topical cream applied to the skin to treat mild-to-moderate eczema and nonsegmental vitiligo.",
+         "markdown": "**Opzelura** (ruxolitinib) 1.5% is `a prescription topical cream applied to the skin to treat mild-to-moderate eczema and nonsegmental vitiligo`.[[1]](https://www.drugs.com/opzelura.html)[[2]](https://nationaleczema.org/treatments/drug-faq/ruxolitinib-faq/)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Drugs.com",
+           "domain": "www.drugs.com",
+           "url": "https://www.drugs.com/opzelura.html",
+           "title": "Opzelura: Uses, Dosage, Side Effects, Warnings",
+           "text": "Opzelura works by blocking two enzymes, JAK1 and JAK2, in a cell-signaling relay called the JAK-STAT pathway. Your immune system s..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "National Eczema Association",
+           "domain": "nationaleczema.org",
+           "url": "https://nationaleczema.org/treatments/drug-faq/ruxolitinib-faq/",
+           "title": "Opzelura (Ruxolitinib) Cream FAQ",
+           "text": "Opzelura (Ruxolitinib) Cream FAQ * What is Opzelura? Opzelura (ruxolitinib 1.5%) cream is a topical selective Janus kinase (JAK) i..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "What It Treats",
+         "text": "Eczema (Atopic Dermatitis): Used for short-term and non-continuous chronic treatment in adults and children aged 2 years and older whose condition is not well-controlled by other prescription topical treatments. Vitiligo: Used for the treatment of nonsegmental vitiligo (a condition causing patches of skin to lose their color) in adults and children aged 12 years and older to help restore skin pigmentation.",
+         "markdown": "- **Eczema (Atopic Dermatitis):** Used for short-term and non-continuous chronic treatment in adults and children aged 2 years and older whose condition is not well-controlled by other prescription topical treatments.[[1]](https://www.opzelura.com/)\n- **Vitiligo:** Used for the treatment of nonsegmental vitiligo (a condition causing patches of skin to lose their color) in adults and children aged 12 years and older to help restore skin pigmentation.[[1]](https://investor.incyte.com/news-releases/news-release-details/incyte-announces-us-fda-approval-opzeluratm-ruxolitinib-cream-0)[[2]](https://www.opzelura.com/)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "OPZELURA",
+           "domain": "www.opzelura.com",
+           "url": "https://www.opzelura.com/",
+           "title": "OPZELURA\u00ae (ruxolitinib) | Patient Information",
+           "text": "OPZELURA is a prescription medicine used on the skin (topical) for: short-term and non-continuous chronic treatment of mild to mod..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Incyte.com",
+           "domain": "investor.incyte.com",
+           "url": "https://investor.incyte.com/news-releases/news-release-details/incyte-announces-us-fda-approval-opzeluratm-ruxolitinib-cream-0",
+           "title": "Incyte Announces U.S. FDA Approval of Opzelura\u2122 (ruxolitinib) Cream ...",
+           "text": "Incyte Announces U.S. FDA Approval of Opzelura\u2122 (ruxolitinib) Cream for the Treatment of Vitiligo * WILMINGTON, Del. --(BUSINESS W..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "OPZELURA",
+           "domain": "www.opzelura.com",
+           "url": "https://www.opzelura.com/",
+           "title": "OPZELURA\u00ae (ruxolitinib) | Patient Information",
+           "text": "OPZELURA is a prescription medicine used on the skin (topical) for: short-term and non-continuous chronic treatment of mild to mod..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "How It Works",
+         "text": "JAK Inhibitor: It belongs to a class of medications called Janus kinase (JAK) inhibitors, specifically targeting JAK1 and JAK2. Calming Immunity: It blocks overactive immune system pathways and chemical messengers (cytokines) that drive inflammation, itching, and the loss of skin pigment.",
+         "markdown": "- **JAK Inhibitor:** It belongs to a class of medications called Janus kinase (JAK) inhibitors, specifically targeting JAK1 and JAK2.\n- **Calming Immunity:** It blocks overactive immune system pathways and chemical messengers (cytokines) that drive inflammation, itching, and the loss of skin pigment.[[1]](https://www.webmd.com/drugs/opzelura-ruxolitinib)[[2]](https://www.drugs.com/opzelura.html)[[3]](https://dailymed.nlm.nih.gov/dailymed/medguide.cfm?setid=24da5509-6631-4795-9d42-273faecd08e7)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "WebMD",
+           "domain": "www.webmd.com",
+           "url": "https://www.webmd.com/drugs/opzelura-ruxolitinib",
+           "title": "Opzelura (Ruxolitinib): Uses, Side Effects, Interactions ... - WebMD",
+           "text": "Opzelura (Ruxolitinib) - Uses, Side Effects, and More. ... Overview: Opzelura is a cream that is applied to the skin to treat atop..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Drugs.com",
+           "domain": "www.drugs.com",
+           "url": "https://www.drugs.com/opzelura.html",
+           "title": "Opzelura: Uses, Dosage, Side Effects, Warnings",
+           "text": "Opzelura works by blocking two enzymes, JAK1 and JAK2, in a cell-signaling relay called the JAK-STAT pathway. Your immune system s..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "DailyMed (.gov)",
+           "domain": "dailymed.nlm.nih.gov",
+           "url": "https://dailymed.nlm.nih.gov/dailymed/medguide.cfm?setid=24da5509-6631-4795-9d42-273faecd08e7",
+           "title": "OPZELURA is for use on the skin only. Do not use ... - DailyMed",
+           "text": "These highlights do not include all the information needed to use OPZELURA cream safely and effectively. See full prescribing info..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "Important Safety Information",
+         "text": "External Use Only: Opzelura is meant for application on the skin only. It should not be used in the eyes, mouth, or vagina. Boxed Warnings: Because it affects the immune system, JAK inhibitors carry warnings for serious risks, including serious infections, increased risk of cancer, blood clots, and major cardiovascular events (mostly studied with oral forms). Combination Restrictions: It should not be used at the same time as therapeutic biologics, other JAK inhibitors, or strong immunosuppressants like cyclosporine or azathioprine.",
+         "markdown": "- **External Use Only:** Opzelura is meant for application on the skin only. It should not be used in the eyes, mouth, or vagina.[[1]](https://www.opzelura.com/atopic-dermatitis/what-is-opzelura)\n- **Boxed Warnings:** Because it affects the immune system, JAK inhibitors carry warnings for serious risks, including serious infections, increased risk of cancer, blood clots, and major cardiovascular events (mostly studied with oral forms).[[1]](https://www.opzelura.com/atopic-dermatitis/safety-side-effects)[[2]](https://www.drugs.com/opzelura.html)[[3]](https://dailymed.nlm.nih.gov/dailymed/medguide.cfm?setid=24da5509-6631-4795-9d42-273faecd08e7)\n- **Combination Restrictions:** It should not be used at the same time as therapeutic biologics, other JAK inhibitors, or strong immunosuppressants like cyclosporine or azathioprine.[[1]](https://www.opzelura.com/atopic-dermatitis/what-is-opzelura)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "OPZELURA",
+           "domain": "www.opzelura.com",
+           "url": "https://www.opzelura.com/atopic-dermatitis/what-is-opzelura",
+           "title": "What is OPZELURA\u00ae (ruxolitinib)? | Atopic Dermatitis Cream",
+           "text": "OPZELURA is a prescription medicine used on the skin (topical) for: short-term and non-continuous chronic treatment of mild to mod..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "OPZELURA",
+           "domain": "www.opzelura.com",
+           "url": "https://www.opzelura.com/atopic-dermatitis/safety-side-effects",
+           "title": "Side Effects | Atopic Dermatitis | OPZELURA\u00ae (ruxolitinib)",
+           "text": "OPZELURA was studied in people as young as 2 years old OPZELURA may cause serious side effects including serious infections, cance..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Drugs.com",
+           "domain": "www.drugs.com",
+           "url": "https://www.drugs.com/opzelura.html",
+           "title": "Opzelura: Uses, Dosage, Side Effects, Warnings",
+           "text": "Opzelura works by blocking two enzymes, JAK1 and JAK2, in a cell-signaling relay called the JAK-STAT pathway. Your immune system s..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "DailyMed (.gov)",
+           "domain": "dailymed.nlm.nih.gov",
+           "url": "https://dailymed.nlm.nih.gov/dailymed/medguide.cfm?setid=24da5509-6631-4795-9d42-273faecd08e7",
+           "title": "OPZELURA is for use on the skin only. Do not use ... - DailyMed",
+           "text": "These highlights do not include all the information needed to use OPZELURA cream safely and effectively. See full prescribing info..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": null,
+         "text": "If you'd like, let me know:Are you considering Opzelura for eczema or vitiligo ?\nDo you have any specific questions about side effects or usage ?\nI can provide more targeted information for your situation.",
+         "markdown": "If you'd like, let me know:\n\n- Are you considering Opzelura for **eczema** or **vitiligo**?\n- Do you have any specific **questions about side effects or usage**?\n\nI can provide more targeted information for your situation.",
+         "links": null,
+         "images": null,
+         "references": null
+        }
+       ],
+       "references": [
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "OPZELURA",
+         "domain": "www.opzelura.com",
+         "url": "https://www.opzelura.com/atopic-dermatitis/what-is-opzelura",
+         "title": "What is OPZELURA\u00ae (ruxolitinib)? | Atopic Dermatitis Cream",
+         "text": "OPZELURA is a prescription medicine used on the skin (topical) for: short-term and non-continuous chronic treatment of mild to mod..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "OPZELURA",
+         "domain": "www.opzelura.com",
+         "url": "https://www.opzelura.com/",
+         "title": "OPZELURA\u00ae (ruxolitinib) | Patient Information",
+         "text": "OPZELURA is a prescription medicine used on the skin (topical) for: short-term and non-continuous chronic treatment of mild to mod..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "OPZELURA",
+         "domain": "www.opzelura.com",
+         "url": "https://www.opzelura.com/atopic-dermatitis/safety-side-effects",
+         "title": "Side Effects | Atopic Dermatitis | OPZELURA\u00ae (ruxolitinib)",
+         "text": "OPZELURA was studied in people as young as 2 years old OPZELURA may cause serious side effects including serious infections, cance..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "WebMD",
+         "domain": "www.webmd.com",
+         "url": "https://www.webmd.com/drugs/opzelura-ruxolitinib",
+         "title": "Opzelura (Ruxolitinib): Uses, Side Effects, Interactions ... - WebMD",
+         "text": "Opzelura (Ruxolitinib) - Uses, Side Effects, and More. ... Overview: Opzelura is a cream that is applied to the skin to treat atop..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "Drugs.com",
+         "domain": "www.drugs.com",
+         "url": "https://www.drugs.com/opzelura.html",
+         "title": "Opzelura: Uses, Dosage, Side Effects, Warnings",
+         "text": "Opzelura works by blocking two enzymes, JAK1 and JAK2, in a cell-signaling relay called the JAK-STAT pathway. Your immune system s..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "DailyMed (.gov)",
+         "domain": "dailymed.nlm.nih.gov",
+         "url": "https://dailymed.nlm.nih.gov/dailymed/medguide.cfm?setid=24da5509-6631-4795-9d42-273faecd08e7",
+         "title": "OPZELURA is for use on the skin only. Do not use ... - DailyMed",
+         "text": "These highlights do not include all the information needed to use OPZELURA cream safely and effectively. See full prescribing info..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "National Eczema Association",
+         "domain": "nationaleczema.org",
+         "url": "https://nationaleczema.org/treatments/drug-faq/ruxolitinib-faq/",
+         "title": "Opzelura (Ruxolitinib) Cream FAQ",
+         "text": "Opzelura (Ruxolitinib) Cream FAQ * What is Opzelura? Opzelura (ruxolitinib 1.5%) cream is a topical selective Janus kinase (JAK) i..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "Incyte.com",
+         "domain": "investor.incyte.com",
+         "url": "https://investor.incyte.com/news-releases/news-release-details/incyte-announces-us-fda-approval-opzeluratm-ruxolitinib-cream-0",
+         "title": "Incyte Announces U.S. FDA Approval of Opzelura\u2122 (ruxolitinib) Cream ...",
+         "text": "Incyte Announces U.S. FDA Approval of Opzelura\u2122 (ruxolitinib) Cream for the Treatment of Vitiligo * WILMINGTON, Del. --(BUSINESS W..."
+        }
+       ]
+      },
+      {
+       "type": "people_also_ask",
+       "rank_group": 1,
+       "rank_absolute": 3,
+       "page": 1,
+       "position": "left",
+       "items": [
+        {
+         "type": "people_also_ask_element",
+         "title": "How long does it take for Opzelura to start working?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "How much does Opzelura cream typically cost?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "What are the serious side effects of Opzelura?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[3]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "Why is Opzelura cream so expensive?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[4]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
