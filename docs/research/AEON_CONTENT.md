@@ -40,7 +40,13 @@ Rules for all copy on the page:
     - GEO for pharma: the guide
     - AEO for pharma
     - Methodology
-- Right: `Start your free report` (royal blue pill), `Sign in` (sand pill)
+- Right: `Start your free report` (royal blue pill; `Free report` below 375px), `Sign in` (sand pill)
+- Mega-menu panels (7shifts panel anatomy): titles `Run the whole loop in one place` (Platform),
+  `Built for every team that touches the brand` (Built for), `Research on AI answers in pharma` (Research);
+  Platform cards Track / Verify / Fix / Review / Audit with feature links (Visibility tracking, Prompt libraries,
+  Citation map, Accuracy vs. label, Side-by-side view, Safety signals, Content fixes, Recommendations,
+  Claims library, AI pre-MLR review, Claim-to-source, Veeva export, Technical SEO, ISI & PDF checks, HCP gate checks);
+  bottom bar `Running a whole portfolio? Book a walkthrough with our team.`
 
 ## 3. Hero
 - Eyebrow (handwritten): `More than rank tracking`
@@ -101,7 +107,7 @@ Rules for all copy on the page:
 
 ## 7. Coverage (7shifts: "Works with the tools you already love" glass card over fixed photo)
 - Fixed page background photo: `/images/photos/pharmacy-night.webp`
-- H2: `Tracks the engines your audience actually asks`
+- H2: `Tracks every engine your audience asks`
 - Chips: `General LLMs` `Clinical LLMs` `AI search` `Label data` `MLR workflow` `SEO data`
 - Scrolling tiles (text wordmarks): ChatGPT, Claude, Gemini, Perplexity, Copilot, Meta AI, Grok, Mistral, Google AI Overviews, OpenEvidence, DailyMed, openFDA, Veeva PromoMats, Semrush, Ahrefs, Google Search Console
 - CTA: `See coverage`
@@ -117,7 +123,7 @@ Rules for all copy on the page:
 - H3: `Built for every team that touches the brand`
 - Persona cards (photo + overlay title; hover reveals the one-liner):
   - `Win back lost prompts` · Brand & digital marketing · `/images/photos/persona-brand.webp` · "See where competitors are recommended and you are not, then ship the fix."
-  - `Catch wrong-dose answers` · Medical affairs · `/images/photos/persona-medical.webp` · "AI sentence next to the label sentence, routed to medical information."
+  - `Catch wrong doses` · Medical affairs · `/images/photos/persona-medical.webp` · "AI sentence next to the label sentence, routed to medical information."
   - `Review, don't rewrite` · Regulatory & MLR · `/images/photos/persona-regulatory.webp` · "Drafts arrive claim-referenced with a pre-MLR risk score."
   - `Run every client brand` · Agencies · `/images/photos/persona-agency.webp` · "One website-in flow per client, one multi-brand overview."
 - Lime marquee (therapeutic areas, doodles in `/images/doodles/ta-*.png`): Obesity (`ta-obesity`), Immunology (`ta-immunology`), Oncology (`ta-oncology`), Neurology (`ta-neurology`), Cardiology (`ta-cardiology`), Women's health (`ta-womens-health`), Dermatology (`ta-dermatology`)
@@ -142,7 +148,7 @@ Rules for all copy on the page:
 7. **Is the first report really free?** Yes. The first scan needs only your company website. We ask for a work email when you want to save the report and track it weekly.
 
 ## 11. Final CTA (7shifts: royal-blue panel + scrolling review cards)
-- H2: `Explore your brand's visibility` / `[in the AI search era]` (bracketed part in lime)
+- H2: `Explore your brand` / `[in the AI search era]` (bracketed part in lime)
 - Buttons: `Start your free report` (sand pill), `Book a walkthrough` (white outline pill)
 - Scrolling stat cards (white, replace review cards; product facts from the PRD, no ratings):
   - `5 min` · `to your first report`
