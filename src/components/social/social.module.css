@@ -1,9 +1,9 @@
 /*
- * Polaroid stack drop-in, measured on 7shifts (framer-motion whileInView, once):
- * each polaroid and the sticker go from { opacity: 0; y: -60px } to { opacity: 1; y: 0 } in 550ms with framer's
+ * Answer-card stack drop-in, measured on 7shifts' polaroid stack (framer-motion whileInView, once):
+ * each card and the sticker go from { opacity: 0; y: -60px } to { opacity: 1; y: 0 } in 550ms with framer's
  * spring baked into the linear() curve below (peaks at 1.0533, so y overshoots to +3.2px before settling),
  * staggered 0 / 200 / 400 / 600ms (delay set per item through --drop-delay). The stack reveals once 50% of it is
- * visible (PolaroidStack sets data-inview). `translate` is used instead of `transform` so the polaroids' own
+ * visible (AnswerStack sets data-inview). `translate` is used instead of `transform` so the cards' own
  * `rotate` is left alone. The hidden start state only applies when scripting is on and motion is allowed, so
  * no-JS and reduced-motion visitors always see the stack.
  */
