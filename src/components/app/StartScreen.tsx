@@ -1,6 +1,7 @@
 "use client";
 
 import { Globe } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { PillButton } from "@/components/ui/pill-button";
@@ -14,7 +15,7 @@ import { ErrorNote, Eyebrow, Lead, PageTitle, Panel, Screen, inputClass } from "
 const MAX_ROWS = 9;
 
 /** Screen 1, "How does AI talk about your drugs?": one input, then a live checklist while discovery runs. */
-export function StartScreen({ initialUrl }: { initialUrl: string }) {
+export function StartScreen({ initialUrl, sampleReportId }: { initialUrl: string; sampleReportId: string | null }) {
   const router = useRouter();
   const [url, setUrl] = useState(initialUrl);
   const [job, setJob] = useState<OnboardingStart | null>(null);
@@ -106,7 +107,17 @@ export function StartScreen({ initialUrl }: { initialUrl: string }) {
           {submitting ? "Starting…" : "Scan my brands"}
         </PillButton>
       </form>
-      <p className="mt-4 text-[13px] text-stone">US prescription and OTC brands. We read your public pages and openFDA.</p>
+      <p className="mt-4 text-[13px] text-stone">
+        US prescription and OTC brands. We read your public pages and openFDA.
+        {sampleReportId && (
+          <>
+            {" "}
+            <Link href={`/report/${sampleReportId}`} className="font-medium text-royal-dark underline underline-offset-3">
+              See a sample report
+            </Link>
+          </>
+        )}
+      </p>
 
       {job !== null && (
         <Panel className="mx-auto mt-10 max-w-[600px] text-left">
