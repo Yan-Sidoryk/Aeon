@@ -1,0 +1,7 @@
+# The frontend deploy needs none of these. backend/ holds .env with API keys: never upload it.
+backend/
+docs/
+scripts/
+.env
+.env.*
+*.db
