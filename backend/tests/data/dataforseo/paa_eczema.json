@@ -1,0 +1,526 @@
+{
+ "version": "0.1.20260917",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "time": "5.4430 sec.",
+ "cost": 0.0023,
+ "tasks_count": 1,
+ "tasks_error": 0,
+ "tasks": [
+  {
+   "id": "09261343-2286-0139-0000-9ffc3501972a",
+   "status_code": 20000,
+   "status_message": "Ok.",
+   "time": "5.3639 sec.",
+   "cost": 0.0023,
+   "result_count": 1,
+   "path": [
+    "v3",
+    "serp",
+    "google",
+    "organic",
+    "live",
+    "advanced"
+   ],
+   "data": {
+    "api": "serp",
+    "function": "live",
+    "se": "google",
+    "se_type": "organic",
+    "keyword": "eczema treatment",
+    "location_code": 2840,
+    "language_code": "en",
+    "device": "desktop",
+    "os": "windows",
+    "depth": 10,
+    "people_also_ask_click_depth": 2
+   },
+   "result": [
+    {
+     "keyword": "eczema treatment",
+     "type": "organic",
+     "se_domain": "google.com",
+     "location_code": 2840,
+     "language_code": "en",
+     "check_url": "https://www.google.com/search?q=eczema%20treatment&hl=en&gl=US&ie=UTF-8&uule=w+CAIQIFISCQs2MuSEtepUEUK33kOSuTsc",
+     "datetime": "2026-09-26 13:44:00 +00:00",
+     "spell": null,
+     "refinement_chips": null,
+     "item_types": [
+      "ai_overview",
+      "organic",
+      "people_also_ask",
+      "images",
+      "video",
+      "related_searches"
+     ],
+     "se_results_count": 12800,
+     "pages_count": 1,
+     "items_count": 12,
+     "items": [
+      {
+       "type": "ai_overview",
+       "rank_group": 1,
+       "rank_absolute": 1,
+       "page": 1,
+       "position": "left",
+       "asynchronous_ai_overview": false,
+       "markdown": "To treat eczema, use thick, fragrance-free [Moisturizers](https://my.clevelandclinic.org/health/diseases/9998-eczema) applied to damp skin after a short, lukewarm bath.\n\n### Daily Skincare\n\n- **Soak and seal:** Take a 5-to-10-minute bath or shower in warm water, then gently pat dry and apply cream or ointment within three minutes.\n- **Moisturize often:** Apply a thick, fragrance-free cream or ointment multiple times a day to repair your skin barrier.\n- **Avoid harsh soaps:** Use mild, dye-free, and fragrance-free cleansers instead of strong soaps.[[1]](https://nationaleczema.org/treatments/)[[2]](https://www.aad.org/news/how-to-treat-eczema-at-home)[[3]](https://www.youtube.com/watch?v=RoyJQVsQ2ZQ&t=1)[[4]](https://www.youtube.com/watch?v=21BzjhJ2Xtw&t=7)\n\n### Medications\n\n- **Topical steroids:** Apply over-the-counter hydrocortisone 1% or prescription-strength topical corticosteroids to calm redness and swelling.\n- **Non-steroidal topicals:** Use prescription options like calcineurin inhibitors (tacrolimus) or JAK inhibitors if steroids are not ideal.\n- **Oral treatments:** Take antihistamines for nighttime itch relief or talk to a doctor about systemic or biologic drugs for severe cases.[[1]](https://www.mayoclinic.org/diseases-conditions/atopic-dermatitis-eczema/diagnosis-treatment/drc-20353279)[[2]](https://www.goodrx.com/conditions/eczema/current-treatments-mild-severe-eczema)[[3]](https://nyulangone.org/conditions/eczema-dermatitis/treatments/medication-for-eczema-dermatitis)[[4]](https://www.oakderm.com/dermatology-blog/what-is-the-fastest-way-to-heal-eczema)[[5]](https://www.aad.org/public/diseases/eczema/types/atopic-dermatitis/treatment)[[6]](https://www.nationaljewish.org/conditions/eczema/eczema-treatment)\n\n### Trigger Management\n\n- **Wear soft fabrics:** Choose loose, 100% cotton clothing and avoid wool or rough synthetic materials.\n- **Control your environment:** Protect your skin from extreme heat or cold and use gentle, fragrance-free laundry detergents.\n- **Manage stress:** Practice relaxation techniques, as stress can trigger or worsen flare-ups.[[1]](https://www.aad.org/news/how-to-treat-eczema-at-home)[[2]](https://www.youtube.com/watch?v=21BzjhJ2Xtw&t=7)[[3]](https://www.youtube.com/watch?v=T_HbQo5oWak&t=4)[[4]](https://www.dermatologyworcester.com/post/at-home-remedies-to-control-eczema-triggers)\n\nIf you'd like, let me know:\n\n- Is the eczema for an **adult or a child**?\n- What **parts of the body** are affected?\n\nI can give you more specific advice or help you decide when to see a doctor.",
+       "items": [
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": null,
+         "text": "To treat eczema, use thick, fragrance-free Moisturizers applied to damp skin after a short, lukewarm bath.",
+         "markdown": "To treat eczema, use thick, fragrance-free [Moisturizers](https://my.clevelandclinic.org/health/diseases/9998-eczema) applied to damp skin after a short, lukewarm bath.",
+         "links": [
+          {
+           "type": "link_element",
+           "title": "Moisturizers",
+           "description": null,
+           "url": "https://my.clevelandclinic.org/health/diseases/9998-eczema",
+           "domain": "my.clevelandclinic.org"
+          }
+         ],
+         "images": null,
+         "references": null
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "Daily Skincare",
+         "text": "Soak and seal: Take a 5-to-10-minute bath or shower in warm water, then gently pat dry and apply cream or ointment within three minutes. Moisturize often: Apply a thick, fragrance-free cream or ointment multiple times a day to repair your skin barrier. Avoid harsh soaps: Use mild, dye-free, and fragrance-free cleansers instead of strong soaps.",
+         "markdown": "- **Soak and seal:** Take a 5-to-10-minute bath or shower in warm water, then gently pat dry and apply cream or ointment within three minutes.\n- **Moisturize often:** Apply a thick, fragrance-free cream or ointment multiple times a day to repair your skin barrier.\n- **Avoid harsh soaps:** Use mild, dye-free, and fragrance-free cleansers instead of strong soaps.[[1]](https://nationaleczema.org/treatments/)[[2]](https://www.aad.org/news/how-to-treat-eczema-at-home)[[3]](https://www.youtube.com/watch?v=RoyJQVsQ2ZQ&t=1)[[4]](https://www.youtube.com/watch?v=21BzjhJ2Xtw&t=7)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "National Eczema Association",
+           "domain": "nationaleczema.org",
+           "url": "https://nationaleczema.org/treatments/",
+           "title": "Eczema Treatments",
+           "text": "There is no cure for eczema, but there are effective treatments that can help manage and prevent flares. Treatments include: * **B..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "American Academy of Dermatology",
+           "domain": "www.aad.org",
+           "url": "https://www.aad.org/news/how-to-treat-eczema-at-home",
+           "title": "How to treat eczema at home - American Academy of Dermatology",
+           "text": "Take short baths or showers to hydrate your skin. Limit your bath or shower to 5-10 minutes and use warm water. Apply your moistur..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "YouTube",
+           "domain": "www.youtube.com",
+           "url": "https://www.youtube.com/watch?v=RoyJQVsQ2ZQ&t=1",
+           "title": "Treating and Managing Eczema in All Skin of Colors",
+           "text": "Treating and Managing Eczema in All Skin of Colors foreign to Allergy and Asthma Network's learning pathway series. today we're go..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "YouTube",
+           "domain": "www.youtube.com",
+           "url": "https://www.youtube.com/watch?v=21BzjhJ2Xtw&t=7",
+           "title": "Eczema (Atopic Dermatitis) treatment | Tufts Medicine",
+           "text": "Eczema (Atopic Dermatitis) treatment | Tufts Medicine the skin is supposed to protect us from allergens and harsh chemicals. and i..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "Medications",
+         "text": "Topical steroids: Apply over-the-counter hydrocortisone 1% or prescription-strength topical corticosteroids to calm redness and swelling. Non-steroidal topicals: Use prescription options like calcineurin inhibitors (tacrolimus) or JAK inhibitors if steroids are not ideal. Oral treatments: Take antihistamines for nighttime itch relief or talk to a doctor about systemic or biologic drugs for severe cases.",
+         "markdown": "- **Topical steroids:** Apply over-the-counter hydrocortisone 1% or prescription-strength topical corticosteroids to calm redness and swelling.\n- **Non-steroidal topicals:** Use prescription options like calcineurin inhibitors (tacrolimus) or JAK inhibitors if steroids are not ideal.\n- **Oral treatments:** Take antihistamines for nighttime itch relief or talk to a doctor about systemic or biologic drugs for severe cases.[[1]](https://www.mayoclinic.org/diseases-conditions/atopic-dermatitis-eczema/diagnosis-treatment/drc-20353279)[[2]](https://www.goodrx.com/conditions/eczema/current-treatments-mild-severe-eczema)[[3]](https://nyulangone.org/conditions/eczema-dermatitis/treatments/medication-for-eczema-dermatitis)[[4]](https://www.oakderm.com/dermatology-blog/what-is-the-fastest-way-to-heal-eczema)[[5]](https://www.aad.org/public/diseases/eczema/types/atopic-dermatitis/treatment)[[6]](https://www.nationaljewish.org/conditions/eczema/eczema-treatment)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Mayo Clinic",
+           "domain": "www.mayoclinic.org",
+           "url": "https://www.mayoclinic.org/diseases-conditions/atopic-dermatitis-eczema/diagnosis-treatment/drc-20353279",
+           "title": "Atopic dermatitis (eczema) - Diagnosis and treatment - Mayo Clinic",
+           "text": "Apply an anti-itch cream to the affected area. A nonprescription cream containing at least 1% hydrocortisone can temporarily relie..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "GoodRx",
+           "domain": "www.goodrx.com",
+           "url": "https://www.goodrx.com/conditions/eczema/current-treatments-mild-severe-eczema",
+           "title": "How to Treat Mild-to-Severe Eczema - GoodRx",
+           "text": "What is the best OTC treatment for eczema? Emollients and a short course of topical steroids (hydrocortisone 1% ) are the best OTC..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "NYU Langone Health",
+           "domain": "nyulangone.org",
+           "url": "https://nyulangone.org/conditions/eczema-dermatitis/treatments/medication-for-eczema-dermatitis",
+           "title": "Medication for Eczema & Dermatitis | NYU Langone Health",
+           "text": "Many people find that topical medications\u2014creams, gels, or ointments applied directly to the skin\u2014relieve itching and reduce redne..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Oak Dermatology",
+           "domain": "www.oakderm.com",
+           "url": "https://www.oakderm.com/dermatology-blog/what-is-the-fastest-way-to-heal-eczema",
+           "title": "Fastest Ways to Heal Eczema | Expert Tips - Oak Dermatology",
+           "text": "The strongest treatment for eczema often involves prescription-strength medications, including topical corticosteroids and calcine..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "American Academy of Dermatology",
+           "domain": "www.aad.org",
+           "url": "https://www.aad.org/public/diseases/eczema/types/atopic-dermatitis/treatment",
+           "title": "Eczema types: Atopic dermatitis diagnosis and treatment",
+           "text": "Dermatologists recommend moisturizer for everyone who has atopic dermatitis. Keeping your skin well moisturized helps to prevent c..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "National Jewish Health",
+           "domain": "www.nationaljewish.org",
+           "url": "https://www.nationaljewish.org/conditions/eczema/eczema-treatment",
+           "title": "Eczema Treatment | National Jewish Health",
+           "text": "There are many drugs available for treating eczema, including: * **Biologics** These drugs include Dupixent\u00ae and Adbry\u00ae. * **Antib..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "Trigger Management",
+         "text": "Wear soft fabrics: Choose loose, 100% cotton clothing and avoid wool or rough synthetic materials. Control your environment: Protect your skin from extreme heat or cold and use gentle, fragrance-free laundry detergents. Manage stress: Practice relaxation techniques, as stress can trigger or worsen flare-ups.",
+         "markdown": "- **Wear soft fabrics:** Choose loose, 100% cotton clothing and avoid wool or rough synthetic materials.\n- **Control your environment:** Protect your skin from extreme heat or cold and use gentle, fragrance-free laundry detergents.\n- **Manage stress:** Practice relaxation techniques, as stress can trigger or worsen flare-ups.[[1]](https://www.aad.org/news/how-to-treat-eczema-at-home)[[2]](https://www.youtube.com/watch?v=21BzjhJ2Xtw&t=7)[[3]](https://www.youtube.com/watch?v=T_HbQo5oWak&t=4)[[4]](https://www.dermatologyworcester.com/post/at-home-remedies-to-control-eczema-triggers)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "American Academy of Dermatology",
+           "domain": "www.aad.org",
+           "url": "https://www.aad.org/news/how-to-treat-eczema-at-home",
+           "title": "How to treat eczema at home - American Academy of Dermatology",
+           "text": "Take short baths or showers to hydrate your skin. Limit your bath or shower to 5-10 minutes and use warm water. Apply your moistur..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "YouTube",
+           "domain": "www.youtube.com",
+           "url": "https://www.youtube.com/watch?v=21BzjhJ2Xtw&t=7",
+           "title": "Eczema (Atopic Dermatitis) treatment | Tufts Medicine",
+           "text": "Eczema (Atopic Dermatitis) treatment | Tufts Medicine the skin is supposed to protect us from allergens and harsh chemicals. and i..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "YouTube",
+           "domain": "www.youtube.com",
+           "url": "https://www.youtube.com/watch?v=T_HbQo5oWak&t=4",
+           "title": "7 eczema skin care tips from dermatologists",
+           "text": "7 eczema skin care tips from dermatologists attopic dermatitis or eczema can make your skin itchy raw and sensitive to relieve you..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "The Dermatology Center of Worcester",
+           "domain": "www.dermatologyworcester.com",
+           "url": "https://www.dermatologyworcester.com/post/at-home-remedies-to-control-eczema-triggers",
+           "title": "At-Home Remedies to Control Eczema Triggers",
+           "text": "Home remedies to control triggers. The key to controlling eczema is to find out what's causing your flare-ups in the first place \u00b7..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": null,
+         "text": "If you'd like, let me know:Is the eczema for an adult or a child ?\nWhat parts of the body are affected?\nI can give you more specific advice or help you decide when to see a doctor.",
+         "markdown": "If you'd like, let me know:\n\n- Is the eczema for an **adult or a child**?\n- What **parts of the body** are affected?\n\nI can give you more specific advice or help you decide when to see a doctor.",
+         "links": null,
+         "images": null,
+         "references": null
+        }
+       ],
+       "references": [
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "Mayo Clinic",
+         "domain": "www.mayoclinic.org",
+         "url": "https://www.mayoclinic.org/diseases-conditions/atopic-dermatitis-eczema/diagnosis-treatment/drc-20353279",
+         "title": "Atopic dermatitis (eczema) - Diagnosis and treatment - Mayo Clinic",
+         "text": "Apply an anti-itch cream to the affected area. A nonprescription cream containing at least 1% hydrocortisone can temporarily relie..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "National Eczema Association",
+         "domain": "nationaleczema.org",
+         "url": "https://nationaleczema.org/treatments/",
+         "title": "Eczema Treatments",
+         "text": "There is no cure for eczema, but there are effective treatments that can help manage and prevent flares. Treatments include: * **B..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "American Academy of Dermatology",
+         "domain": "www.aad.org",
+         "url": "https://www.aad.org/news/how-to-treat-eczema-at-home",
+         "title": "How to treat eczema at home - American Academy of Dermatology",
+         "text": "Take short baths or showers to hydrate your skin. Limit your bath or shower to 5-10 minutes and use warm water. Apply your moistur..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "GoodRx",
+         "domain": "www.goodrx.com",
+         "url": "https://www.goodrx.com/conditions/eczema/current-treatments-mild-severe-eczema",
+         "title": "How to Treat Mild-to-Severe Eczema - GoodRx",
+         "text": "What is the best OTC treatment for eczema? Emollients and a short course of topical steroids (hydrocortisone 1% ) are the best OTC..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "National Jewish Health",
+         "domain": "www.nationaljewish.org",
+         "url": "https://www.nationaljewish.org/conditions/eczema/eczema-treatment",
+         "title": "Eczema Treatment | National Jewish Health",
+         "text": "There are many drugs available for treating eczema, including: * **Biologics** These drugs include Dupixent\u00ae and Adbry\u00ae. * **Antib..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "YouTube",
+         "domain": "www.youtube.com",
+         "url": "https://www.youtube.com/watch?v=RoyJQVsQ2ZQ&t=1",
+         "title": "Treating and Managing Eczema in All Skin of Colors",
+         "text": "Treating and Managing Eczema in All Skin of Colors foreign to Allergy and Asthma Network's learning pathway series. today we're go..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "NYU Langone Health",
+         "domain": "nyulangone.org",
+         "url": "https://nyulangone.org/conditions/eczema-dermatitis/treatments/medication-for-eczema-dermatitis",
+         "title": "Medication for Eczema & Dermatitis | NYU Langone Health",
+         "text": "Many people find that topical medications\u2014creams, gels, or ointments applied directly to the skin\u2014relieve itching and reduce redne..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "American Academy of Dermatology",
+         "domain": "www.aad.org",
+         "url": "https://www.aad.org/public/diseases/eczema/types/atopic-dermatitis/treatment",
+         "title": "Eczema types: Atopic dermatitis diagnosis and treatment",
+         "text": "Dermatologists recommend moisturizer for everyone who has atopic dermatitis. Keeping your skin well moisturized helps to prevent c..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "YouTube",
+         "domain": "www.youtube.com",
+         "url": "https://www.youtube.com/watch?v=21BzjhJ2Xtw&t=7",
+         "title": "Eczema (Atopic Dermatitis) treatment | Tufts Medicine",
+         "text": "Eczema (Atopic Dermatitis) treatment | Tufts Medicine the skin is supposed to protect us from allergens and harsh chemicals. and i..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "Oak Dermatology",
+         "domain": "www.oakderm.com",
+         "url": "https://www.oakderm.com/dermatology-blog/what-is-the-fastest-way-to-heal-eczema",
+         "title": "Fastest Ways to Heal Eczema | Expert Tips - Oak Dermatology",
+         "text": "The strongest treatment for eczema often involves prescription-strength medications, including topical corticosteroids and calcine..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "The Dermatology Center of Worcester",
+         "domain": "www.dermatologyworcester.com",
+         "url": "https://www.dermatologyworcester.com/post/at-home-remedies-to-control-eczema-triggers",
+         "title": "At-Home Remedies to Control Eczema Triggers",
+         "text": "Home remedies to control triggers. The key to controlling eczema is to find out what's causing your flare-ups in the first place \u00b7..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "YouTube",
+         "domain": "www.youtube.com",
+         "url": "https://www.youtube.com/watch?v=T_HbQo5oWak&t=4",
+         "title": "7 eczema skin care tips from dermatologists",
+         "text": "7 eczema skin care tips from dermatologists attopic dermatitis or eczema can make your skin itchy raw and sensitive to relieve you..."
+        }
+       ]
+      },
+      {
+       "type": "people_also_ask",
+       "rank_group": 1,
+       "rank_absolute": 3,
+       "page": 1,
+       "position": "left",
+       "items": [
+        {
+         "type": "people_also_ask_element",
+         "title": "What heals eczema fast?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "Which cream is best for eczema?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "Why is my eczema so itchy?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[3]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "What can I do if nothing is helping my eczema?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[4]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "What is mostly mistaken for eczema?",
+         "seed_question": "What can I do if nothing is helping my eczema?",
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[5]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "What kills eczema bacteria naturally?",
+         "seed_question": "What can I do if nothing is helping my eczema?",
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[6]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "What not to put on eczema?",
+         "seed_question": "What kills eczema bacteria naturally?",
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[7]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "What to drink to clear eczema?",
+         "seed_question": "What kills eczema bacteria naturally?",
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[8]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "What do Chinese people use for eczema?",
+         "seed_question": "What kills eczema bacteria naturally?",
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[2]/div[3]/div[1]/div[1]/div[1]/div[1]/div[2]/div[9]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "type": "related_searches",
+       "rank_group": 1,
+       "rank_absolute": 12,
+       "page": 1,
+       "position": "left",
+       "items": [
+        "Eczema treatment cream",
+        "How to cure eczema permanently",
+        "Natural eczema treatment",
+        "Eczema treatment pill",
+        "Eczema treatment for kids",
+        "Eczema treatment for baby",
+        "Eczema treatment at home",
+        "Best eczema treatment"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

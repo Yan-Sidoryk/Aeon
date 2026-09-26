@@ -11,7 +11,7 @@ from pathlib import Path
 from sqlmodel import Session, select
 
 from app.db import engine
-from app.events import Job
+from app.jobs import JobContext as Job
 from app.models import Answer, Company, Competitor, Draft, Product, Prompt, Report, Scan
 from app.services.report import aggregate
 

@@ -80,3 +80,14 @@ async def build_setup(session: Session, product: Product) -> None:
         for p in prompts
     )
     session.commit()
+
+
+async def run_setup(job, session: Session, product: Product) -> None:
+    """Background job for screen 4: competitors + questions, with step events for the UI."""
+    job.emit("step", {"key": "competitors", "label": "Finding competitors with the same indication…", "status": "active"})
+    await build_setup(session, product)
+    n_comp = len(session.exec(select(Competitor).where(Competitor.product_id == product.id)).all())
+    n_q = len(session.exec(select(Prompt).where(Prompt.product_id == product.id)).all())
+    job.emit("step", {"key": "competitors", "label": f"Found {n_comp} competitors", "status": "done"})
+    job.emit("step", {"key": "questions", "label": f"Wrote {n_q} questions", "status": "done"})
+    job.finish("done", {"product_id": product.id})

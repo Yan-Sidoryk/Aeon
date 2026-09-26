@@ -7,7 +7,7 @@ from sqlmodel import Session
 from app import llm
 from app.config import settings
 from app.db import engine
-from app.events import Job
+from app.jobs import JobContext as Job
 from app.models import Draft, Product, Report
 from app.schemas import DraftOut
 from app.services import premlr

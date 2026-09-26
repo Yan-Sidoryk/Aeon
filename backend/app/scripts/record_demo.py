@@ -11,7 +11,7 @@ from sqlmodel import Session, select
 
 from app.db import engine, init_db
 from app.engines.registry import enabled_engines
-from app.events import create_job
+from app.jobs import LocalJob
 from app.models import Company, Org, Product, Prompt, Report, Scan
 from app.services import demo, discovery, fix, scan, setup
 
@@ -26,7 +26,7 @@ async def discover(url: str) -> int:
         s.add(company)
         s.commit()
         company_id = company.id
-    job = create_job("rec-discovery")
+    job = LocalJob("rec-discovery")
     await discovery.run_discovery(job, company_id, url)
     print(*[e["data"] for e in job.events], sep="\n")
     return company_id
@@ -49,7 +49,7 @@ async def main(company_id: int, hero_brand: str | None = None) -> None:
         s.commit()
         scan_id = sc.id
 
-    job = create_job("rec-scan")
+    job = LocalJob("rec-scan")
     await scan.run_scan(job, scan_id, enabled_engines())
     print(job.events[-1])
 

@@ -1,0 +1,448 @@
+{
+ "version": "0.1.20260917",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "time": "8.0137 sec.",
+ "cost": 0.004,
+ "tasks_count": 1,
+ "tasks_error": 0,
+ "tasks": [
+  {
+   "id": "09261342-2286-0139-0000-cf6c8389ef2b",
+   "status_code": 20000,
+   "status_message": "Ok.",
+   "time": "7.8734 sec.",
+   "cost": 0.004,
+   "result_count": 1,
+   "path": [
+    "v3",
+    "serp",
+    "google",
+    "organic",
+    "live",
+    "advanced"
+   ],
+   "data": {
+    "api": "serp",
+    "function": "live",
+    "se": "google",
+    "se_type": "organic",
+    "keyword": "best treatment for moderate eczema in kids",
+    "location_code": 2840,
+    "language_code": "en",
+    "device": "desktop",
+    "os": "windows",
+    "depth": 10,
+    "load_async_ai_overview": true
+   },
+   "result": [
+    {
+     "keyword": "best treatment for moderate eczema in kids",
+     "type": "organic",
+     "se_domain": "google.com",
+     "location_code": 2840,
+     "language_code": "en",
+     "check_url": "https://www.google.com/search?q=best%20treatment%20for%20moderate%20eczema%20in%20kids&hl=en&gl=US&ie=UTF-8&uule=w+CAIQIFISCQs2MuSEtepUEUK33kOSuTsc",
+     "datetime": "2026-09-26 13:42:43 +00:00",
+     "spell": null,
+     "refinement_chips": null,
+     "item_types": [
+      "ai_overview",
+      "organic",
+      "people_also_ask",
+      "discussions_and_forums"
+     ],
+     "se_results_count": 145000,
+     "pages_count": 1,
+     "items_count": 11,
+     "items": [
+      {
+       "type": "ai_overview",
+       "rank_group": 1,
+       "rank_absolute": 1,
+       "page": 1,
+       "position": "left",
+       "asynchronous_ai_overview": true,
+       "markdown": "The best treatment for moderate eczema in kids is `a daily routine of thick, fragrance-free moisturizers combined with prescription mid-strength [12] topical corticosteroids or non-steroid creams` [12] to control flare-ups.[[1]](https://happyskindermatology.com/2025/03/07/best-products-for-eczema-treatment-for-infants/)[[2]](https://pmc.ncbi.nlm.nih.gov/articles/PMC8128359/)[[3]](https://paedicare.com.au/eczema-children/)\n\n### Daily Skin Care Routine\n\n- **Emollients (Moisturizers):** Apply thick creams or ointments (like CeraV e or Aquaphor ) multiple times a day and immediately after bathing to lock in water.\n- **Bathing:** Give your child short, lukewarm baths using soap-free, fragrance-free cleansers, then gently pat the skin dry.[[1]](https://www.akronchildrens.org/kidshealth/en/parents/eczema-atopic-dermatitis.html)[[2]](https://a-zpeds.com/managing-childhood-eczema-in-the-preschool-years/)[[3]](https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children)[[4]](https://mydoctor.kaiserpermanente.org/mas/structured-content/Condition_Eczema_Derm.xml?co=%2Fregions%2Fmas)[[5]](https://www.youtube.com/watch?v=DId8ky-76hA&t=119)\n\n### Medical Treatments for Flares\n\n- **Topical Corticosteroids:** A doctor may prescribe a moderate-strength prescription steroid cream or ointment to reduce redness and swelling during a flare.[[1]](https://ubiehealth.com/doctors-note/eczema-rash-flare-persists-causes-relief-action-57)[[2]](https://www.brooklynbridgepediatrics.com/medical-conditions/eczema-atopic-dermatitis-and-your-child)\n- **Topical Calcineurin Inhibitors:** Non-steroid prescription creams [12] (like tacrolimus or pimecrolimus) can treat sensitive areas like the face or neck without the risk of skin thinning from long-term steroid use.[[1]](https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children)\n- **Wet Wrap Therapy:** Damp cotton layers wrapped over moisturizers and medication can soothe severe or stubborn flare-ups.[[1]](https://a-zpeds.com/managing-childhood-eczema-in-the-preschool-years/)[[2]](https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children)\n\n### Managing Triggers\n\n- **Clothing:** Dress your child in soft, breathable cotton and avoid scratchy wool or polyester.\n- **Nails:** Keep your child's fingernails short or use cotton mittens at night to prevent skin damage and secondary infection from scratching.\n- **Environment:** Identify and avoid known irritants such as scented soaps, harsh laundry detergents, or extreme temperature changes.[[1]](https://mydoctor.kaiserpermanente.org/mas/structured-content/Condition_Eczema_Derm.xml?co=%2Fregions%2Fmas)[[2]](https://www.akronchildrens.org/kidshealth/en/parents/eczema-atopic-dermatitis.html)[[3]](https://www.youtube.com/watch?v=DId8ky-76hA&t=119)[[4]](https://a-zpeds.com/managing-childhood-eczema-in-the-preschool-years/)[[5]](https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children)\n\nIf you want, tell me:\n\n- Your child's **age** \n- **Where** the eczema patches are located on their body\n- What **treatments** you have already tried\n\nI can give you more specific guidance for your situation.",
+       "items": [
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": null,
+         "text": "The best treatment for moderate eczema in kids is a daily routine of thick, fragrance-free moisturizers combined with prescription mid-strength [12] topical corticosteroids or non-steroid creams [12] to control flare-ups.",
+         "markdown": "The best treatment for moderate eczema in kids is `a daily routine of thick, fragrance-free moisturizers combined with prescription mid-strength [12] topical corticosteroids or non-steroid creams` [12] to control flare-ups.[[1]](https://happyskindermatology.com/2025/03/07/best-products-for-eczema-treatment-for-infants/)[[2]](https://pmc.ncbi.nlm.nih.gov/articles/PMC8128359/)[[3]](https://paedicare.com.au/eczema-children/)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Happy Skin Pediatric Dermatology",
+           "domain": "happyskindermatology.com",
+           "url": "https://happyskindermatology.com/2025/03/07/best-products-for-eczema-treatment-for-infants/",
+           "title": "Best Products for Eczema Treatment for Infants | Happy Skin, PLLC",
+           "text": "Prescribed treatments may include: * Corticosteroid Creams. Topical corticosteroid creams and ointments can reduce inflammation an..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "National Institutes of Health (NIH) | (.gov)",
+           "domain": "pmc.ncbi.nlm.nih.gov",
+           "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8128359/",
+           "title": "Systemic treatments for eczema: a network meta\u2010analysis",
+           "text": "Why this question is important Eczema is a persistent condition that causes dry, cracked, and itchy skin. People with mild eczema ..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Paedicare",
+           "domain": "paedicare.com.au",
+           "url": "https://paedicare.com.au/eczema-children/",
+           "title": "Eczema in children | Paedicare Paediatricians",
+           "text": "... harsh soaps; bath water that is too hot; aggressive rubbing with towel after bath (pat rather than wipe). Read additional info..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "Daily Skin Care Routine",
+         "text": "Emollients (Moisturizers): Apply thick creams or ointments (like CeraV e or Aquaphor ) multiple times a day and immediately after bathing to lock in water. Bathing: Give your child short, lukewarm baths using soap-free, fragrance-free cleansers, then gently pat the skin dry.",
+         "markdown": "- **Emollients (Moisturizers):** Apply thick creams or ointments (like CeraV e or Aquaphor ) multiple times a day and immediately after bathing to lock in water.\n- **Bathing:** Give your child short, lukewarm baths using soap-free, fragrance-free cleansers, then gently pat the skin dry.[[1]](https://www.akronchildrens.org/kidshealth/en/parents/eczema-atopic-dermatitis.html)[[2]](https://a-zpeds.com/managing-childhood-eczema-in-the-preschool-years/)[[3]](https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children)[[4]](https://mydoctor.kaiserpermanente.org/mas/structured-content/Condition_Eczema_Derm.xml?co=%2Fregions%2Fmas)[[5]](https://www.youtube.com/watch?v=DId8ky-76hA&t=119)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Akron Children's",
+           "domain": "www.akronchildrens.org",
+           "url": "https://www.akronchildrens.org/kidshealth/en/parents/eczema-atopic-dermatitis.html",
+           "title": "For parents: Eczema (Atopic Dermatitis) - Akron Children's",
+           "text": "How Can Parents Help? Help prevent or treat eczema by keeping your child's skin from getting dry or itchy and avoiding triggers th..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "a-zpeds.com",
+           "domain": "a-zpeds.com",
+           "url": "https://a-zpeds.com/managing-childhood-eczema-in-the-preschool-years/",
+           "title": "Managing Childhood Eczema: Expert Tips for Parents",
+           "text": "Skincare Routine Establishing a consistent skincare routine is crucial for managing eczema in preschoolers. Start with gentle clea..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "CityMD",
+           "domain": "www.citymd.com",
+           "url": "https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children",
+           "title": "Sensitive skin SOS: a comprehensive guide to eczema in ...",
+           "text": "Topical steroids. These creams or ointments help reduce inflammation and relieve itching. It's crucial to use them as prescribed b..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Kaiser Permanente",
+           "domain": "mydoctor.kaiserpermanente.org",
+           "url": "https://mydoctor.kaiserpermanente.org/mas/structured-content/Condition_Eczema_Derm.xml?co=%2Fregions%2Fmas",
+           "title": "Eczema (Atopic Dermatitis) - My Doctor Online",
+           "text": "We'll examine your rash and ask about your symptoms and family history. Home Treatment There isn't a cure for eczema. Treatment ca..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "YouTube",
+           "domain": "www.youtube.com",
+           "url": "https://www.youtube.com/watch?v=DId8ky-76hA&t=119",
+           "title": "Eczema in Kids | Dr Gurmeet Soni Bhalla | Causes, Symptoms ...",
+           "text": "Eczema in Kids | Dr Gurmeet Soni Bhalla | Causes, Symptoms & Treatment of Atopic Dermatitis | RxDx it's actually that some foods c..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "Medical Treatments for Flares",
+         "text": "Topical Corticosteroids: A doctor may prescribe a moderate-strength prescription steroid cream or ointment to reduce redness and swelling during a flare. Topical Calcineurin Inhibitors: Non-steroid prescription creams [12] (like tacrolimus or pimecrolimus) can treat sensitive areas like the face or neck without the risk of skin thinning from long-term steroid use. Wet Wrap Therapy: Damp cotton layers wrapped over moisturizers and medication can soothe severe or stubborn flare-ups.",
+         "markdown": "- **Topical Corticosteroids:** A doctor may prescribe a moderate-strength prescription steroid cream or ointment to reduce redness and swelling during a flare.[[1]](https://ubiehealth.com/doctors-note/eczema-rash-flare-persists-causes-relief-action-57)[[2]](https://www.brooklynbridgepediatrics.com/medical-conditions/eczema-atopic-dermatitis-and-your-child)\n- **Topical Calcineurin Inhibitors:** Non-steroid prescription creams [12] (like tacrolimus or pimecrolimus) can treat sensitive areas like the face or neck without the risk of skin thinning from long-term steroid use.[[1]](https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children)\n- **Wet Wrap Therapy:** Damp cotton layers wrapped over moisturizers and medication can soothe severe or stubborn flare-ups.[[1]](https://a-zpeds.com/managing-childhood-eczema-in-the-preschool-years/)[[2]](https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "ubiehealth.com",
+           "domain": "ubiehealth.com",
+           "url": "https://ubiehealth.com/doctors-note/eczema-rash-flare-persists-causes-relief-action-57",
+           "title": "Eczema Rash Won't Stop? Why Your Skin Is Flaring & Medical Next Steps",
+           "text": "Your Treatment Isn't Strong Enough Mild eczema may respond to over-the-counter hydrocortisone. But moderate or severe eczema often..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Brooklyn Bridge Pediatrics",
+           "domain": "www.brooklynbridgepediatrics.com",
+           "url": "https://www.brooklynbridgepediatrics.com/medical-conditions/eczema-atopic-dermatitis-and-your-child",
+           "title": "Eczema (Atopic Dermatitis) and Your Child",
+           "text": "Topical steroids (hydrocortisone creams or ointments) may help relieve itchy skin and decrease inflammation. They work best for mi..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "CityMD",
+           "domain": "www.citymd.com",
+           "url": "https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children",
+           "title": "Sensitive skin SOS: a comprehensive guide to eczema in ...",
+           "text": "Topical steroids. These creams or ointments help reduce inflammation and relieve itching. It's crucial to use them as prescribed b..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "a-zpeds.com",
+           "domain": "a-zpeds.com",
+           "url": "https://a-zpeds.com/managing-childhood-eczema-in-the-preschool-years/",
+           "title": "Managing Childhood Eczema: Expert Tips for Parents",
+           "text": "Skincare Routine Establishing a consistent skincare routine is crucial for managing eczema in preschoolers. Start with gentle clea..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "CityMD",
+           "domain": "www.citymd.com",
+           "url": "https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children",
+           "title": "Sensitive skin SOS: a comprehensive guide to eczema in ...",
+           "text": "Topical steroids. These creams or ointments help reduce inflammation and relieve itching. It's crucial to use them as prescribed b..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": "Managing Triggers",
+         "text": "Clothing: Dress your child in soft, breathable cotton and avoid scratchy wool or polyester. Nails: Keep your child's fingernails short or use cotton mittens at night to prevent skin damage and secondary infection from scratching. Environment: Identify and avoid known irritants such as scented soaps, harsh laundry detergents, or extreme temperature changes.",
+         "markdown": "- **Clothing:** Dress your child in soft, breathable cotton and avoid scratchy wool or polyester.\n- **Nails:** Keep your child's fingernails short or use cotton mittens at night to prevent skin damage and secondary infection from scratching.\n- **Environment:** Identify and avoid known irritants such as scented soaps, harsh laundry detergents, or extreme temperature changes.[[1]](https://mydoctor.kaiserpermanente.org/mas/structured-content/Condition_Eczema_Derm.xml?co=%2Fregions%2Fmas)[[2]](https://www.akronchildrens.org/kidshealth/en/parents/eczema-atopic-dermatitis.html)[[3]](https://www.youtube.com/watch?v=DId8ky-76hA&t=119)[[4]](https://a-zpeds.com/managing-childhood-eczema-in-the-preschool-years/)[[5]](https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children)",
+         "links": null,
+         "images": null,
+         "references": [
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Kaiser Permanente",
+           "domain": "mydoctor.kaiserpermanente.org",
+           "url": "https://mydoctor.kaiserpermanente.org/mas/structured-content/Condition_Eczema_Derm.xml?co=%2Fregions%2Fmas",
+           "title": "Eczema (Atopic Dermatitis) - My Doctor Online",
+           "text": "We'll examine your rash and ask about your symptoms and family history. Home Treatment There isn't a cure for eczema. Treatment ca..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "Akron Children's",
+           "domain": "www.akronchildrens.org",
+           "url": "https://www.akronchildrens.org/kidshealth/en/parents/eczema-atopic-dermatitis.html",
+           "title": "For parents: Eczema (Atopic Dermatitis) - Akron Children's",
+           "text": "How Can Parents Help? Help prevent or treat eczema by keeping your child's skin from getting dry or itchy and avoiding triggers th..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "YouTube",
+           "domain": "www.youtube.com",
+           "url": "https://www.youtube.com/watch?v=DId8ky-76hA&t=119",
+           "title": "Eczema in Kids | Dr Gurmeet Soni Bhalla | Causes, Symptoms ...",
+           "text": "Eczema in Kids | Dr Gurmeet Soni Bhalla | Causes, Symptoms & Treatment of Atopic Dermatitis | RxDx it's actually that some foods c..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "a-zpeds.com",
+           "domain": "a-zpeds.com",
+           "url": "https://a-zpeds.com/managing-childhood-eczema-in-the-preschool-years/",
+           "title": "Managing Childhood Eczema: Expert Tips for Parents",
+           "text": "Skincare Routine Establishing a consistent skincare routine is crucial for managing eczema in preschoolers. Start with gentle clea..."
+          },
+          {
+           "type": "ai_overview_reference",
+           "position": "left",
+           "source": "CityMD",
+           "domain": "www.citymd.com",
+           "url": "https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children",
+           "title": "Sensitive skin SOS: a comprehensive guide to eczema in ...",
+           "text": "Topical steroids. These creams or ointments help reduce inflammation and relieve itching. It's crucial to use them as prescribed b..."
+          }
+         ]
+        },
+        {
+         "type": "ai_overview_element",
+         "position": "left",
+         "title": null,
+         "text": "If you want, tell me:Your child's age\nWhere the eczema patches are located on their body\nWhat treatments you have already tried\nI can give you more specific guidance for your situation.",
+         "markdown": "If you want, tell me:\n\n- Your child's **age** \n- **Where** the eczema patches are located on their body\n- What **treatments** you have already tried\n\nI can give you more specific guidance for your situation.",
+         "links": null,
+         "images": null,
+         "references": null
+        }
+       ],
+       "references": [
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "Happy Skin Pediatric Dermatology",
+         "domain": "happyskindermatology.com",
+         "url": "https://happyskindermatology.com/2025/03/07/best-products-for-eczema-treatment-for-infants/",
+         "title": "Best Products for Eczema Treatment for Infants | Happy Skin, PLLC",
+         "text": "Prescribed treatments may include: * Corticosteroid Creams. Topical corticosteroid creams and ointments can reduce inflammation an..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "a-zpeds.com",
+         "domain": "a-zpeds.com",
+         "url": "https://a-zpeds.com/managing-childhood-eczema-in-the-preschool-years/",
+         "title": "Managing Childhood Eczema: Expert Tips for Parents",
+         "text": "Skincare Routine Establishing a consistent skincare routine is crucial for managing eczema in preschoolers. Start with gentle clea..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "CityMD",
+         "domain": "www.citymd.com",
+         "url": "https://www.citymd.com/health-and-wellness/sensitive-skin-sos-a-comprehensive-guide-to-eczema-in-children",
+         "title": "Sensitive skin SOS: a comprehensive guide to eczema in ...",
+         "text": "Topical steroids. These creams or ointments help reduce inflammation and relieve itching. It's crucial to use them as prescribed b..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "National Institutes of Health (NIH) | (.gov)",
+         "domain": "pmc.ncbi.nlm.nih.gov",
+         "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8128359/",
+         "title": "Systemic treatments for eczema: a network meta\u2010analysis",
+         "text": "Why this question is important Eczema is a persistent condition that causes dry, cracked, and itchy skin. People with mild eczema ..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "Akron Children's",
+         "domain": "www.akronchildrens.org",
+         "url": "https://www.akronchildrens.org/kidshealth/en/parents/eczema-atopic-dermatitis.html",
+         "title": "For parents: Eczema (Atopic Dermatitis) - Akron Children's",
+         "text": "How Can Parents Help? Help prevent or treat eczema by keeping your child's skin from getting dry or itchy and avoiding triggers th..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "Kaiser Permanente",
+         "domain": "mydoctor.kaiserpermanente.org",
+         "url": "https://mydoctor.kaiserpermanente.org/mas/structured-content/Condition_Eczema_Derm.xml?co=%2Fregions%2Fmas",
+         "title": "Eczema (Atopic Dermatitis) - My Doctor Online",
+         "text": "We'll examine your rash and ask about your symptoms and family history. Home Treatment There isn't a cure for eczema. Treatment ca..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "YouTube",
+         "domain": "www.youtube.com",
+         "url": "https://www.youtube.com/watch?v=DId8ky-76hA&t=119",
+         "title": "Eczema in Kids | Dr Gurmeet Soni Bhalla | Causes, Symptoms ...",
+         "text": "Eczema in Kids | Dr Gurmeet Soni Bhalla | Causes, Symptoms & Treatment of Atopic Dermatitis | RxDx it's actually that some foods c..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "Paedicare",
+         "domain": "paedicare.com.au",
+         "url": "https://paedicare.com.au/eczema-children/",
+         "title": "Eczema in children | Paedicare Paediatricians",
+         "text": "... harsh soaps; bath water that is too hot; aggressive rubbing with towel after bath (pat rather than wipe). Read additional info..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "ubiehealth.com",
+         "domain": "ubiehealth.com",
+         "url": "https://ubiehealth.com/doctors-note/eczema-rash-flare-persists-causes-relief-action-57",
+         "title": "Eczema Rash Won't Stop? Why Your Skin Is Flaring & Medical Next Steps",
+         "text": "Your Treatment Isn't Strong Enough Mild eczema may respond to over-the-counter hydrocortisone. But moderate or severe eczema often..."
+        },
+        {
+         "type": "ai_overview_reference",
+         "position": "right",
+         "source": "Brooklyn Bridge Pediatrics",
+         "domain": "www.brooklynbridgepediatrics.com",
+         "url": "https://www.brooklynbridgepediatrics.com/medical-conditions/eczema-atopic-dermatitis-and-your-child",
+         "title": "Eczema (Atopic Dermatitis) and Your Child",
+         "text": "Topical steroids (hydrocortisone creams or ointments) may help relieve itchy skin and decrease inflammation. They work best for mi..."
+        }
+       ]
+      },
+      {
+       "type": "people_also_ask",
+       "rank_group": 1,
+       "rank_absolute": 3,
+       "page": 1,
+       "position": "left",
+       "items": [
+        {
+         "type": "people_also_ask_element",
+         "title": "Is eczema linked to lymphoma?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[2]/div[1]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "What is the 3 minute rule for eczema?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[2]/div[2]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "How to treat moderate to severe eczema?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[2]/div[3]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        },
+        {
+         "type": "people_also_ask_element",
+         "title": "What is mostly mistaken for eczema?",
+         "seed_question": null,
+         "xpath": "/html[1]/body[1]/div[3]/div[1]/div[13]/div[2]/div[1]/div[2]/div[1]/div[1]/div[4]/div[1]/div[1]/div[1]/div[1]/div[2]/div[4]",
+         "expanded_element": [
+          {
+           "type": "people_also_ask_ai_overview_expanded_element",
+           "items": null,
+           "references": null,
+           "asynchronous_ai_overview": true
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

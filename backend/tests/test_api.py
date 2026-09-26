@@ -51,7 +51,7 @@ def client(tmp_path, monkeypatch, opzelura):
     monkeypatch.setattr(demo, "CELL_DELAY", 0)
     from app.main import app
 
-    with TestClient(app) as c:
+    with TestClient(app, headers=H) as c:
         yield c
 
 
@@ -78,7 +78,11 @@ def test_full_flow(client, monkeypatch):
     hero = next(p for p in company["products"] if p["is_hero"])
     assert hero["has_boxed_warning"] and "label" not in hero
 
-    setup = client.post(f"/api/products/{hero['id']}/setup").json()
+    started = client.post(f"/api/products/{hero['id']}/setup")
+    assert started.status_code == 202
+    assert events(client, f"/api/setup/{started.json()['job_id']}/events")[-1][0] == "done"
+    assert client.post(f"/api/products/{hero['id']}/setup").status_code == 200  # idempotent once built
+    setup = client.get(f"/api/products/{hero['id']}/setup").json()
     assert len(setup["prompts"]) == 2 and "lane" not in setup["prompts"][0]
     assert setup["competitors"][0]["brand"] == "Dupixent"
 
@@ -147,10 +151,41 @@ def test_choose_labeler(client):
         s.commit()
         company_id = company.id
 
-    assert client.post(f"/api/companies/{company_id}/labeler", json={"labeler": "Nope"}).status_code == 422
-    out = client.post(f"/api/companies/{company_id}/labeler", json={"labeler": "Acme Inc"}).json()
+    owner = {"X-Session-Id": "labeler-test"}
+    assert client.post(f"/api/companies/{company_id}/labeler", json={"labeler": "Acme Inc"}).status_code == 404
+    assert client.post(f"/api/companies/{company_id}/labeler", json={"labeler": "Nope"}, headers=owner).status_code == 422
+    out = client.post(f"/api/companies/{company_id}/labeler", json={"labeler": "Acme Inc"}, headers=owner).json()
     by_brand = {p["brand"]: p for p in out["products"]}
     assert out["labeler_candidates"] == []
     assert by_brand["Alpha"]["partner"] and not by_brand["Alpha"]["selected"] and not by_brand["Alpha"]["is_hero"]
     assert by_brand["Beta"]["is_hero"] and not by_brand["Beta"]["partner"]
     assert not by_brand["Gamma"]["partner"]  # unindexed label: benefit of the doubt
+
+
+def test_ownership_and_public_report(client):
+    """Another browser can read the shared report but not the company or its drafts."""
+    r = client.post("/api/onboarding", json={"url": "incyte.com"}).json()
+    events(client, f"/api/onboarding/{r['job_id']}/events")
+    other = {"X-Session-Id": "someone-else"}
+    assert client.get(f"/api/companies/{r['company_id']}", headers=other).status_code == 404
+    assert client.get(f"/api/companies/{r['company_id']}").status_code == 200
+    assert client.get("/api/companies", headers=other).json() == []
+
+
+def test_jobs_survive_restart():
+    """A job left 'running' by a crash is re-queued, and its old events are cleared on the retry."""
+    from sqlmodel import Session
+
+    from app import jobs
+    from app.db import engine, init_db
+    from app.models import Job, JobEvent
+
+    init_db()
+    with Session(engine) as s:
+        s.add(Job(id="crashed-1", kind="discovery", status="running", attempts=1))
+        s.add(JobEvent(job_id="crashed-1", event="step", data={"key": "read"}))
+        s.commit()
+    assert jobs.resume_interrupted() >= 1
+    with Session(engine) as s:
+        assert s.get(Job, "crashed-1").status == "queued"
+    assert jobs.enqueue("discovery", {}, job_id="crashed-1") == "crashed-1"  # joins, doesn't duplicate

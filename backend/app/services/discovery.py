@@ -10,7 +10,7 @@ from sqlmodel import Session, select
 
 from app import llm
 from app.db import engine
-from app.events import Job
+from app.jobs import JobContext as Job
 from app.models import Company, Product
 from app.schemas import PortfolioEnrich, SiteExtract
 from app.services import crawl, openfda

@@ -5,7 +5,6 @@ brand/generic/manufacturer miss them. We also search those with `_missing_:openf
 brand and molecule from `spl_product_data_elements`."""
 
 import asyncio
-import re
 
 import httpx
 

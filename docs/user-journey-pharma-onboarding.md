@@ -1,200 +1,223 @@
-# PharmaPulse User Journey: Pharma Onboarding
+# Aeon User Journey: Pharma Onboarding (v2, agentic)
 
 Sep 26, 2026 · @Abdul Rehman Khan
 
+v2 turns the onboarding into a set of agents that do real work with real tools, replaces scores with yes/no checks, and adds the dashboard that users return to. v1's principles still hold.
+
 ## The goal
 
-A pharma marketer types one thing, their company website, and sees how AI talks about their drugs in under 5 minutes. Everything else is inferred, shown back to them, and confirmed with a click.
+A pharma marketer types one thing, their company website, and sees how AI talks about their drugs in about 5 minutes. Everything else is inferred by agents, shown back, and confirmed with a click.
 
-This doc covers pharma manufacturers only (Rx, OTC, biotech). Pharmacies and telehealth are a separate discussion.
+This doc covers pharma manufacturers only (Rx, OTC, biotech), US labels only.
 
 ### Onboarding principles
 
 1. **One input.** Company website URL. No forms about therapeutic areas, keywords or competitors.
-2. **Confirm, don't configure.** AI proposes the portfolio, competitors and prompts; the user ticks or unticks. Nothing starts blank.
-3. **Value before signup friction.** The first scan runs before we ask for billing, team invites or integrations.
-4. **Scary number first.** The first screen after the scan shows one headline: "AI mentions you in 31% of answers; competitor X in 64%" or "2 AI answers state your dose wrong."
-5. **Every screen has one primary button.** If a step needs explaining, it's too complicated.
-6. **Defaults are pharma-safe.** Regulatory tier, lanes and guardrails are set automatically from the label; users never see the word "lane" during onboarding.
-7. **Nothing is locked in.** Everything confirmed during onboarding is editable later from Settings.
+2. **Confirm, don't configure.** Agents propose the portfolio, competitors and questions; the user ticks or unticks. Nothing starts blank.
+3. **Value before signup friction.** The first scan runs on an anonymous account. We ask for a work email only to save.
+4. **Facts, not scores.** Every result is a yes/no check with the AI answer behind it ("Claude recommends Protopic, not you"). No percentages, no 0–100 scores: they swing between runs and invite arguments about the math.
+5. **Every screen has one primary button.**
+6. **Defaults are pharma-safe.** Everything is grounded in the FDA label. Users never see the word "lane".
+7. **Nothing is locked in.** Everything confirmed during onboarding is editable later.
 
-## How PharmaGEO onboards today
+## How it works: agents, not a script
 
-PharmaGEO is sales-led: a prospect fills in a form and waits for a human. Their first value arrives in 24 hours at best and a full audit in 7 working days. We win by collapsing that into one self-serve session.
+Aeon is built on the Anthropic Python SDK. Agents run on the SDK's tool runner (`client.beta.messages.tool_runner`): Claude decides which tool to call next, the tool runs, and the loop continues until the job is done. We don't use LangChain, LangGraph or the Claude Agent SDK. They add layers we'd have to debug, and the tool runner already gives us the loop, typed tools and per-turn hooks.
 
-| Step | PharmaGEO | PharmaPulse |
-| --- | --- | --- |
-| Entry | Book a 30-minute demo, or request a free 8-page sample PDF ([contact page](https://pharma-geo.com/contact)) | Type your website, see results live |
-| Inputs asked | Name, work email, company, role, brand or indication, markets and languages | Website URL (+ work email to save results) |
-| First value | Sample report within 24 hours | First scan in under 5 minutes |
-| Full audit | 7 working days, analyst-written ([comparison page](https://pharma-geo.com/articles/pharmageo-vs-generic-geo-tools)) | Same session, then refreshed weekly |
-| Prompt set | Client's digital and medical teams build an 80-prompt set in week 1 ([90-day plan](https://pharma-geo.com/articles/90-day-pharma-geo-mobilization-plan)) | Auto-generated from the label; user just ticks |
-| Next step | Analyst recommendations; client executes | "Fix this" button drafts the content and runs pre-MLR |
+We only use an agent where the next step depends on what was just found. Measurement stays a plain workflow, because an agent's own instructions would change the answers we're measuring.
 
-**Copy from them:** the free sample report as a lead magnet (ours is generated instantly and shareable), asking for markets and languages early, and a published methodology page.
+| Step | Type | What Claude decides | Tools |
+|---|---|---|---|
+| Discovery | Agent | Which pages to read, which names are products, which labels are theirs | Web fetch and web search (Anthropic), openFDA label lookup, `record_company`, `record_product` |
+| Setup | Agent | Which competitors truly compete, which real questions matter | DataForSEO questions people ask on Google, openFDA verification, `record_competitor`, `record_question` |
+| Scan | Workflow | Nothing: fixed questions, fixed engines | Claude with web search (asked 3×), Google AI Overviews + AI Mode via DataForSEO |
+| Checks | Workflow | Yes/no per answer | Claude structured output against the FDA label |
+| Fix this | Agent (evaluator–optimizer) | How to revise until the draft passes | `get_label_section`, `check_draft` (pre-MLR checklist), `submit_draft` |
+| Promo opportunities | Agent | Which competitor ad themes are worth answering, and how on-label | Competitor ads from the Meta Ad Library via Apify, `get_label_section`, `record_opportunity` |
+| Weekly tracking | Scheduler | Nothing: re-runs the scan weekly and shows what changed | Same as Scan |
 
-**Skip:** mandatory demo calls, multi-field forms before any value, and asking the client to build their own prompt set.
+Every agent run is traced in Langfuse: each tool call, each Claude call, its cost and its result.
 
-**Keep a sales path too:** big pharma procurement will still want a demo. Offer "Book a walkthrough" as a secondary button, never as a gate.
+### Vendors
+
+Only four: **Anthropic** (Claude), **DataForSEO** (Google AI Overviews, AI Mode, questions people ask, citation data), **Apify** (competitor ads), and **openFDA** (free public label data, no key). Supabase hosts the data and accounts; Langfuse hosts traces and evals.
 
 ## The journey at a glance
-
-Six onboarding steps, about 5 minutes end to end, with only three clicks that need thought.
 
 ```mermaid
 flowchart LR
   A[1. Enter website] --> B[2. Confirm company + portfolio]
   B --> C[3. Pick a hero drug]
-  C --> D[4. Confirm competitors + prompts]
-  D --> E[5. Live first scan]
-  E --> F[6. First report + one fix]
+  C --> D[4. Confirm competitors + 10 questions]
+  D --> E[5. Live scan]
+  E --> F[6. Report + one fix]
   F --> G[Save with work email]
+  G --> H[Dashboard + weekly tracking]
 ```
 
-| Step | User does | Time | Feeling we want |
-| --- | --- | --- | --- |
-| 1. Enter website | Types `acmepharma.com` | 5 s | "That's it?" |
-| 2. Confirm portfolio | Unticks anything wrong | 30 s | "It already knows us." |
-| 3. Pick hero drug | Clicks one card | 5 s | "Start with what matters." |
-| 4. Confirm competitors + prompts | Glances, clicks Run | 30 s | "These are the questions patients ask." |
-| 5. Live scan | Watches the grid fill | 2–3 min | "This is live." |
-| 6. First report | Reads headline, clicks one fix | 1 min | "Oh no. And oh, it fixes it." |
+| Step | User does | Time | Agent behind it |
+|---|---|---|---|
+| 1. Enter website | Types `acmepharma.com` | 5 s | Discovery agent reads the site and pulls FDA labels (~30–60 s) |
+| 2. Confirm portfolio | Unticks anything wrong | 30 s | — |
+| 3. Pick hero drug | Clicks one card | 5 s | Setup agent starts in the background |
+| 4. Confirm competitors + questions | Glances, clicks Run | 30 s | — |
+| 5. Live scan | Watches the grid fill | ~2 min | Scan workflow (10 questions × 3 engines) |
+| 6. Report | Reads the checks, clicks one fix | 1 min | Fix agent drafts and self-reviews (~1 min) |
 
-## Onboarding, screen by screen
+## Screen by screen
 
-### Screen 1 — "How does AI talk about your drugs?"
+### Screen 1: "How does AI talk about your drugs?"
 
-- **User sees:** landing page with one input: "Your company website" and a button "Scan my brands". Secondary link: "Book a walkthrough instead".
-- **User does:** types the domain, presses Enter. No account yet.
-- **Behind it:** crawl homepage, product pages, pipeline page and brand sites linked from the corporate site; look up the company as a labeler in openFDA.
-- **While waiting (10–20 s):** a live checklist ticks off: "Reading your website… Found 7 products… Pulling FDA labels… Mapping indications…"
+- **User sees:** one input, "Your company website", and "Scan my brands". No account; an anonymous session starts silently.
+- **Behind it:** the discovery agent reads the homepage and product pages with Claude's web fetch, follows links to brand sites, looks the company up as a labeler in openFDA, and records each product it can match to an FDA label.
+- **While waiting:** the checklist shows what the agent is actually doing, one row per tool call: "Reading incyte.com/products…", "Found Opzelura's FDA label", "Checking Iclusig: labeled by Takeda".
 
-### Screen 2 — "Here's what we found"
+### Screen 2: "Here's what we found"
 
-- **User sees:** a company card (name, HQ, type: specialty pharma, therapeutic areas) and a grid of product cards. Each card: brand name, molecule, indication in one line, Rx or OTC, markets, and a green "FDA label found" badge.
-- **User does:** unticks anything wrong (discontinued, divested, not theirs). "Add a product" if one is missing (type a brand name, we fetch the label).
-- **Behind it:** product list merged from the website and openFDA records for that manufacturer; molecule and indication from the label; regulatory tier set automatically (Rx vs OTC).
+- Company card (name, HQ, type, therapeutic areas) and product cards: brand, molecule, one-line indication, Rx/OTC, "FDA label found".
+- Products labeled by another company ("Labeled by Eli Lilly") start unticked and can't be the hero. Pipeline drugs are listed, not scanned.
+- If the site maps to several labelers: one question, "Which of these are you?"
+- "Add a product": type a brand, we fetch its label.
 - **Primary button:** "Looks right".
 
-### Screen 3 — "Which drug should we start with?"
+### Screen 3: "Which drug should we start with?"
 
-- **User sees:** the confirmed products as big cards, with one pre-selected (the brand with the most search demand).
-- **User does:** clicks one. Copy says "You can add the rest in one click after your first scan."
-- **Why one:** a focused first result is faster, cheaper and more memorable than a shallow scan of everything.
+- Big cards for the confirmed products, one pre-selected (most Google search demand, from DataForSEO).
+- Picking one starts the setup agent in the background, so Screen 4 is ready on arrival.
 
-### Screen 4 — "Who you're up against and what people ask"
+### Screen 4: "Who you're up against and what people ask"
 
-- **User sees:** two panels.
-  - **Competitors:** 4–6 chips for drugs with the same indication (from openFDA + LLM), removable, with "+ add".
-  - **Questions we'll ask AI:** 20 sample prompts grouped as Patients, Caregivers, Doctors, e.g. "What's the best treatment for moderate eczema in adults?" and "How is \[brand\] dosed?". A counter says "+20 more".
-- **User does:** glances, maybe removes a competitor, clicks **Run my first scan**.
-- **Behind it:** 40 prompts generated from the label and indication, each silently tagged with its lane (off-label prompts are monitor-only).
-- **Optional, collapsed:** markets and languages (default: US, English).
+- **Competitors:** 4–6 chips. The agent proposes drugs for the same indication and keeps only the ones with a US FDA label. Removable, with "+ add".
+- **10 questions** grouped as Patients, Caregivers, Doctors:
+  - 6 unbranded (condition and treatment, never naming a drug). Taken from real questions people ask on Google where possible, marked "Asked on Google".
+  - 2 branded ("How is Opzelura applied?").
+  - 2 comparisons ("Opzelura or Protopic for a 4-year-old?").
+- **Engines:** Claude, Google AI Overviews and Google AI Mode are live. ChatGPT, Gemini and Perplexity show as "coming soon" (they arrive through DataForSEO, no new vendor).
+- **Primary button:** "Run my first scan".
 
-### Screen 5 — Live scan
+### Screen 5: Live scan
 
-- **User sees:** the prompt × engine grid filling live across ChatGPT, Claude, Gemini, Perplexity and Google AI Overviews. Top counters tick up: answers read, mentions of you, mentions of competitors, accuracy issues found.
-- **User does:** nothing; watches for 2–3 minutes. A button "Email me when ready" if they want to leave.
-- **Behind it:** scan fan-out, answer parsing, accuracy check against the label, citation collection.
+- The question × engine grid fills live. Each cell becomes a check: **you** (named, and at what position), **competitor instead**, **not mentioned**, **no AI Overview shown** (Google didn't show one; neither good nor bad), plus a red flag when the answer contradicts the label.
+- Header counters are plain counts: "answers read", "mention you", "name a competitor", "label conflicts".
 
-### Screen 6 — "Your AI visibility report"
+### Screen 6: "Your AI visibility report"
 
-- **User sees**, top to bottom:
-  1. **Headline number:** visibility score vs top competitor ("You: 34. Competitor X: 71.").
-  2. **Red box (if any):** accuracy issues, e.g. "2 AI answers state the wrong dose" with the AI sentence next to the label sentence.
-  3. **Where you lose:** 3 prompts where a competitor is recommended and you're not.
-  4. **Why:** top sources AI cites for your competitors that never mention you.
-  5. **Top 3 fixes**, each with a "Fix this" button.
-- **User does:** clicks one "Fix this" → sees a drafted, label-grounded page with a pre-MLR risk score, which proves the whole loop.
-- **Save gate:** "Save this report and track weekly": work email + password (or Google/Microsoft sign-in). This is the first time we ask for an account.
-- **Share:** "Share report" creates a link for their boss or medical affairs; the shared report is the viral loop.
+Top to bottom:
 
-## What we ask vs what we infer
+1. **Where AI recommends you:** one line per engine, as counts of checks. "Claude mentions Opzelura in 4 of 6 unbranded questions. Protopic: 5 of 6."
+2. **Red box:** statements that contradict the label, the AI sentence next to the label sentence.
+3. **Where you lose:** the unbranded questions where a competitor is recommended and you're not.
+4. **Why:** the sources AI cites for competitors and not for you, across Claude, AI Overviews and AI Mode.
+5. **Top 3 fixes**, each with "Fix this".
 
-We ask for two things: a website and, at the end, a work email. Everything else is inferred and shown back for confirmation.
+**Fix this:** the fix agent drafts from the label only, calls `check_draft`, reads which checks failed, revises, and checks again (up to 3 rounds). The UI shows each round: "Round 1: fair balance ✗ → revised → Round 2: all checks pass". The result is a draft plus the pre-MLR checklist below plus a claim-to-label table, exportable as an MLR package (Word/PDF with references) for any review tool, including PromoMats.
 
-| Information | How we get it | User's job |
-| --- | --- | --- |
-| Company name, HQ, type | Website crawl + LLM summary | None |
-| Product portfolio | Website product pages + openFDA records by manufacturer | Untick wrong ones |
-| Molecule (INN) per product | FDA label | None |
-| Indications, population | FDA label | None |
-| Rx vs OTC (regulatory tier) | FDA label product type | None |
-| Boxed warning, dosing | FDA label | None |
-| Brand websites | Links from corporate site + label | None |
-| Competitors | Drugs with overlapping indications in openFDA + LLM | Remove or add a chip |
-| Prompts | Generated from indication, label and audience | Glance |
-| Keywords | Generated from prompts + DataForSEO suggestions | None (shown later in SEO tab) |
-| Markets and languages | Default US/English; detect EU if the site has country selectors | Optional toggle |
-| Work email | Asked at save | Type it |
-| Team, integrations, billing | Asked after first value | Later |
+**Save gate:** "Save this report and track weekly": work email, confirmed by magic link. The anonymous account becomes theirs; nothing is lost.
 
-## After onboarding
+**Share:** the report link is public and read-only, for their boss or medical affairs.
 
-The goal of the first month is one approved, published fix with measured lift. That turns a curious user into a paying account.
+## Checks, not scores
 
-| When | What happens | Nudge from us |
-| --- | --- | --- |
-| Day 0 | First report saved; one draft created | "Add your other 6 products" (one click, scans run in background) |
-| Day 1 | Full scans done for the whole portfolio; SEO audit finished | Email: portfolio summary + top 3 actions |
-| Days 2–5 | User invites medical affairs / regulatory reviewer to the pre-MLR workspace | In-app: "Your draft needs a reviewer. Invite one." |
-| Week 1 | First weekly re-scan; trend line appears | Monday email: "What changed in AI answers about your brands" |
-| Week 2 | First draft approved and exported | "Mark as published" to start tracking lift |
-| Weeks 3–4 | Re-scan shows change on the fixed prompts | Before/after card they can share internally |
-| Day 30 | Trial converts | Upgrade prompt tied to results: "Keep tracking 7 brands and 280 prompts" |
+Every check is yes/no and shows the answer behind it.
 
-**Returning user home screen:** one action feed ("Do these 5 things this week"), not a wall of dashboards. Dashboards live one click away.
+| Check | Yes when |
+|---|---|
+| Mentions you | The answer names the brand or molecule |
+| Competitor instead | It names a tracked competitor and not you |
+| Matches your label | Nothing it says about your drug contradicts the FDA label (only checked when you're mentioned) |
+| Cites your sites | A cited source is on your corporate or brand domains |
+
+**Stability.** Claude's answers vary, so each question is asked 3 times, and a check is ✓ when at least 2 of 3 answers agree. Google returns one AI Overview per query and location, so it's fetched once; "no overview shown" is its own state. Summaries are counts of checks, never percentages.
+
+### Pre-MLR checklist (replaces the risk score)
+
+| Check | How |
+|---|---|
+| Every claim traced to the label | Rule: each claim's quote must appear verbatim in the label. A miss blocks export. |
+| On-label only (indication, population, dose) | AI reviewer against the label |
+| No overstatement ("safe", "cure", superlatives, unqualified numbers) | Rule |
+| Fair balance (risk as prominent as benefit) | Rule + AI reviewer |
+| Important Safety Information present, boxed warning first | Rule |
+| No comparison without head-to-head data | AI reviewer |
+
+Result: **Ready for MLR review** (all pass), **Needs changes** (the fix agent keeps revising), or **Blocked** (an untraceable claim).
+
+## After onboarding: the dashboard
+
+The report is the first page of a dashboard people come back to weekly, in the same space as Peec AI and Profound. Those report visibility as percentages across engines. Aeon shows checks with the answer behind each one, plus what they don't have: label accuracy and MLR-ready fixes.
+
+| Page | What it answers |
+|---|---|
+| Overview | This week's checks per engine, what changed since last week, label conflicts, next scan |
+| Questions | The question × engine grid with every answer and its sources |
+| Competitors | Where each competitor appears, on which engines, and which sources AI cites for them |
+| Sources | Domains cited for you vs only for competitors: where to get content placed |
+| Opportunities | Competitors' current ad themes (Meta Ad Library) and an on-label angle for each, with "Draft this" |
+| Content | Drafts and their pre-MLR checklist status |
+| Tracking | Weekly re-scan on/off, history |
+
+| When | What happens | Nudge |
+|---|---|---|
+| Day 0 | First report saved; one draft created | "Add your other products" |
+| Weekly | Re-scan of the same 10 questions per tracked drug | "What changed in AI answers about your brands" |
+| After a fix is published | Re-scan shows whether the checks flipped | Before/after they can share internally |
 
 ## How it changes by persona
 
-The onboarding is identical for everyone. Only the report's default emphasis changes, based on one optional question on Screen 6: "What's your role?"
+One optional question on the report, "What's your role?", changes what it leads with.
 
-| Persona | Why they came | Report leads with | First action we push |
-| --- | --- | --- | --- |
-| Brand / digital marketing lead | Losing share to competitors | Visibility score vs competitors, lost prompts | "Fix this" draft for the top lost prompt |
-| Medical affairs | AI saying wrong things about the drug | Accuracy issues, label vs AI answer | Route errors to medical info; correction drafts |
-| Regulatory / MLR reviewer | Invited by a colleague | Pre-MLR workspace with a waiting draft | Review and approve |
-| Agency | Managing several clients' brands | Multi-brand overview | "Add client" (same website-in flow per client) |
+| Persona | Leads with | First action |
+|---|---|---|
+| Brand / marketing | Where AI recommends you, where you lose | "Fix this" on the top lost question |
+| Medical affairs | Label conflicts | Correction drafts |
+| Regulatory / MLR | Pre-MLR checklist on waiting drafts | Review |
+| Agency | Where you lose, sources | "Add client" |
 
-Invited users skip onboarding entirely and land directly on the item they were invited to.
+## Pharmacovigilance
+
+Pharmacovigilance is drug-safety monitoring. US law (21 CFR 314.80) requires a drug company to collect, assess and report adverse events about its drugs from any source it comes across, including social media it monitors. What that means for Aeon:
+
+- **AI answers:** low risk. We read AI-generated answers, not patient reports.
+- **Competitors' ads (Apify):** fine. Promotional content, not patient posts.
+- **Patient posts about the client's own drug (social, Reddit):** not in scope. If we add it, we first add an adverse-event detector and a documented handoff to the client's safety team.
+
+## Infrastructure
+
+- **Supabase Postgres** holds everything: companies, products, questions, answers, reports, drafts, and the job queue with its progress events. Jobs survive a restart: the backend resumes unfinished jobs, and progress streams read from the database.
+- **Supabase Auth:** anonymous sign-in on first visit, email magic link at the save gate (same user id). Reports are public by link; everything else belongs to its account.
+- **Backend:** FastAPI, one process running the API, the job worker and the weekly scheduler.
+- **Langfuse:**
+  - **Traces:** one per job, with nested agent steps, tool calls and Claude calls (tokens, cost, latency).
+  - **Evals:** datasets for the label check, the pre-MLR checklist and the fix loop, run as experiments before any prompt or model change. Their results are pass/fail too.
+
+## Cost
+
+Budget: about €20–30 for the hackathon. Development runs on recorded runs (demo mode) and saved API responses; live runs are for demos.
+
+| Per full live run (10 questions) | Approx. |
+|---|---|
+| Discovery + setup agents (Claude Opus 5) | $0.5–1.0 |
+| Claude scan: 10 questions × 3 samples, web search on | $1.5–2.5 |
+| Google AI Overviews + AI Mode (DataForSEO) | ~$0.10 |
+| Label checks (label cached across calls) | $0.2–0.4 |
+| One "Fix this" loop (up to 3 rounds) | $0.3–0.8 |
+| Competitor ads (Apify, ~10 ads per competitor) | $0.1–0.3 |
+| **Total** | **~$3–5** |
+
+Weekly tracking re-runs only the scan and checks: about $2 per drug per week.
 
 ## What we will not do
 
-- **No setup wizard with 10 steps.** Six screens, three real decisions.
-- **No blank states.** Every list arrives pre-filled.
-- **No jargon in onboarding.** No "lanes", "GEO", "share of voice" or "regulatory tier" before the report. Say "questions people ask AI" and "how often AI recommends you."
-- **No keyword upload, no CSV import, no integrations** during onboarding. Offer them later in Settings.
-- **No account before value.** The work email comes after the first report.
-- **No full-portfolio first scan.** One hero drug first; the rest runs in the background.
-- **No mandatory demo.** Sales is an option, not a gate.
+- No setup wizard. Six screens, three real decisions.
+- No blank states. Every list arrives pre-filled.
+- No scores or percentages. Checks and counts only.
+- No jargon in onboarding: no "lanes", "GEO" or "share of voice".
+- No account before value.
+- No full-portfolio first scan. One hero drug first.
+- No monitoring of patient social posts without the pharmacovigilance handoff above.
 
-### Open questions
+## Open questions
 
-- **Pharmacies and telehealth:** separate discussion; if added later, same website-in flow with a different product model (services, not labels).
-- **Non-US companies:** products without FDA labels need EMA/SmPC lookup; for the hackathon, US-labelled products only.
-- **Wrong company match:** if the website maps to several labelers (subsidiaries, partners), ask one question: "Which of these are you?"
-- **Unlaunched pipeline drugs:** show them as "pipeline" but don't scan them by default.
-
-## Build notes
-
-These match F1 (website-first onboarding) in the build spec and PRD.md.
-
-**Portfolio discovery pipeline** (target under 20 seconds)
-
-1. Firecrawl the domain (max 30 pages: home, products, pipeline, about, linked brand sites).
-2. LLM (Haiku, JSON) extracts `{company_name, hq, company_type, therapeutic_areas[], products: [{brand, molecule?, url?}]}` from the crawled pages.
-3. openFDA label search by manufacturer: `openfda.manufacturer_name:"<company>"` → list of brand names and generic names; merge with the website list and de-duplicate by brand + molecule.
-4. For each product, fetch the label (F1 steps 1–4) in parallel; set Rx/OTC tier from the label.
-5. Rank products by DataForSEO search volume for the brand name to pre-select the hero drug.
-6. Stream each step's result to the UI so the checklist ticks live.
-
-**Anonymous-first sessions**
-
-- Create a temporary org keyed to a browser session; attach it to the account at the save step.
-- Rate-limit anonymous scans (one hero drug, 40 prompts, 1 sample per engine) to cap cost.
-
-**Demo fallback**
-
-- Pre-compute the full onboarding for one real company website so the hackathon demo is instant; the live path runs if the network is fine.
-
-**Screens to build** (map to the PRD's Track D): `/start` (URL input), `/start/portfolio`, `/start/hero`, `/start/setup`, `/start/scan`, `/report/[id]` (shareable).
+- **More engines:** ChatGPT, Gemini and Perplexity through DataForSEO's LLM endpoints (+~$0.3–1 per scan). Turn on when the budget allows.
+- **Non-US companies:** EMA/SmPC labels. Not for the hackathon.
+- **Pharmacies and telehealth:** separate product model (services, not labels).

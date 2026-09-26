@@ -11,7 +11,7 @@ from app import llm
 from app.config import settings
 from app.db import engine
 from app.engines.base import Engine
-from app.events import Job
+from app.jobs import JobContext as Job
 from app.models import Answer, Competitor, Product, Prompt, Scan
 from app.schemas import AccuracyCheck, AnswerParse
 from app.services.report import build_report
