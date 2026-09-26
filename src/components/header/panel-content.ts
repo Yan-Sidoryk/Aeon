@@ -16,7 +16,6 @@ import {
   Table2,
   type LucideIcon,
 } from "lucide-react";
-import { START_HREF } from "@/components/ui/pill-button";
 
 // Mega-menu panel content (server-rendered). Mirrors the 7shifts Platform / Built for / Resources panels
 // with Aeon copy from docs/research/AEON_CONTENT.md.
@@ -132,65 +131,3 @@ export const BUILT_FOR_ITEMS: BuiltForItem[] = [
     icon: "/images/doodles/ta-immunology.png",
   },
 ];
-
-// ---------------------------------------------------------------- Research
-
-export type ResearchItem = { title: string; description: string; href: string; icon: string };
-export type ResearchCard = ResearchItem & { colorClass: string };
-
-export const RESEARCH_TITLE = "Research on AI answers in pharma";
-
-export const RESEARCH_ITEMS: ResearchItem[] = [
-  {
-    title: "Research hub",
-    description: "Everything we publish on AI answers in pharma",
-    href: "#resources",
-    icon: "/images/doodles/doodle-track.png",
-  },
-  {
-    title: "AEO for pharma",
-    description: "Win citations on the prompts patients and HCPs ask",
-    href: "#resources",
-    icon: "/images/doodles/doodle-phone.png",
-  },
-  {
-    title: "Methodology",
-    description: "How we sample AI answers and score confidence",
-    href: "#resources",
-    icon: "/images/doodles/doodle-fix.png",
-  },
-  {
-    title: "The Aeon Index",
-    description: "The first public ranking of pharma brands in AI answers",
-    href: "/aeon-index",
-    icon: "/images/doodles/doodle-measure.png",
-  },
-];
-
-/** The two coloured cards (7shifts "Templates and Tools" sky-blue and "Food Runner" lime). */
-export const RESEARCH_CARDS: ResearchCard[] = [
-  {
-    title: "GEO for pharma: the guide",
-    description: "What GEO means for Rx, OTC and biotech brands, and how it fits your MLR process",
-    href: "#resources",
-    icon: "/images/doodles/doodle-faq.png",
-    colorClass: "bg-periwinkle",
-  },
-  {
-    title: "Free AI visibility report",
-    description: "Your first report in about 5 minutes. No credit card required.",
-    href: START_HREF,
-    icon: "/images/doodles/doodle-verify.png",
-    colorClass: "bg-lime",
-  },
-];
-
-export const RESEARCH_FEATURE = {
-  tag: "Playbook",
-  title: "The GEO Playbook 2026",
-  description:
-    "Field-tested tactics for getting pharma brands cited accurately in AI answers, from source priorities to GEO in MLR.",
-  link: "Download free",
-  href: "#resources",
-  image: "/images/covers/playbook.webp",
-} as const;

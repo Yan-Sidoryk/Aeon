@@ -29,8 +29,11 @@ Next.js 16 (App Router, React 19), TypeScript strict, Tailwind CSS v4 and shadcn
   [`docs/research/`](docs/research/) and [`docs/design-references/`](docs/design-references/).
 - **Messaging:** adapted from https://pharma-geo.com/ and the PRD. The full copy deck is
   [`docs/research/AEON_CONTENT.md`](docs/research/AEON_CONTENT.md).
-- **Visual assets:** the logo, photos, doodle icons, resource covers and hero video were generated with Higgsfield.
-  Raw vector sources are in `assets-src/`; `node scripts/optimize-assets.mjs` turns them into the web versions in
+- **Visual direction:** product-led. The hero and feature sections show the product UI (built in HTML/CSS), and
+  third-party AI engines and tools appear with their real logos (`src/components/brand-logos.tsx`, sources in
+  `third_party/LOGOS.md`). No stock people photos or photo backgrounds.
+- **Visual assets:** the Aeon logo, doodle icons and the "old way" desk photo were generated with Higgsfield. Raw
+  vector sources are in `assets-src/`; `node scripts/optimize-assets.mjs` turns them into the web versions in
   `public/`.
 
 ## Project structure
@@ -40,8 +43,8 @@ src/app/                 page, layout, global tokens (globals.css), favicon
 src/components/          one file per page section, plus section helpers in sub-folders
 src/components/ui/       shared primitives (PillButton, shadcn button)
 src/components/icons.tsx icons extracted from the reference site
-public/images/           photos, doodles, covers (web-ready)
-public/videos/           hero loop + poster
+public/images/           doodles and the one remaining photo (web-ready)
+public/logos/            AI engine and tool logos (colour, mono, wordmark)
 assets-src/              raw Higgsfield vector outputs
 docs/                    PRD, user journey, research and component specs
 ```

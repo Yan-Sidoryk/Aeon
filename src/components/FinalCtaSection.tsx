@@ -51,7 +51,9 @@ function StatCardItem({ card, duplicate = false }: { card: StatCard; duplicate?:
 export function FinalCtaSection() {
   return (
     <div data-section="cta" className="relative z-50 -my-[40px] rounded-[40px]">
-      <section aria-labelledby="final-cta-heading" className="rounded-[40px] bg-royal p-[40px] xl:py-0">
+      {/* pb-[80px] below xl: the footer sheet now overlaps this panel's last 40px (the resources section used to sit
+          between them), so the horizontal stat strip needs that much extra room to stay fully visible. */}
+      <section aria-labelledby="final-cta-heading" className="rounded-[40px] bg-royal p-[40px] pb-[80px] xl:py-0">
         <div className="mx-auto max-w-[1200px] xl:flex">
           <div className="xl:flex xl:w-1/2 xl:flex-col xl:justify-center xl:py-[40px]">
             <h2

@@ -1,6 +1,6 @@
-import { BuiltForPanel, PlatformPanel, ResearchPanel } from "@/components/header/DesktopPanels";
+import { BuiltForPanel, PlatformPanel } from "@/components/header/DesktopPanels";
 import { HeaderShell } from "@/components/header/HeaderShell";
-import { MobileBuiltForPanel, MobilePlatformPanel, MobileResearchPanel } from "@/components/header/MobilePanels";
+import { MobileBuiltForPanel, MobilePlatformPanel } from "@/components/header/MobilePanels";
 
 /**
  * Fixed site header (7shifts `header#site-navigation`): white floating pill with hover mega menus from 1200px,
@@ -13,12 +13,10 @@ export function SiteHeader() {
       desktopPanels={{
         platform: <PlatformPanel />,
         "built-for": <BuiltForPanel />,
-        research: <ResearchPanel />,
       }}
       mobilePanels={{
         platform: <MobilePlatformPanel />,
         "built-for": <MobileBuiltForPanel />,
-        research: <MobileResearchPanel />,
       }}
     />
   );

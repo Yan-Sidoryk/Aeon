@@ -2,6 +2,9 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* The research docs quote hundreds of 7shifts class names; keep Tailwind from generating CSS for them. */
+@source not "../../docs";
+
 @custom-variant dark (&:is(.dark *));
 
 /*

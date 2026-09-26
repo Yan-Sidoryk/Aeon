@@ -9,199 +9,191 @@ Aeon component: `src/components/CoverageSection.tsx` → `export function Covera
 
 ## Overview
 
-A transparent section that lets the page's fixed background photo show through. Centered on it is a dark
-translucent "glass" card: heading, category chips and a CTA on the left, and on the right two columns of white
-120px logo tiles that scroll vertically forever in opposite directions. Clicking a chip swaps the tile set. Below
-810px the card stacks, and a single horizontal row of tiles replaces the two columns. The card fades in once when
-80% of it is on screen.
+The layout and behavior come from 7shifts, restyled light after user feedback ("hate the night pharmacy
+background picture, don't need a picture" and "use logos of the brands you mention or the llms engines"). The page
+no longer has a fixed photo. The section is a full-bleed **sand band**. The why section's rounded bottom and the
+social section's rounded top sit over it, so sand shows behind both sets of corners. On the band sits a **white card**:
+heading, category chips and a CTA on the left, and on the right two columns of 120px **logo tiles** that scroll
+vertically forever in opposite directions. Clicking a chip swaps the tile set. Below 810px the card stacks and a
+single horizontal row of tiles replaces the two columns. The card fades in once, when 80% of it is on screen.
 
 **Breakpoints are 7shifts' real ones.** Read from 7shifts' CSSOM: `md` = `(min-width: 810px)`, `lg` = 1024px,
-`xl` = `(min-width: 1200px)`, `2xl` = 1374px. The shared theme now defines the same values, so the component uses
-`md:` / `xl:` as 7shifts does. At 768 the 7shifts section is still in its mobile layout.
+`xl` = `(min-width: 1200px)`, `2xl` = 1374px. The shared theme defines the same values. At 768 the section is still
+in its mobile layout.
 
-## DOM structure (7shifts → Aeon)
+### Changes from the 7shifts original (and the first Aeon build)
+| | 7shifts / first build | Now |
+| --- | --- | --- |
+| backdrop | transparent section over a fixed full-screen photo | sand `#f1f0ec` band, no image |
+| card | `bg-black/50` + `backdrop-blur-lg`, white text | `bg-white`, soft shadow, ink text |
+| chips | `#fbfaf8`, hover `brightness(.85)`, no selected look | sand, hover oat, **selected chip oat** (`aria-pressed`) |
+| tiles | white, partner logo image (first build: text wordmark + dot) | offwhite, 1px oat border, brand logo + name |
+| tile window edges | hard clip | 32px / 40px fade mask (hard edges looked like sliced tiles on white) |
+| 810–890px | right column squeezes tiles to 104px (clipped) | right column `min-w-64`, tiles stay whole |
+
+## DOM structure
 
 ```
-section.relative.flex.flex-row.px-5.pt-[76px].pb-[76px].md:!px-20.xl:pt-[100px].xl:pb-[100px]   (transparent)
-└─ div.card  mx-auto w-full flex max-xl:flex-col rounded-[20px] bg-black/50 backdrop-blur-lg !p-0 max-md:!py-6
-   │         !gap-5 md:!gap-10 xl:!gap-0 md:!flex-row md:!pr-7 md:!max-w-full xl:!max-w-[720px]
-   │         transition-opacity duration-500 (!opacity-0 until revealed)
-   ├─ div.left  flex flex-col gap-10 max-xl:items-start px-6 md:py-12 md:pl-12 md:w-[64%] xl:w-[52%]
-   │  ├─ h2  (white, 36px)
-   │  ├─ p   (empty, 0px tall, still takes a 40px gap slot → 80px between h2 and chips)
-   │  ├─ div.chips  flex flex-row flex-wrap gap-2
-   │  │  └─ button × 6
-   │  └─ a.cta  mr-auto mt-auto max-xl:mx-auto (royal pill)
-   └─ div.right  flex items-center justify-center md:w-[36%] xl:w-[48%]
-      └─ div.window  flex gap-4 overflow-y-hidden max-md:w-full max-md:my-2 md:h-80 xl:h-96
-         ├─ div.keen-slider (column A)  w-full md:max-w-[120px] max-md:!hidden   ← moves DOWN
-         └─ div.keen-slider (column B)  w-full md:max-w-[120px]                  ← moves UP (LEFT on mobile)
-            └─ div.slide × 2n  120×120 bg-white p-2 flex items-center rounded-xl (img 104px wide)
+section#coverage[data-section=coverage]  relative z-10 -mt-10 flex flex-row bg-sand
+│        px-5 pt-[116px] pb-[116px] md:px-20 xl:pt-[140px] xl:pb-[140px]
+└─ div.card  mx-auto w-full flex flex-col gap-5 rounded-[20px] bg-white py-6 shadow-[…]
+   │         md:flex-row md:gap-10 md:py-0 md:pr-7  xl:max-w-[720px] xl:gap-0
+   │         transition-opacity duration-500 (opacity-0 until revealed)
+   ├─ div.left  flex flex-col items-start gap-10 px-6 md:w-[64%] md:py-12 md:pl-12 xl:w-[52%] xl:items-stretch
+   │  ├─ h2#coverage-heading  (mb-10 stands in for 7shifts' empty <p> → 80px between h2 and chips)
+   │  ├─ div[role=group][aria-label="Filter engines by category"]  flex flex-row flex-wrap gap-2
+   │  │  └─ button[aria-pressed][aria-controls=coverage-engines] × 6
+   │  └─ PillButton "See coverage"  mx-auto mt-auto xl:ml-0
+   └─ div.right  flex items-center justify-center md:w-[36%] md:min-w-64 xl:w-[48%]
+      ├─ ul#coverage-engines.sr-only[aria-label=<chip>][aria-live=polite]  names of the active category
+      └─ div.window[aria-hidden]  my-2 flex w-full gap-4 overflow-hidden md:my-0 md:h-80 md:w-auto xl:h-96 + fade mask
+         ├─ div (column A)  hidden w-[120px] md:block      ← track moves DOWN
+         └─ div (column B)  w-full md:w-[120px]            ← track moves UP (LEFT below 810)
+            └─ track: tile loop × 2 (animate-marquee-y / -x)
+               └─ div.tile × 2n  120×120
 ```
-
-Aeon replaces the empty `<p>` with `mb-10` on the h2 (same 80px). Column tracks are CSS marquees (below) instead of
-keen-slider. The tile columns are `aria-hidden`; a visually hidden `<ul>` lists the engines of the active chip.
 
 ## Computed styles
 
-### Section
+### Section (sand band)
 | prop | < 810 | 810–1199 | ≥ 1200 |
 | --- | --- | --- | --- |
-| padding | 76px 20px | 76px 80px | 100px 80px |
-| display | flex row | flex row | flex row |
-| background | transparent (fixed page photo shows through) | | |
-| height (7shifts) | 696 @390 | 576 @1024 | 708 @1440 |
+| background | `#f1f0ec` (`bg-sand`), full bleed | | |
+| margin-top | −40px (tucks under the why sheet's 40px rounded bottom) | | |
+| padding | 116px 20px | 116px 80px | 140px 80px |
+| visible sand above / below the card | 76px / 76px (7shifts' spacing) | 76 / 76 | 100 / 100 |
+| stacking | `relative z-10` (why is `z-50`, social `z-20`, so both neighbours paint over the band) | | |
+
+The extra 40px at the bottom is for the social section, which is planned as a white sheet with
+`-mt-[40px] rounded-t-[40px] z-20`. Checked by injecting those styles: sand shows behind both of its top corners.
+The why section (`-mt-[60px] rounded-[40px] z-50 bg-white`) shows sand behind its bottom corners.
 
 ### Card
 | prop | value |
 | --- | --- |
-| background | `rgba(0,0,0,0.5)` (`bg-black/50`) |
-| backdrop-filter | `blur(16px)` (`backdrop-blur-lg`) |
+| background | `#fff` |
+| shadow | `0 1px 2px rgba(0,0,0,.04), 0 12px 32px -16px rgba(0,0,0,.12)`; no border |
 | border-radius | 20px |
-| border / shadow | none / none |
-| width | 100% of section content; max 720px at ≥ 1200 (margin auto → x=360 at 1440) |
+| width | 100% of the section content; max 720px at ≥ 1200 (x=360 at 1440) |
 | direction | column < 810, row ≥ 810 |
 | padding | `24px 0` < 810; `0 28px 0 0` ≥ 810 |
 | gap | 20px < 810; 40px 810–1199; 0 ≥ 1200 |
 | transition | `opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1)` |
-| size (7shifts) | 720×508 @1440, 864×424 @1024, 728×440 @768, 350×544 @390 |
+| size (measured) | 720×508 @1440, 864×424 @1024, 650×556 @810, 700×508 @860, 728×488 @768, 350×592 @390, 280×716 @320 |
 
 ### Left column
 | prop | < 810 | ≥ 810 | ≥ 1200 |
 | --- | --- | --- | --- |
-| width | 100% (stretch) | 64% (flex-shrinks to 510.8 @1024) | 52% (359.8 @1440) |
+| width | 100% | 64% (flex-shrinks; 326px @810 because of the right column's 256px minimum) | 52% (359.8 @1440) |
 | padding | 0 24px | 48px 24px 48px 48px | same |
 | gap | 40px | 40px | 40px |
-| align-items | flex-start | flex-start | normal (stretch) |
+| align-items | flex-start | flex-start | stretch |
 
 ### Heading (h2)
-`font-display` (7shifts "medium" 7sans → Geist), weight 500, 36px, white, `text-align: left`, letter-spacing normal.
-Line-height **28px below 810** (lines overlap slightly, as on 7shifts) and **36px at ≥ 810**.
-7shifts h2 box @1440: 288×108 (3 lines). Geist is about 4% wider than 7sans ("Works with the" is 252.6px vs 242px),
-and "Tracks the engines" measures 316.6px, so Aeon's heading takes **4 lines (288×144)** in the same column. The
-card grows 36px; nothing else moves.
+"Tracks every engine your audience asks". `font-display` (Geist) 500, 36px, ink, left-aligned. Line-height **28px
+below 810** (lines overlap slightly, as on 7shifts) and **36px from 810**. Lines: 4 @320, 3 @390, 1 @768, 3 @810,
+2 @900 and 1024, 3 @1440 (288×108, the same box as 7shifts' heading).
 
 ### Chips (`button`)
 | prop | value |
 | --- | --- |
 | container | `flex flex-row flex-wrap gap-2` (8px both axes) |
-| height / padding | 40px / 0 16px |
-| font | `font-display` 16px / 24px, weight 500, black, centered |
-| background | `#fbfaf8` (`bg-offwhite`, 7shifts extra-light-gray) |
+| height / padding | 40px / 0 16px (7shifts) |
+| font | `font-display` 16px / 24px, weight 500, ink, centered (7shifts) |
+| background | sand `#f1f0ec`; hover oat `#e2ded6` (inside `@media (hover: hover)`); selected (`aria-pressed=true`) oat |
 | radius | 9999px |
 | transition | `all 150ms cubic-bezier(0.4, 0, 0.2, 1)` |
 | focus-visible | `ring-2 ring-royal ring-offset-2 ring-offset-white`, outline none |
+| rows | 3 @390, 3 @1440, 2 @1024, 4 @810–850 (narrower left column) |
 
-### CTA (`a`)
-Shared pill: h 48, px 16, radius full, `font-display` 16/24 500, white on royal `#4570ff`, hover/active
-`#3658c9`. Margin `mt-auto`; `mx-auto` (centered) below 1200, `mr-auto` (left) at ≥ 1200. Use `PillButton`.
-7shifts CTA @1440: x=408 y=+412 in the card, 148×48 ("See integrations").
+The selected look is an Aeon addition. On 7shifts the clicked chip looks like the others, which does not work for
+a light filter group.
+
+### CTA
+Shared `PillButton` primary: h 48, px 16, radius full, `font-display` 16/24 500, white on royal `#4570ff`,
+hover/active `#3658c9`, 150ms. `mt-auto`; centered below 1200, left-aligned from 1200. → `#faqs`.
 
 ### Right column and tile window
 | prop | < 810 | 810–1199 | ≥ 1200 |
 | --- | --- | --- | --- |
-| right column width | 100% | 36% | 48% |
+| right column width | 100% | 36%, min 256px | 48% |
 | window size | card width × 120 (margin 8px 0) | 256 × 320 | 256 × 384 |
-| window position | full card width, straight clip at card edges | centered in the column | centered (x=758 @1440) |
 | columns shown | column B only, horizontal | A + B, vertical, 16px apart | A + B |
+| fade mask | `linear-gradient(to right, transparent, #000 32px, #000 calc(100% − 32px), transparent)` | `to bottom`, 40px | same |
 
-Tile: 120×120, `bg-white`, padding 8px, radius 12px (`rounded-xl`), overflow hidden, no border or shadow,
-content vertically centered (7shifts: logo `<img>` 104px wide). Tile pitch 136px (16px spacing) on both axes.
-
-**810 to about 890px quirk (reproduced):** the right column has a specified width (36%), so its flex minimum is that
-width, not the 256px window. The window (a scroll container) shrinks to the column, and each tile column shrinks
-to (width − 16) / 2. At 810 that is 223.9px and 103.95px, so the 120px tiles are clipped 16px on the right.
-Aeon measures identically (358.09 / 223.91 / 103.95).
-**Clip:** hard `overflow: hidden` edges. No mask, gradient or shadow anywhere in the section (checked on every
-descendant).
+### Tile
+| prop | value |
+| --- | --- |
+| box | 120×120 (border-box), `rounded-xl` (12px), `overflow-hidden`, pitch 136px (16px margin) on both axes |
+| surface | `bg-offwhite` `#fbfaf8`, `border border-oat` (1px `#e2ded6`), no shadow |
+| layout | `flex-col items-center gap-2 px-1.5 pt-7`. The logo sits at a fixed height (28px inside the border), so logos line up across the mobile row. A one-line name is centered (28px above and below the group). A two-line name grows downward (14px left at the bottom). |
+| logo | `<BrandLogo id variant="color" size={40} alt="" />` (40×40) |
+| name | `font-sans` (Inter Tight) 12px / 14px, weight 500, stone `#6e6d6c`, centered, `text-balance`; max text width 106px |
+| wrapping | all names fit on one line (widest: Veeva PromoMats 96px, Google AI Mode 84px, Search Console 83px) except **Google AI Overviews** (114px), which breaks as "Google AI / Overviews" |
 
 ## States and behaviors
 
 ### 1. Tile marquee (time-driven, continuous)
-- **Trigger:** always running from page load (7shifts: keen-slider driven by JS; no pause on hover; drag disabled;
-  cursor auto).
-- **Measured:** constant linear speed **88.3 px/s** for every category (POS 88.18, Payroll 88.27, Hiring 88.26;
-  mobile 88.54). Column A (left) content moves **down**; column B (right) moves **up**. Mobile row moves **left**.
-- Column A lists the items in reverse DOM order (slide 0 at the bottom), so the two columns never show the same
-  sequence side by side.
-- **Aeon implementation:** each track renders its tile loop twice (second copy `aria-hidden`) and uses
-  `animate-marquee-y` (0 → −50%), with `[animation-direction:reverse]` for column A, and `animate-marquee-x` for the
-  mobile row. Each tile carries its 16px spacing as margin (`mb-4` / `mr-4`), so −50% is exactly one loop.
-  Duration = `loopLength × 136px / 88.3px/s` (10.78s for 7 tiles, 9.24s for 6), set inline as
-  `animation-duration`. A per-element `--marquee-duration` has no effect while `--animate-marquee-*` lives in a
-  non-inline `@theme` block, because the variable is resolved at `:root`. Measured in the Aeon build: 88.0–88.5 px/s,
-  column A down, column B up, mobile row left. Each loop repeats the category's engines until
-  it has at least 6 tiles (816px, longer than the widest mobile window of 769px and the 384px desktop window), so
-  the seam is never visible.
-- Reduced motion: the global `prefers-reduced-motion` rule stops the tracks on a keyframe edge that looks
-  identical to the start.
+- Always running, no pause on hover, no drag (as on 7shifts).
+- **Speed 88.3 px/s** (7shifts' measured speed) for every category, both columns and the mobile row. Column A
+  moves **down**, column B **up**, the mobile row **left**. Column A lists the loop in reverse order, so the two
+  columns never show the same sequence side by side.
+- Implementation: each track renders its loop twice. The track uses `animate-marquee-y` (0 → −50%), with
+  `[animation-direction:reverse]` for column A, and `animate-marquee-x` for the mobile row. Each tile carries its 16px
+  spacing as margin (`mb-4` / `mr-4`), so −50% is exactly one loop. Duration is
+  `loopLength × 136px / 88.3px/s`, set per track as `--marquee-duration`. The theme's `--animate-marquee-*` tokens
+  are `@theme inline`, so the variable is read at the element: 12.32s for General LLMs (8 tiles) and 9.24s for the
+  rest (6 tiles).
+- **Seam:** short categories repeat until the loop has at least 6 tiles (816px). That is longer than the widest
+  mobile window (769px at 809) and the 384px desktop window, so the loop point never shows.
+- Measured in Aeon (Playwright, 1s sample): column A +89.2 px/s, column B −89.2 px/s @1440; row −88.2 px/s @390.
+- Reduced motion: the global `prefers-reduced-motion` rule ends the animation after 0.01ms. The tracks rest at
+  translate 0, which looks the same as the start (measured 0 px/s).
 
 ### 2. Chip hover
-- **Trigger:** `:hover` (inside `@media (hover: hover)`).
-- **Before → after:** `filter: none` → `filter: brightness(0.85)` (the chip turns light grey: #fbfaf8 → ~#d5d4d3).
-- **Transition:** `all 150ms cubic-bezier(0.4, 0, 0.2, 1)`.
+`bg-sand` → `bg-oat`, 150ms. Only on devices with hover.
 
 ### 3. Chip click (filters tiles)
-- **Trigger:** click.
-- **After:** both columns swap to the category's tiles **instantly**. There is no fade (card opacity stays 1) and
-  both tracks restart from their initial offset (keen re-init). Default category: the first chip.
-- **Chip look:** 7shifts has **no active or pressed style**. The clicked chip looks exactly like the others once the
-  mouse leaves (no `aria-pressed` either). Aeon keeps the identical look and adds `aria-pressed` and
-  `aria-controls` for assistive tech. Aeon remounts the tracks with `key={category}` to restart the animation.
-- 7shifts categories → Aeon categories (tile count per loop on 7shifts: 13 / 9 / 5 / 8 / 4 / 5 unique):
-
-| 7shifts chip | Aeon chip | Aeon engines |
-| --- | --- | --- |
-| POS | General LLMs | ChatGPT, Claude, Gemini, Copilot, Meta AI, Grok, Mistral |
-| Analytics | Clinical LLMs | OpenEvidence |
-| Hiring | AI search | Perplexity, Google AI Overviews, Google AI Mode |
-| Back Office | Label data | DailyMed, openFDA |
-| Payroll | MLR workflow | Veeva PromoMats |
-| Training | SEO data | Semrush, Ahrefs, Google Search Console |
+Both tracks swap to the category's tiles **instantly**, with no fade, and restart from their initial offset
+(`key={category}` remounts them, as keen-slider re-inits on 7shifts). The chip gets `aria-pressed=true` and turns oat.
+The visually hidden list (`aria-live=polite`) announces the new names. Default category: General LLMs.
 
 ### 4. In-view reveal (one-shot)
-- **Trigger:** IntersectionObserver on the card. Measured at a 1440×900 viewport: the fade fired between card
-  visibility 0.787 (no) and 0.807 (yes), so the **threshold is 0.8**. Never re-hides after scrolling away.
-- **Before → after:** `opacity: 0` → `opacity: 1`, `transition: opacity 500ms cubic-bezier(0.4, 0, 0.2, 1)`.
-- Aeon also reveals the card when its visible part covers 80% of the viewport height, so a card taller than a
-  short landscape viewport still appears. Full-page screenshots must scroll the page first (as 7shifts' own
-  capture does); otherwise the card is captured at opacity 0.
+IntersectionObserver on the card with a 0.8 threshold, matching 7shifts (measured to fire between 0.787 and 0.807
+visibility). `opacity 0 → 1`, 500ms. Also reveals once the card's visible part covers 80% of the viewport height,
+for cards taller than a short landscape viewport. Never re-hides. Full-page screenshots must scroll the page first.
 
 ### 5. CTA hover
 `#4570ff` → `#3658c9`, 150ms (shared `PillButton` primary).
 
-## Aeon content mapping
-| slot | 7shifts | Aeon |
-| --- | --- | --- |
-| h2 | Works with the tools you already love | Tracks the engines your audience actually asks |
-| chips | POS · Analytics · Hiring · Back Office · Payroll · Training | General LLMs · Clinical LLMs · AI search · Label data · MLR workflow · SEO data |
-| tiles | partner logo images | typographic wordmarks (below) |
-| CTA | See integrations → /integrations/home/ | See coverage → `#faqs` |
+## Content
 
-### Wordmark tiles (no image files, no third-party artwork)
-The lockup is centered in the 104px content box: a 10px dot in an Aeon palette color, a 6px gap, then the name in
-`font-display` weight 600, `tracking-tight`, line-height 1.05, ink. Single-line names use 17px. Names that need two
-or three lines are left-aligned in the lockup at 16px:
-- One line: ChatGPT, Claude, Gemini, Copilot, Meta AI, Grok, Mistral, Perplexity, DailyMed, openFDA, Semrush, Ahrefs
-- Several lines: Open / Evidence · Google AI / Overviews · Google AI / Mode · Veeva / PromoMats · Google / Search / Console
+| chip | tiles (logo · name) |
+| --- | --- |
+| General LLMs | ChatGPT · Claude · Gemini · Copilot · Meta AI · Grok · Mistral · DeepSeek |
+| Clinical LLMs | OpenEvidence (monogram "OE") |
+| AI search | Perplexity · Google "G" + **Google AI Overviews** · Google "G" + **Google AI Mode** |
+| Label data | DailyMed (monogram "DM") · openFDA (monogram "FDA") |
+| MLR workflow | Veeva PromoMats (monogram "V") |
+| SEO data | Semrush · Ahrefs (monogram "a") · Search Console |
 
-Dot colors rotate through royal, flame, mint, violet, navy, forest and ink, so neighbouring tiles differ. They are
-accents, not brand colors.
+Names come from `BRANDS[id].name`, with a per-tile `label` override where one logo stands for a different product
+name (the two Google tiles; Search Console). The same names fill the screen-reader list.
 
 ## Assets
-None. The background photo is the page-level fixed `/images/photos/pharmacy-night.webp` from `page.tsx`. Tiles are
-text only.
+- Logos: the shared `BrandLogo` component (`src/components/brand-logos.tsx`) → `/public/logos/<id>.svg` (LobeHub
+  Icons, MIT; Simple Icons, CC0; see `third_party/LOGOS.md`). Brands with no open logo (OpenEvidence, DailyMed,
+  openFDA, Veeva, Ahrefs) render as the component's colored monogram square. Nothing needs to be done here if a real
+  logo is added to `BRANDS` later.
+- No photos. The fixed `/images/photos/pharmacy-night.webp` page background has been removed from `page.tsx`.
 
-## Responsive summary
-| | 390 (mobile) | 768 (still mobile on 7shifts) | 1024 (md) | 1440 (xl) |
-| --- | --- | --- | --- | --- |
-| section padding | 76 / 20 | 76 / 20 | 76 / 80 | 100 / 80 |
-| card | 350 wide, stacked, py 24, gap 20 | 728 wide, stacked | 864 wide, row, gap 40, pr 28 | 720 wide, row, gap 0, pr 28 |
-| h2 | 36/28, left (Aeon: 4 lines) | 36/28 (Aeon: 2 lines) | 36/36, 2 lines | 36/36, 3 lines (Aeon: 4) |
-| chips | wrap (Aeon: 3 rows) | wrap (Aeon: 2 rows) | 2 rows | 3 rows |
-| CTA | centered | centered | centered in left column | left |
-| tiles | one row moving left, full card width | same | 2 columns 256×320 | 2 columns 256×384 |
-| section height, 7shifts → Aeon (measured) | 696 → 772 | 592 → 668 | 576 → 576 | 708 → 744 |
-
-The page has no horizontal overflow from this section at 320–1024 (`documentElement.scrollWidth` equals the
-viewport at 390).
+## Responsive summary (measured)
+| | 320 | 390 | 768 | 810 | 1024 | 1440 |
+| --- | --- | --- | --- | --- | --- | --- |
+| section padding (y / x) | 116 / 20 | 116 / 20 | 116 / 20 | 116 / 80 | 116 / 80 | 140 / 80 |
+| card | 280×716 | 350×592 | 728×488 | 650×556 | 864×424 | 720×508 |
+| layout | stacked | stacked | stacked | row | row | row, max 720 |
+| h2 lines | 4 | 3 | 1 | 3 | 2 | 3 |
+| tiles | row, moving left | row | row | 2 columns 256×320 | 2 columns 256×320 | 2 columns 256×384 |
+| section height | 948 | 824 | 720 | 788 | 656 | 788 |
+| `scrollWidth` = viewport | yes | yes | yes | yes | yes | yes |
