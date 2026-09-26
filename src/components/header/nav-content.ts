@@ -3,19 +3,18 @@ import { START_HREF, WALKTHROUGH_HREF } from "@/components/ui/pill-button";
 // Copy + structure for the site header (announcement bar lives in AnnouncementBar.tsx).
 // Mirrors the 7shifts mega-menu anatomy with Aeon content (docs/research/AEON_CONTENT.md, section 2).
 
-export type NavMenuId = "platform" | "built-for" | "research";
+export type NavMenuId = "platform" | "built-for";
 
 export type NavItem =
   | { kind: "menu"; id: NavMenuId; label: string; icon: string }
   | { kind: "link"; label: string; href: string; icon: string };
 
-/** Top-level nav, in 7shifts order (Platform, Pricing, Built for, Integrations -> Aeon Index, Resources -> Research). */
+/** Top-level nav, in 7shifts order (Platform, Pricing, Built for, Integrations -> Aeon Index). Research is off until resources return. */
 export const NAV_ITEMS: NavItem[] = [
   { kind: "menu", id: "platform", label: "Platform", icon: "/images/doodles/doodle-track.png" },
   { kind: "link", label: "Pricing", href: "/pricing", icon: "/images/doodles/doodle-verify.png" },
   { kind: "menu", id: "built-for", label: "Built for", icon: "/images/doodles/doodle-review.png" },
   { kind: "link", label: "Aeon Index", href: "/aeon-index", icon: "/images/doodles/doodle-measure.png" },
-  { kind: "menu", id: "research", label: "Research", icon: "/images/doodles/doodle-fix.png" },
 ];
 
 /** `shortLabel` replaces the label in the mobile bar below 375px, where the full label would reach the logo. */
