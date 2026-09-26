@@ -5,10 +5,12 @@ from sqlmodel import Session, select
 
 from app import jobs
 from app.auth import current_org, owned_draft, owned_scan
+from app.config import settings
 from app.db import get_session
 from app.models import Answer, Draft, Org, Report
 from app.routers.onboarding import stream_job, stream_org
 from app.schemas import SaveIn
+from app.services import demo
 
 router = APIRouter(prefix="/api", tags=["report"])
 
@@ -53,6 +55,9 @@ def create_fix(report_id: str, fix_key: str, response: Response, org: Org = Depe
         return {"draft_id": existing.id, "job_id": None}
     if not any(f["key"] == fix_key for f in report.payload.get("fixes", [])):
         raise HTTPException(404, f"fix '{fix_key}' not in report")
+    if settings.demo_mode and demo.available() and fix_key not in demo.recorded_fix_keys():
+        # demo mode never spends money: only the recorded fix loop replays
+        raise HTTPException(409, "This demo has one recorded fix: open the first one. Other fixes are drafted in live mode.")
     # enqueue() joins a job that's already queued or running, so a double click is safe
     job_id = jobs.enqueue("fix", {"report_id": report_id, "fix_key": fix_key}, org_id=org.id,
                           job_id=fix_job_id(report_id, fix_key))

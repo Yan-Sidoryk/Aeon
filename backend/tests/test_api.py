@@ -165,11 +165,19 @@ def test_full_flow(client, monkeypatch):
             s.expunge(d)
         return d
 
+    # demo mode never spends money: a fix without a recording is refused
+    assert client.post(f"/api/reports/{report_id}/fixes/faq").status_code == 409
+    from app.config import settings
+
+    monkeypatch.setattr(settings, "demo_mode", False)
     monkeypatch.setattr(fix, "draft_with_review", fake_draft)
     r = client.post(f"/api/reports/{report_id}/fixes/faq")
     assert r.status_code == 202
+    again = client.post(f"/api/reports/{report_id}/fixes/faq").json()  # a double click joins the job or gets its draft
+    assert again["job_id"] == r.json()["job_id"] or again["draft_id"] is not None
     evs = events(client, f"/api/fixes/{r.json()['job_id']}/events")
     assert evs[0][0] == "round" and evs[-1][0] == "done"
+    monkeypatch.setattr(settings, "demo_mode", True)
 
     # promo opportunities replay
     r = client.post(f"/api/products/{hero['id']}/opportunities")

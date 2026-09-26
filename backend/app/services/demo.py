@@ -105,6 +105,10 @@ async def _replay(job: JobContext, events: list[dict], *, skip_terminal: bool = 
         await asyncio.sleep(CELL_DELAY if e["event"] in ("answer", "counters") else STEP_DELAY)
 
 
+def recorded_fix_keys() -> set[str]:
+    return {d["fix_key"] for d in load()["drafts"]}
+
+
 def _hero_brand(b: dict) -> str:
     return next(p["brand"] for p in b["products"] if p["is_hero"])
 

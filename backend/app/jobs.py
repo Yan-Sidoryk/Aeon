@@ -13,6 +13,7 @@ from collections.abc import AsyncIterator, Awaitable, Callable
 from datetime import datetime, timezone
 from typing import Any
 
+from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, delete, select
 
 from app.config import settings
@@ -72,7 +73,17 @@ def _jsonable(data: Any) -> Any:
 
 
 def enqueue(kind: str, params: dict, org_id: int | None = None, job_id: str | None = None) -> str:
-    """Queue a job; returns its id. Re-queuing a finished job with the same id runs it again from scratch."""
+    """Queue a job; returns its id. Re-queuing a finished job with the same id runs it again from scratch.
+    Two requests racing to create the same job id (a double click, React StrictMode) both get that one job."""
+    try:
+        return _enqueue(kind, params, org_id, job_id)
+    except IntegrityError:
+        if job_id is None:
+            raise
+        return job_id  # the other request created it first: join it
+
+
+def _enqueue(kind: str, params: dict, org_id: int | None, job_id: str | None) -> str:
     with Session(engine) as s:
         job = s.get(Job, job_id) if job_id else None
         if job and job.status not in TERMINAL:

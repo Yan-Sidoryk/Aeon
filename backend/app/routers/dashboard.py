@@ -5,9 +5,11 @@ from sqlmodel import Session, select
 
 from app import jobs
 from app.auth import current_org, owned_draft, owned_product
+from app.config import settings
 from app.db import get_session
 from app.models import CompetitorAd, Draft, Opportunity, Org, Report, Scan
 from app.routers.onboarding import stream_job, stream_org
+from app.services import demo
 
 router = APIRouter(prefix="/api", tags=["dashboard"])
 
@@ -53,6 +55,7 @@ def list_opportunities(product_id: int, org: Org = Depends(current_org), session
     job = jobs.get_job(promo_job_id(product_id))
     return {
         "status": job.status if job else None,
+        "job_id": job.id if job else None,
         "opportunities": [o.model_dump() | {"draft_id": drafts.get(f"opp-{o.key}")} for o in opps],
         "ads": [{"competitor": a.competitor, "advertiser": a.page_name, "first_shown": a.started_at, "url": a.url,
                  "ad_id": a.ad_id} for a in ads],
@@ -70,6 +73,8 @@ def draft_opportunity(product_id: int, key: str, response: Response, org: Org = 
     existing = session.exec(select(Draft).where(Draft.product_id == product_id, Draft.fix_key == f"opp-{key}")).first()
     if existing:
         return {"draft_id": existing.id, "job_id": None}
+    if settings.demo_mode and demo.available():  # demo mode never spends money
+        raise HTTPException(409, "Drafting from an opportunity runs in live mode; the demo recording has none.")
     job_id = jobs.enqueue("opportunity_draft", {"product_id": product_id, "opportunity_id": opp.id}, org_id=org.id,
                           job_id=f"oppdraft-{product_id}-{key}")
     response.status_code = 202
