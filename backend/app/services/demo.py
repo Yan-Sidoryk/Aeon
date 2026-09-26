@@ -5,6 +5,7 @@ can't tell the difference (apart from speed)."""
 
 import asyncio
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 from sqlmodel import Session, select
@@ -136,6 +137,7 @@ async def replay_scan(job: Job, scan_id: int) -> None:
         s.add(report)
         scan = s.get(Scan, scan_id)
         scan.status, scan.stats, scan.report_id = "done", counters, report.id
+        scan.finished_at = datetime.now(timezone.utc)
         s.add(scan)
         s.commit()
         job.finish("done", {"report_id": report.id})
