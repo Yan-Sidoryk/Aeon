@@ -324,6 +324,8 @@ export type Opportunity = {
 
 export type Opportunities = {
   status: "queued" | "running" | "done" | "failed" | null;
+  /** The promo research job, to follow its events while it runs. */
+  job_id: string | null;
   opportunities: Opportunity[];
   ads: { competitor: string; advertiser: string; first_shown: string; url: string; ad_id: string }[];
 };

@@ -3,7 +3,7 @@
 import { useSyncExternalStore, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-type SectionKey = "headline" | "accuracy" | "lost" | "sources" | "fixes";
+export type SectionKey = "visibility" | "changes" | "accuracy" | "lost" | "sources" | "fixes";
 type Role = "brand" | "medical" | "regulatory" | "agency";
 
 const ROLES: { id: Role; label: string }[] = [
@@ -14,12 +14,12 @@ const ROLES: { id: Role; label: string }[] = [
 ];
 
 // The journey doc: the role question changes what the report leads with. Medical and regulatory readers care
-// about label accuracy first; brand and agency readers about visibility.
+// about label accuracy and the fixes first; brand and agency readers about where AI recommends them.
 const ORDER: Record<Role, SectionKey[]> = {
-  brand: ["headline", "accuracy", "lost", "sources", "fixes"],
-  agency: ["headline", "lost", "sources", "fixes", "accuracy"],
-  medical: ["accuracy", "fixes", "headline", "lost", "sources"],
-  regulatory: ["accuracy", "fixes", "headline", "lost", "sources"],
+  brand: ["visibility", "changes", "accuracy", "lost", "sources", "fixes"],
+  agency: ["visibility", "changes", "lost", "sources", "fixes", "accuracy"],
+  medical: ["accuracy", "fixes", "visibility", "changes", "lost", "sources"],
+  regulatory: ["accuracy", "fixes", "visibility", "changes", "lost", "sources"],
 };
 
 // The role is a per-browser preference, kept in localStorage (memory if storage is blocked).
@@ -60,8 +60,13 @@ function subscribe(notify: () => void) {
   };
 }
 
-export function ReportSections({ sections }: { sections: Record<SectionKey, ReactNode> }) {
+/**
+ * The report's main sections, in the order the reader's role asks for. Empty sections are skipped; `lead` goes
+ * first whatever the role (a weekly scan leads with what changed).
+ */
+export function ReportSections({ sections, lead }: { sections: Record<SectionKey, ReactNode>; lead?: SectionKey }) {
   const role = useSyncExternalStore(subscribe, readRole, () => null);
+  const order = ORDER[role ?? "brand"];
 
   return (
     <>
@@ -88,9 +93,11 @@ export function ReportSections({ sections }: { sections: Record<SectionKey, Reac
       </div>
 
       <div className="mt-8 flex flex-col gap-14">
-        {ORDER[role ?? "brand"].map((key) => (
-          <div key={key}>{sections[key]}</div>
-        ))}
+        {(lead ? [lead, ...order.filter((key) => key !== lead)] : order)
+          .filter((key) => sections[key])
+          .map((key) => (
+            <div key={key}>{sections[key]}</div>
+          ))}
       </div>
     </>
   );
