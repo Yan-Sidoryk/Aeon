@@ -25,13 +25,19 @@
 
 ---
 
-## Why
+## Why this matters
 
-Patients, caregivers and doctors now ask AI about treatments. When an assistant recommends a competitor for "best cream for plaque
-psoriasis", or quotes an age limit from a label that has since changed, the brand team usually never finds out, and
-anything they publish to fix it has to get through medical, legal and regulatory (MLR) review first.
+Patients, caregivers and doctors now ask AI about treatments, and no brand team controls the answer. When Claude or
+Google's AI recommends a competitor for "best cream for plaque psoriasis", or repeats an age limit from a label that
+has since changed, the brand usually never finds out. And every correction has to get through medical, legal and
+regulatory review (MLR) before it can be published.
 
-Aeon shows both problems for one drug in about six minutes, from nothing but the company's website.
+**Aeon closes that loop in one flow:** type the company's website, and six minutes later the brand team sees where
+each AI engine recommends them, where it recommends a competitor instead, and where it contradicts the FDA label,
+with the answer behind every check. One click drafts on-label content that has already passed a pre-MLR review.
+
+SEO tools count keywords; most AI-visibility tools report a single score. Aeon is built for regulated brands:
+every result is traceable to the AI's own words and to the label, and nothing goes out that MLR would reject on sight.
 
 ## What it does
 
@@ -50,24 +56,80 @@ Aeon shows both problems for one drug in about six minutes, from nothing but the
   <br><sub>Every check opens the answer behind it: all three Claude samples, the sources, and who it named instead.</sub>
 </p>
 
-## How it works
+## Architecture
 
 ```mermaid
-flowchart LR
-    W[Company website] --> D[Discovery agent<br/>Claude + openFDA]
-    D --> S[Setup agent<br/>competitors + 10 real questions]
-    S --> Q[Scan<br/>Claude ×3 · AI Overviews · AI Mode]
-    Q --> C[Checks<br/>named? competitor? label conflict?]
-    C --> R[Report + dashboard]
-    R --> F[Fix this<br/>draft → pre-MLR review → revise]
+flowchart TB
+    subgraph FE["Next.js 16 · React 19"]
+        START["/start<br/>onboarding"] --- REPORT["/report/[id]<br/>shareable report"] --- APP["/app<br/>dashboard"]
+    end
+
+    subgraph API["FastAPI"]
+        GUARD["Guardrails<br/>website check · limits · spend cap"]
+        JOBS["Durable job queue<br/>DB-backed, heartbeats, retries"]
+        SSE["SSE progress streams"]
+    end
+
+    subgraph AGENTS["Agents · Anthropic tool runner"]
+        DISC["Discovery<br/>web fetch + openFDA tools"]
+        SETUP["Setup<br/>competitors + questions"]
+        FIX["Fix loop<br/>draft → review → revise ×3"]
+        PROMO["Promo research<br/>competitor ads"]
+    end
+
+    subgraph SCAN["Scan · fixed workflow, not an agent"]
+        CL["Claude ×3 samples<br/>majority vote"]
+        AIO["Google AI Overviews"]
+        AIM["Google AI Mode"]
+        PARSE["Parse · label check · citations"]
+    end
+
+    PREMLR["Pre-MLR review<br/>6 deterministic rules + LLM claim matching"]
+
+    FE -- "REST + SSE" --> API
+    GUARD --> JOBS
+    JOBS --> DISC & SETUP & SCAN & FIX & PROMO
+    JOBS --> SSE
+    CL & AIO & AIM --> PARSE
+    FIX --> PREMLR
+
+    DISC -.-> OFDA[("openFDA")]
+    SETUP -.-> DFS[("DataForSEO")]
+    AIO & AIM -.-> DFS
+    PROMO -.-> APIFY[("Apify")]
+    JOBS --- DB[("Postgres / SQLite")]
+    AGENTS & SCAN -.-> LF[("Langfuse<br/>traces + evals")]
 ```
 
-- **Agents** run on the Anthropic SDK's tool runner: they read pages, look labels up and record what they find,
-  and every step streams live to the screen.
-- **Measurement is not an agent.** The scan is a fixed workflow, so the instructions never change the answers being
-  measured.
-- **Durable jobs** live in the database, so a restart or a dropped connection resumes the work instead of losing it.
-- **Every call is traced** in Langfuse, with evals for the label checks, the pre-MLR review and the fix loop.
+**What happens when someone types a website:**
+
+1. **Guardrails first.** The API checks that it's a real, public website that answers, and that the caller has budget
+   left today. Junk never reaches a model.
+2. **Discovery agent.** Claude reads the site with web fetch and calls tools to look up the company's FDA labels,
+   record the company and record each product. Code then does the deterministic parts: partner products, one-line
+   indications, and picking the hero drug by real Google search volume.
+3. **Setup agent.** It picks competitors from openFDA and builds 10 questions from what people really ask on Google:
+   unbranded, branded and comparison questions for patients, caregivers and doctors.
+4. **Scan.** A fixed workflow, deliberately not an agent, so instructions never change the answers being measured.
+   Every question goes to every engine. Claude is asked 3 times and each cell is a majority vote, which keeps results
+   stable from run to run. Each answer is parsed (who's named, in what position, citing what) and compared with the
+   full FDA label, every form of the brand included.
+5. **Report and dashboard.** Checks and counts of checks, never scores. Each check opens the AI's exact words.
+6. **Fix this.** An agent drafts on-label content from the label alone, runs it through the pre-MLR review, reads the
+   failed checks and revises: up to 3 rounds, each streamed to the screen.
+
+**Engineering details that matter:**
+
+- **Durable jobs.** Every job and every progress event lives in the database. A restart, a deploy or a dropped
+  connection resumes the work (with heartbeats and bounded retries) instead of losing it. On Vercel each job runs
+  inside the request that streams it; on a server, a worker pool runs them.
+- **Spend metering.** Each job records what it actually cost: Claude tokens (cache writes and reads priced
+  separately), web searches, DataForSEO's reported cost and Apify's run cap. A global daily cap stops new runs.
+- **Prompt caching.** The FDA label is cached once per scan and read by every label check at a tenth of the price.
+- **Demo mode.** One real live run is recorded (rows plus every job's event log) and replayed through the same jobs
+  and streams, so the demo shows the agents' real steps for free, with a banner that says so.
+- **Ownership everywhere.** Sequential ids are checked against the caller on every endpoint; only reports, whose ids
+  are random, are public by link.
 
 | Measured on a live run (arcutis.com, Sonnet 5) | Time | Cost |
 |---|---|---|
@@ -75,6 +137,33 @@ flowchart LR
 | Setup: competitors and questions | ~1 min | $0.06 |
 | Scan: 10 questions × 3 engines, label checks | ~4 min | $2.93 |
 | **A full report** | **~6 min** | **~$3** |
+
+## How we know it's right: evals
+
+AI output that goes near MLR has to be measured, not trusted. Aeon ships three eval suites that run as
+**Langfuse experiments**, so every prompt or model change is compared run against run, case by case:
+
+| Suite | What it proves | Cases | Scored as |
+|---|---|---|---|
+| `label-check` | The label check catches real contradictions **without false alarms**: wrong ages, wrong body-surface limits, wrong tube counts, next to correct statements that must pass. | 12 statements on the Opzelura label (7 wrong, 5 right), each tied to the label section that decides it | `correct`, `no_false_alarm` (pass/fail per case) + counts |
+| `premlr` | The pre-MLR review fails what it must and passes clean copy. | 5 drafts: overstatement, missing ISI, untraceable claim, unsupported comparison, and one clean draft | `catches`, `clean_passes` |
+| `fix-loop` | The fix agent reaches "ready for MLR review" within its rounds on a real report. | Every fix in a real report | `ready` |
+
+```bash
+cd backend
+.venv/bin/python -m app.evals.run label-check     # ~12 Claude calls
+.venv/bin/python -m app.evals.run premlr          # ~5 calls
+.venv/bin/python -m app.evals.run fix-loop --report <report_id>
+```
+
+The pre-MLR review itself is built to be auditable. Six checks (every claim traced to the label, on-label only, no
+overstatement, fair balance, ISI present with the boxed warning first, no comparison without head-to-head data) come
+from deterministic rules that never depend on a model. An LLM pass only adds claim matching on top. A claim whose
+quote isn't verbatim in the label blocks export outright.
+
+Alongside the evals, **39 backend tests** run offline with no keys: the whole flow in demo mode (durable jobs, SSE
+replay, report, recorded fix loop, ownership), the website check, the limits and spend cap, and label parsing. Every
+eval case is written from the label text and marked for medical-affairs review before it gates a release.
 
 ## Built to be trusted
 
