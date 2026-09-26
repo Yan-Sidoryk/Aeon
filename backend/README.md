@@ -1,4 +1,4 @@
-# PharmaPulse backend
+# Aeon backend
 
 FastAPI backend for the website-in onboarding flow (`docs/user-journey-pharma-onboarding.md`): URL → portfolio → hero drug → competitors + prompts → live AI scan → report → "Fix this" draft with a pre-MLR score.
 

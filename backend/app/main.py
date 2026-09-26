@@ -15,7 +15,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="PharmaPulse API", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="Aeon API", version="0.1.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_methods=["*"], allow_headers=["*"])
 app.include_router(onboarding.router)
 app.include_router(scan.router)

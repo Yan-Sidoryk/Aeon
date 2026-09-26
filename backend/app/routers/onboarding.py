@@ -9,7 +9,7 @@ from app.db import get_session
 from app.deps import get_or_404, get_org
 from app.events import create_job, get_job, run_in_background
 from app.models import Company, Competitor, Org, Product, Prompt
-from app.schemas import AddProductIn, CompetitorIn, OnboardingIn, ProductPatch, PromptIn
+from app.schemas import AddProductIn, CompetitorIn, LabelerIn, OnboardingIn, ProductPatch, PromptIn
 from app.services import crawl, demo, discovery, openfda, setup
 
 router = APIRouter(prefix="/api", tags=["onboarding"])
@@ -50,6 +50,24 @@ def get_company(company_id: int, session: Session = Depends(get_session)):
     return {**company.model_dump(), "products": [p.model_dump(exclude={"label"}) | {
         "label_found": bool(p.label_set_id), "has_boxed_warning": bool(p.label.get("boxed_warning"))}
         for p in products]}
+
+
+@router.post("/companies/{company_id}/labeler", summary="'Which of these are you?': keep one labeler's products")
+def choose_labeler(company_id: int, body: LabelerIn, session: Session = Depends(get_session)):
+    company = get_or_404(session, Company, company_id)
+    if body.labeler not in company.labeler_candidates:
+        raise HTTPException(422, f"'{body.labeler}' is not one of this company's labelers")
+    products = session.exec(select(Product).where(Product.company_id == company_id, Product.pipeline == False)  # noqa: E712
+                            .order_by(Product.search_rank)).all()
+    for p in products:  # another labeler's products become partner products: shown, unticked, never the hero
+        if p.labeler and p.labeler != body.labeler:
+            p.partner, p.selected, p.is_hero = True, False, False
+    if not any(p.is_hero for p in products) and (own := [p for p in products if not p.partner]):
+        own[0].is_hero = True
+    company.labeler_candidates = []
+    session.add_all([company, *products])
+    session.commit()
+    return get_company(company_id, session)
 
 
 @router.patch("/products/{product_id}")
