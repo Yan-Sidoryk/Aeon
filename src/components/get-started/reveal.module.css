@@ -1,0 +1,19 @@
+/*
+ * 7shifts' timeline cards reveal once when scrolled into view (framer-motion on their side):
+ * initial { opacity: 0; transform: translateY(16px) } -> { opacity: 1; transform: none },
+ * 500ms, ease "easeOut" = cubic-bezier(0, 0, 0.58, 1), card n delayed by n * 150ms (delay comes from a Tailwind class).
+ * The hidden state only applies when scripting is on and motion is allowed, so no-JS and reduced-motion
+ * visitors always see the cards.
+ */
+.card {
+  transition-property: opacity, transform;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.58, 1);
+}
+
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .card:not([data-revealed]) {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
