@@ -40,14 +40,28 @@ export class ApiError extends Error {
 
 type RequestOptions = Omit<RequestInit, "body"> & { body?: unknown };
 
+/**
+ * Where a request goes. The browser uses API_URL as is: on Vercel that's the relative "/api/backend", a service on the
+ * same deployment. Server rendering can't fetch a relative URL, so there it calls back into this deployment by its
+ * absolute URL, past Vercel's login protection with the bypass secret the deployment is given.
+ */
+function target(path: string): { url: string; headers: Record<string, string> } {
+  if (typeof window !== "undefined" || /^https?:\/\//.test(API_URL)) return { url: `${API_URL}${path}`, headers: {} };
+  const origin = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000";
+  const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET ?? process.env.PROTECTION_BYPASS_SECRET;
+  return { url: `${origin}${API_URL}${path}`, headers: bypass ? { "x-vercel-protection-bypass": bypass } : {} };
+}
+
 async function request<T>(path: string, { body, headers, ...init }: RequestOptions = {}): Promise<T> {
   const h = new Headers(headers);
   if (body !== undefined) h.set("Content-Type", "application/json");
   for (const [k, v] of Object.entries(await authHeaders())) h.set(k, v);
+  const { url, headers: routing } = target(path);
+  for (const [k, v] of Object.entries(routing)) h.set(k, v);
 
   let res: Response;
   try {
-    res = await fetch(`${API_URL}${path}`, {
+    res = await fetch(url, {
       cache: "no-store",
       ...init,
       headers: h,
