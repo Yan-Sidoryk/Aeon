@@ -1,0 +1,67 @@
+/* Motion for the overlay UI cards on the hero video (Aeon addition; 7shifts bakes its cards into the footage).
+   prefers-reduced-motion is neutralised globally in globals.css. */
+
+/* Staggered entrance: set --card-delay on the element. */
+.cardIn {
+  animation: card-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--card-delay, 0ms);
+}
+
+/* Slow idle float, amplitude in em so it scales with the frame. */
+.float {
+  animation: card-float var(--float-duration, 7s) ease-in-out var(--float-delay, 0s) infinite;
+  will-change: transform;
+}
+
+/* Visibility bars grow in once the card has landed: set --bar-delay. */
+.barGrow {
+  transform-origin: left center;
+  animation: bar-grow 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--bar-delay, 0ms);
+}
+
+.spin {
+  animation: spin 900ms linear infinite;
+}
+
+/* Pause control: freeze the idle motion together with the video. */
+.paused .float,
+.paused .spin {
+  animation-play-state: paused;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes card-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -0.25em, 0);
+  }
+}
+
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
