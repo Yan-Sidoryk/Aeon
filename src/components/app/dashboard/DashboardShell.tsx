@@ -7,6 +7,7 @@ import {
   FileText,
   Globe,
   LayoutDashboard,
+  Megaphone,
   MessagesSquare,
   Plus,
   Swords,
@@ -29,14 +30,15 @@ import { ErrorNote, Panel, Skeleton } from "../ui";
 
 type NavItem = { slug: string; label: string; icon: LucideIcon };
 
-// What a brand team checks each week. Promo opportunities and the tracking page stay reachable by URL; weekly
-// tracking is a switch at the bottom of the sidebar.
+// Measure (overview, questions, competitors, sources), then act: opportunities, and fixes drafted and pre-MLR
+// reviewed. The tracking page stays reachable by URL; weekly tracking is a switch at the bottom of the sidebar.
 const NAV: NavItem[] = [
   { slug: "", label: "Overview", icon: LayoutDashboard },
   { slug: "questions", label: "Questions", icon: MessagesSquare },
   { slug: "competitors", label: "Competitors", icon: Swords },
   { slug: "sources", label: "Sources", icon: Globe },
-  { slug: "content", label: "Fixes", icon: FileText },
+  { slug: "opportunities", label: "Opportunities", icon: Megaphone },
+  { slug: "content", label: "Fixes & drafts", icon: FileText },
 ];
 
 const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-royal";
