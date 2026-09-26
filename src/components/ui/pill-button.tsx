@@ -15,7 +15,7 @@ const variants: Record<PillButtonVariant, string> = {
 };
 
 const base =
-  "inline-flex h-12 cursor-pointer items-center justify-center whitespace-nowrap rounded-full px-4 font-display text-[16px] leading-6 font-medium antialiased transition-all duration-150 ease-[cubic-bezier(0.4,0,0.2,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-royal focus-visible:ring-offset-2 focus-visible:ring-offset-white";
+  "inline-flex h-12 cursor-pointer items-center justify-center whitespace-nowrap rounded-full px-4 font-display text-[16px] leading-6 font-medium antialiased transition-all duration-150 ease-[cubic-bezier(0.4,0,0.2,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-royal focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:pointer-events-none disabled:opacity-40";
 
 type PillButtonProps = {
   href?: string;

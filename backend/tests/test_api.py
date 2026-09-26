@@ -124,3 +124,33 @@ def test_full_flow(client, monkeypatch):
 
     saved = client.post("/api/orgs/save", json={"email": "Brand@Acme.com"}, headers=H).json()
     assert saved["email"] == "brand@acme.com"
+
+
+def test_choose_labeler(client):
+    from sqlmodel import Session
+
+    from app.db import engine
+    from app.models import Company, Org, Product
+
+    with Session(engine) as s:
+        org = Org(session_id="labeler-test")
+        s.add(org)
+        s.commit()
+        company = Company(org_id=org.id, domain="acme.com", status="ready", labeler_candidates=["Acme Inc", "Acme Labs"])
+        s.add(company)
+        s.commit()
+        s.add_all([
+            Product(company_id=company.id, brand="Alpha", labeler="Acme Labs", search_rank=1, is_hero=True),
+            Product(company_id=company.id, brand="Beta", labeler="Acme Inc", search_rank=2),
+            Product(company_id=company.id, brand="Gamma", labeler="", search_rank=3),
+        ])
+        s.commit()
+        company_id = company.id
+
+    assert client.post(f"/api/companies/{company_id}/labeler", json={"labeler": "Nope"}).status_code == 422
+    out = client.post(f"/api/companies/{company_id}/labeler", json={"labeler": "Acme Inc"}).json()
+    by_brand = {p["brand"]: p for p in out["products"]}
+    assert out["labeler_candidates"] == []
+    assert by_brand["Alpha"]["partner"] and not by_brand["Alpha"]["selected"] and not by_brand["Alpha"]["is_hero"]
+    assert by_brand["Beta"]["is_hero"] and not by_brand["Beta"]["partner"]
+    assert not by_brand["Gamma"]["partner"]  # unindexed label: benefit of the doubt

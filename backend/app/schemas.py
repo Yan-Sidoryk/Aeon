@@ -123,6 +123,10 @@ class AddProductIn(BaseModel):
     brand: str
 
 
+class LabelerIn(BaseModel):
+    labeler: str
+
+
 class CompetitorIn(BaseModel):
     brand: str
     molecule: str = ""

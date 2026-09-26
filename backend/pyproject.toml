@@ -1,5 +1,5 @@
 [project]
-name = "pharmapulse-backend"
+name = "aeon-backend"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
@@ -15,6 +15,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]  # fixtures/ and tests/ are data, not packages
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

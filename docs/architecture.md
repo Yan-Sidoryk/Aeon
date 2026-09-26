@@ -8,7 +8,7 @@ How the frontend screens from `user-journey-pharma-onboarding.md` connect to the
 
 ```mermaid
 flowchart LR
-  subgraph Browser["Frontend (Next.js or similar)"]
+  subgraph Browser["Frontend (Next.js 16, src/app)"]
     S1["/start"] --> S2["/start/portfolio"] --> S3["/start/hero"] --> S4["/start/setup"] --> S5["/start/scan"] --> S6["/report/[id]"]
   end
 
@@ -50,7 +50,7 @@ flowchart LR
 | Auth | None in the MVP. IDs in URLs are the only access control, so the report link is shareable by design. |
 | Errors | Non-2xx responses return `{"detail": "..."}`. Show `detail` to the user. |
 | Live docs | `GET /docs` (interactive) and `GET /openapi.json` (can generate a typed client). |
-| Health | `GET /api/health` → `{"ok": true, "demo_mode": false}` |
+| Health | `GET /api/health` → `{"ok": true, "demo_mode": false}`; in demo mode also `demo_domain`, the site the recording is of |
 
 **Demo mode.** Start the backend with `DEMO_MODE=1` and any URL replays a recorded incyte.com run (Opzelura as the hero drug) through the same endpoints and streams, in a few seconds. The frontend doesn't change. Use it for development and as the fallback when showing the product.
 
@@ -104,7 +104,7 @@ Live timing: ~22s. Demo mode: ~3s.
 | `pipeline: true` | Show in a "Pipeline" group, unticked, not scanned |
 | `has_boxed_warning` | Optional warning icon |
 
-- If `labeler_candidates` has 2 or more names, ask "Which of these are you?". There is no endpoint yet to save the answer.
+- If `labeler_candidates` has 2 or more names, ask "Which of these are you?" and send the answer to `POST /api/companies/{id}/labeler` with `{"labeler": "..."}`. It returns the updated company: other labelers' products become partner products, the hero moves if it has to, and `labeler_candidates` is cleared.
 - Untick or retick: `PATCH /api/products/{id}` with `{"selected": false}`.
 - "Add a product": `POST /api/companies/{id}/products` with `{"brand": "Dupixent"}`. Returns the new product, or 404 if no US FDA label exists.
 - Primary button "Looks right" → `/start/hero`.
@@ -237,6 +237,7 @@ Every 3 seconds is enough.
 | GET | `/api/companies/{id}` | | company + `products[]` |
 | POST | `/api/companies/{id}/products` | `{brand}` | product, or 404 |
 | GET | `/api/products/{id}` | | product incl. full `label` |
+| POST | `/api/companies/{id}/labeler` | `{labeler}` | company + `products[]`; 422 if not a candidate |
 | PATCH | `/api/products/{id}` | `{selected}` | `{ok}` |
 | POST | `/api/products/{id}/hero` | | `{ok}` |
 | POST | `/api/products/{id}/setup` | `?regenerate=true` optional | setup view |
@@ -370,4 +371,5 @@ Data flow in one line: `Company` → `Product` (+ FDA label JSON) → `Competito
 - **Single process.** Jobs run inside the web server. Run one backend instance; don't load-balance across several.
 - **No auth or anonymous limits** yet. Anyone with an ID can read its data, and scans aren't rate-limited per session.
 - **Firecrawl free plan** allows about 2 onboardings per minute. A burst returns slower discovery (the backend retries).
-- **Not built yet:** labeler choice endpoint, "Email me when ready", role question on the report, "Add your other products". See `progress-backend.md`.
+- **Not built yet:** "Email me when ready" and "Add your other products". The role question on the report is frontend-only (stored per browser). See `progress-backend.md`.
+- **`PUT /api/products/{id}/prompts` drops lanes.** The setup view hides `lane`, so a round-trip through this endpoint resets every question to `unbranded` and breaks the headline scope. The frontend doesn't edit questions until this keeps lanes.
