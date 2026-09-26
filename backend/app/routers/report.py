@@ -3,8 +3,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlmodel import Session, select
 
-from app import jobs
-from app.auth import current_org, owned_draft, owned_scan
+from app import guard
+from app.auth import Caller, current_caller, current_org, owned_draft, owned_scan
 from app.config import settings
 from app.db import get_session
 from app.models import Answer, Draft, Org, Report
@@ -46,21 +46,23 @@ def fix_job_id(report_id: str, fix_key: str) -> str:
 
 @router.post("/reports/{report_id}/fixes/{fix_key}",
              summary="'Fix this': {draft_id} if ready, else 202 {job_id}; stream /api/fixes/{job_id}/events")
-def create_fix(report_id: str, fix_key: str, response: Response, org: Org = Depends(current_org),
+def create_fix(report_id: str, fix_key: str, response: Response, caller: Caller = Depends(current_caller),
                session: Session = Depends(get_session)):
     report = _report(session, report_id)
-    owned_scan(session, report.scan_id, org)  # drafting costs money: only the report's owner can start it
     existing = session.exec(select(Draft).where(Draft.report_id == report_id, Draft.fix_key == fix_key)).first()
-    if existing:
+    if existing:  # drafts are public with the report link anyway
         return {"draft_id": existing.id, "job_id": None}
+    if report.payload.get("sample"):
+        raise HTTPException(409, "This sample report has one recorded fix: open that one. Scan your own site to draft the rest.")
+    owned_scan(session, report.scan_id, caller.org)  # drafting costs money: only the report's owner can start it
     if not any(f["key"] == fix_key for f in report.payload.get("fixes", [])):
         raise HTTPException(404, f"fix '{fix_key}' not in report")
     if settings.demo_mode and demo.available() and fix_key not in demo.recorded_fix_keys():
         # demo mode never spends money: only the recorded fix loop replays
         raise HTTPException(409, "This demo has one recorded fix: open the first one. Other fixes are drafted in live mode.")
-    # enqueue() joins a job that's already queued or running, so a double click is safe
-    job_id = jobs.enqueue("fix", {"report_id": report_id, "fix_key": fix_key}, org_id=org.id,
-                          job_id=fix_job_id(report_id, fix_key))
+    # joins a job that's already queued or running, so a double click is safe
+    job_id = guard.start(session, caller, "fix", {"report_id": report_id, "fix_key": fix_key},
+                         job_id=fix_job_id(report_id, fix_key))
     response.status_code = 202
     return {"draft_id": None, "job_id": job_id}
 
@@ -93,7 +95,8 @@ def save(body: SaveIn, org: Org = Depends(current_org), session: Session = Depen
 
 
 @router.get("/me", summary="The caller's account")
-def me(org: Org = Depends(current_org), session: Session = Depends(get_session)):
-    return {"org_id": org.id, "email": org.email, "signed_in": bool(org.user_id)}
+def me(caller: Caller = Depends(current_caller)):
+    """signed_in: a confirmed email (anonymous visitors are false)."""
+    return {"org_id": caller.org.id, "email": caller.org.email, "signed_in": caller.signed_in}
 
 

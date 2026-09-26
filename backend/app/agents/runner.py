@@ -9,6 +9,7 @@ import logging
 from collections.abc import Callable
 from typing import Any
 
+from app import spend
 from app.config import settings
 from app.llm import LLMError, client
 from app.observability import observe
@@ -60,6 +61,7 @@ async def _loop(messages, usage, system, tools, model, effort, max_iterations, m
         async for message in runner:
             last = message
             _add_usage(usage, message.usage)
+            spend.claude(message.model, message.usage)
             messages.append({"role": "assistant", "content": message.content})
             if on_server_tool:
                 for block in message.content:

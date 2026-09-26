@@ -18,6 +18,17 @@ def test_dedupe_keeps_latest():
     assert dedupe_latest([old, new, {**old, "brand": ""}]) == [new]
 
 
+def test_dedupe_merges_a_brands_labels():
+    """Zoryve cream and Zoryve foam are two labels: checks must know both."""
+    cream = {"brand": "Zoryve", "molecule": "roflumilast", "manufacturer": "Arcutis", "set_id": "c",
+             "effective_time": "20260720", "label": {"indications": "cream: plaque psoriasis, age 6+", "boxed_warning": ""}}
+    foam = {**cream, "set_id": "f", "effective_time": "20260902",
+            "label": {"indications": "foam: seborrheic dermatitis, age 9+", "boxed_warning": ""}}
+    [merged] = dedupe_latest([cream, foam])
+    assert merged["set_id"] == "f"
+    assert "cream" in merged["label"]["indications"] and "foam" in merged["label"]["indications"]
+
+
 def test_premlr_flags_bad_copy(opzelura):
     bad = "Opzelura is the best cream and completely safe. It cures eczema. 75% of patients improved."
     flags = premlr.rule_flags(bad, [{"text": "made up", "label_quote": "not in the label at all"}], opzelura["label"])

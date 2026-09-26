@@ -148,6 +148,8 @@ class Job(SQLModel, table=True):
     error: str | None = None
     attempts: int = 0
     org_id: int | None = Field(default=None, foreign_key="org.id", index=True)
+    ip_hash: str | None = None  # who started it (hashed), for the per-IP limits on visitors (guard.py)
+    cost_usd: float = 0.0  # measured spend of its runs (spend.py)
     created_at: datetime = Field(default_factory=_now)
     updated_at: datetime = Field(default_factory=_now)
 

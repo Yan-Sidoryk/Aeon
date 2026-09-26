@@ -28,3 +28,18 @@ def opzelura(opzelura_record) -> dict:
     from app.services.openfda import parse_label
 
     return parse_label(opzelura_record)
+
+
+@pytest.fixture(autouse=True)
+def public_websites(monkeypatch):
+    """The website check (services/website.py) never touches the network in tests: every name is a live site."""
+    from app.services import website
+
+    async def resolve(host):
+        return ["93.184.216.34"]
+
+    async def answers(url):
+        return True
+
+    monkeypatch.setattr(website, "_resolve", resolve)
+    monkeypatch.setattr(website, "_answers", answers)

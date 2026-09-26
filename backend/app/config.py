@@ -25,14 +25,15 @@ class Settings(BaseSettings):
     database_url: str = DEFAULT_DATABASE_URL
 
     demo_mode: bool = False
+    daily_spend_cap_usd: float = 10.0  # all live runs together, per UTC day (guard.py)
     environment: str = "development"  # Langfuse environment tag
 
     model_fast: str = "claude-haiku-4-5"
-    model_smart: str = "claude-opus-5"
+    model_smart: str = "claude-sonnet-5"  # the agents (discovery, setup, fix, promo)
     jobs_inline: bool = False  # run each job inside the request that streams it (automatic on Vercel)
     cron_secret: str = ""  # Vercel Cron sends it as a bearer token
     model_engine_claude: str = "claude-sonnet-5"  # the "Claude" people ask; ~60% cheaper per scan than Opus 5
-    model_accuracy: str = "claude-opus-5"  # label checks; chosen by the label-accuracy benchmark
+    model_accuracy: str = "claude-sonnet-5"  # label checks; re-run the label-check eval before changing
     engine_effort: str = "low"  # scan answers: speed matters more than depth
     accuracy_effort: str = "medium"
     draft_effort: str = "medium"  # "Fix this" is interactive

@@ -13,10 +13,13 @@ export type Health = {
   auth: boolean;
   /** Site the demo recording is of. */
   demo_domain?: string;
+  /** The recorded run loaded as a public sample report (live mode); null until seeded. */
+  sample_report_id?: string | null;
 };
 
 export type Engine = { name: string; label: string; enabled: boolean; coming_soon: boolean; samples: number };
 
+/** signed_in: a confirmed email (anonymous visitors are false; always true without Supabase). */
 export type Me = { org_id: number; email: string | null; signed_in: boolean };
 
 // ---- Screens 1-3: onboarding, portfolio, hero ------------------------------
@@ -231,6 +234,8 @@ export type Report = {
   fixes: Fix[];
   methodology: string;
   scan: { id: number; kind: Scan["kind"] };
+  /** Only on the sample report: the recording it was loaded from. */
+  sample?: { domain: string; recorded_at: string } | null;
 };
 
 export type Citation = { url: string; title: string };

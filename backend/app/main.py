@@ -12,7 +12,7 @@ from app.db import init_db
 from app.observability import init_tracing, shutdown
 from app.routers import dashboard, onboarding, report, scan
 from app.scheduler import run_due, scheduler
-from app.services import demo
+from app.services import demo, sample
 
 
 @asynccontextmanager
@@ -21,6 +21,8 @@ async def lifespan(app: FastAPI):
     init_db()
     # Serverless: no background tasks outlive a request; jobs run in their streams, weekly scans via /api/cron/weekly
     tasks = [] if settings.inline_jobs else [asyncio.create_task(jobs.worker()), asyncio.create_task(scheduler())]
+    if not settings.demo_mode:  # demo mode replays the recording for every run already
+        tasks.append(asyncio.create_task(sample.seed_quietly()))
     yield
     for task in tasks:
         task.cancel()
@@ -70,5 +72,5 @@ async def weekly_cron(authorization: str | None = Header(None)):
 def health():
     on = settings.demo_mode and demo.available()
     # demo_domain: the site the recording is of, so the UI can say whose results a replay shows
-    return {"ok": True, "demo_mode": on, "auth": settings.auth_enabled,
+    return {"ok": True, "demo_mode": on, "auth": settings.auth_enabled, "sample_report_id": sample.report_id(),
             **({"demo_domain": demo.load()["company"]["domain"]} if on else {})}

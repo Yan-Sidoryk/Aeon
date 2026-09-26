@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
-import { AppFrame } from "@/components/app/AppFrame";
+import { StatusBanners } from "@/components/app/AppFrame";
 
 export const metadata: Metadata = {
   title: "Dashboard · Aeon",
   robots: { index: false },
 };
 
+/** The dashboard draws its own app chrome (a full-height sidebar), so only the status banners sit above it. */
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  return <AppFrame>{children}</AppFrame>;
+  return (
+    <div className="min-h-dvh bg-offwhite">
+      <StatusBanners />
+      {children}
+    </div>
+  );
 }
