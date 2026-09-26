@@ -24,4 +24,6 @@ app.include_router(report.router)
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "demo_mode": settings.demo_mode and demo.available()}
+    on = settings.demo_mode and demo.available()
+    # demo_domain: the site the recording is of, so the UI can say whose results a replay shows
+    return {"ok": True, "demo_mode": on, **({"demo_domain": demo.load()["company"]["domain"]} if on else {})}
